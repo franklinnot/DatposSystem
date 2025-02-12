@@ -76,7 +76,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
+        $referer = $request->headers->get('referer', '/');
         // Se indica que se recargue la página 
-        return Inertia::location('login');
+        return Inertia::location($referer);
     }
 }
