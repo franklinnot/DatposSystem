@@ -60,9 +60,11 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         // En lugar de redireccionar al home, le decimos a inertia que recargue la
-        // pagina (login) y al hacer esto automaticamente se mostrara el dashboard
+        // pagina de origen y al hacer esto automaticamente se mostrara el dashboard
         // al volver a ejectuar el codigo javascript del componente
-        return Inertia::location('login');
+        $referer = $request->headers->get('referer', '/');
+        // Se indica que se recargue la página 
+        return Inertia::location($referer);
     }
 
     /**
