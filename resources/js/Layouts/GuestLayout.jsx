@@ -1,12 +1,9 @@
-import ApplicationLogo from "@/Components/ApplicationLogo";
 import { Link } from "@inertiajs/react";
 import { useEffect } from "react";
 
 export default function Guest({ children }) {
 
-    // // useEffect para verificar si el usuario ya está autenticado
-    // useEffect(() => {
-    //     // Espera a que se cargue el DOM y busca el elemento con id "app"
+    // Espera a que se cargue el DOM y busca el elemento con id "app"
     //     const appElement = document.getElementById("app");
     //     if (!appElement) {
     //         console.warn('No se encontró el elemento con id "app".');
@@ -33,17 +30,16 @@ export default function Guest({ children }) {
     //     }
     // }, []);
 
-    return (
-        <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <Link href="/">
-                    <ApplicationLogo className="w-20 h-20 fill-current text-gray-500" />
-                </Link>
-            </div>
+    // Construir la URL completa
 
-            <div className="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {children}
-            </div>
+    return (
+        <div
+            className="h-dvh w-dvw pb-6 grid place-items-center
+                      bg-gradient-to-tr from-[#D3E0FF] to-[#FFFFFF]
+                      lg:bg-none lg:bg-white"
+        >
+            {/*  */}
+            {children}
         </div>
     );
 }
