@@ -19,7 +19,7 @@ export default function Login({ status }) {
         remember: false,
     });
 
-    // 
+    //
     useEffect(() => {
         return () => {
             reset("password");
@@ -37,6 +37,8 @@ export default function Login({ status }) {
         });
     };
 
+
+    //#region Construir la URL completa para el mensaje de WhatsApp
     const telf = "941225240";
     const message =
         "¡Hola 👋! Estoy interesado en los servicios SaaS de Microservice y me gustaría saber más. ¿Podemos hablar?";
@@ -46,6 +48,7 @@ export default function Login({ status }) {
         "&text=" +
         encodeURIComponent(message) +
         "&type=phone_number&app_absent=0";
+    //#endregion
 
     return (
         <GuestLayout>
