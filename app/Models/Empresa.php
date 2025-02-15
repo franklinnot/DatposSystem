@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Empresa extends Model
 {
 
+    #region Setup del modelo
     protected $table = 'empresa';
     protected $primaryKey = 'id_empresa';
     protected $fillable = [
+        'id_empresa',
         'ruc',
         'razon_social',
         'nombre_comercial',
@@ -25,17 +27,37 @@ class Empresa extends Model
         'cantidad_usuarios',
         'facturacion_electronica',
         'logo',
-        'dias_plazo',
         'estado',
+        'dias_plazo',
+    ];
+    #endregion
+
+    // Atributos y funciones que deben ser ocultadas al serializar el modelo en el data-page
+    protected $hidden = [
+        
     ];
 
-    public static function get_empresa($idEmpresa): ?Empresa
+    #region CRUD
+    public static function get_empresa($id_empresa): ?Empresa
     {
-        return self::where('id_empresa', $idEmpresa)->first();
+        return self::find($id_empresa);
+    }
+    #endregion
+
+    #region Relationships 1 - N
+    public function usuarios()
+    {
+        return $this->hasMany(Usuario::class, 'id_empresa');
     }
 
-    public static function actualizar_estado($idEmpresa, $estado)
+    public function sucursales()
     {
-        return self::where('id_empresa', $idEmpresa)->update(['estado' => $estado]);
+        return $this->hasMany(Usuario::class, 'id_empresa');
     }
+
+    public function pagosTarifa()
+    {
+        return $this->hasMany(Usuario::class, 'id_empresa');
+    }
+    #endregion
 }

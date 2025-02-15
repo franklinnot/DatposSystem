@@ -13,13 +13,16 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
     use HasFactory, Notifiable;
 
     #region Setup del modelo
-    
     protected $table = 'usuario';
     protected $primaryKey = 'id_usuario';
-    // atributos que pueden ser asignados por los metodos create y update
     protected $fillable = [
+        'id_usuario',
         'email',
+        'email_verified_at',
         'password',
+        'remember_token',
+        'created_at',
+        'updated_at',
         'nombre',
         'direccion',
         'foto',
@@ -29,6 +32,7 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
         'id_almacen',
         'id_empresa',
     ];
+    #endregion
 
     // nombre del identificador unico del usuario => el pk
     public function getAuthIdentifierName()
