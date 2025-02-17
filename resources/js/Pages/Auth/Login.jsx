@@ -37,7 +37,6 @@ export default function Login({ status }) {
         });
     };
 
-
     //#region Construir la URL completa para el mensaje de WhatsApp
     const telf = "941225240";
     const message =
@@ -61,7 +60,16 @@ export default function Login({ status }) {
             >
                 {/* Titulo y saludo */}
                 <div className="grid place-items-center text-center gap-8">
-                    <ApplicationLogo size={72} />
+                    <Link
+                        href="/"
+                        onClick={(e) => {
+                            e.preventDefault(); // Previene la navegación predeterminada de Inertia
+                            Inertia.visit("dashboard", { replace: true });
+                            Inertia.reload(); // Recarga la página completamente
+                        }}
+                    >
+                        <ApplicationLogo size={72} />
+                    </Link>
                     <div className="grid place-items-center">
                         <h2 className="text-[1.68rem] font-bold">
                             Inicia sesión en tu cuenta

@@ -20,7 +20,7 @@ export default function Authenticated({ user, header, children }) {
                                     href="/"
                                     onClick={(e) => {
                                         e.preventDefault(); // Previene la navegación predeterminada de Inertia
-                                        Inertia.visit("/", { replace: true });
+                                        Inertia.visit("dashboard", { replace: true });
                                         Inertia.reload(); // Recarga la página completamente
                                     }}
                                 >

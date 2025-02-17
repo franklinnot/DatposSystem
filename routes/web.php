@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Inertia\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,9 +18,28 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/', function (Request $request) {
+    $dashboardUrl = route('dashboard');
+
+    return response(
+        '<!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="utf-8">
+            <title>Dashboard</title>
+            <script type="text/javascript">
+                // Reemplaza la URL actual en el historial por la de dashboard
+                history.replaceState(null, "", "' . $dashboardUrl . '");
+                // Recarga la página para cargar la ruta dashboard
+                window.location.reload();
+            </script>
+        </head>
+        <body>
+            Dashboard
+        </body>
+        </html>'
+    );
+})->middleware(['auth', 'verified']);
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
