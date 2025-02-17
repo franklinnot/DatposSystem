@@ -9,6 +9,7 @@ class Sucursal extends Model
 {
     use HasFactory;
 
+    // agregar bool para determinar la sucursal principal
     #region Setup del modelo
     protected $table = 'sucursal';
     protected $primaryKey = 'id_sucursal';

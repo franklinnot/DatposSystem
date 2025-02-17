@@ -29,7 +29,6 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
         'estado',
         'id_rol',
         'id_sucursal',
-        'id_almacen',
         'id_empresa',
     ];
     #endregion

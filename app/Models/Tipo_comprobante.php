@@ -15,10 +15,10 @@ class Tipo_comprobante extends Model
     protected $fillable = [
         'id_tipo_comprobante',
         'codigo',
+        'serie',
         'nombre',
         'igv',
         'estado',
-        'id_empresa',
     ];
     #endregion
 

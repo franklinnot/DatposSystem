@@ -21,5 +21,20 @@ class Almacen extends Model
     ];
     #endregion
 
+
+    public function productos()
+    {
+        return $this->hasMany(Producto_almacen::class, 'id_almacen');
+    }
+    public function sucursal()
+    {
+        return $this->hasMany(Sucursal_almacen::class, 'id_almacen');
+    }
+
+    public function usuarios()
+    {
+        return $this->hasMany(Usuario_almacen::class, 'id_almacen');
+    } 
+
     
 }
