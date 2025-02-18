@@ -30,10 +30,7 @@ export default function Login({ status }) {
         e.preventDefault();
 
         post(route("login"), {
-            onSuccess: () => {
-                // forzamos la recarga de la pagina al momento de iniciar sesion
-                Inertia.reload();
-            },
+            onFinish: () => reset("password"),
         });
     };
 
@@ -65,7 +62,6 @@ export default function Login({ status }) {
                         onClick={(e) => {
                             e.preventDefault(); // Previene la navegación predeterminada de Inertia
                             Inertia.visit("dashboard", { replace: true });
-                            Inertia.reload(); // Recarga la página completamente
                         }}
                     >
                         <ApplicationLogo size={72} />

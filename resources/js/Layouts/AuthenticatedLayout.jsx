@@ -26,15 +26,7 @@ export default function Authenticated({ user, header, children }) {
                     <div className="flex justify-between h-16">
                         <div className="flex">
                             <div className="shrink-0 flex items-center">
-                                <Link
-                                    href={route("dashboard")}
-                                    onClick={(e) => {
-                                        e.preventDefault(); // Previene la navegación predeterminada de Inertia
-                                        Inertia.visit(route("dashboard"), {
-                                            replace: true, // Evita agregar una nueva entrada en el historial
-                                        });
-                                    }}
-                                >
+                                <Link href={route("dashboard")}>
                                     <ApplicationLogo size={48} />
                                 </Link>
                             </div>
