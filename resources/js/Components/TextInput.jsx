@@ -6,7 +6,7 @@ export default forwardRef(function TextInput(
 ) {
     const input = ref ? ref : useRef();
     const [inputValue, setInputValue] = useState(props.value ?? "");
-    const [hasValue, setHasValue] = useState(props.value?.length > 0 ?? false);
+    const [hasValue, setHasValue] = useState(props.value?.length > 0);
 
     // Sincroniza con props.value
     useEffect(() => {

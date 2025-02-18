@@ -4,10 +4,21 @@ import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link } from "@inertiajs/react";
+import { useEffect } from "react";
+import { usePage } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 
 export default function Authenticated({ user, header, children }) {
-    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const [showingNavigationDropdown, setShowingNavigationDropdown] =
+        useState(false);
+    const { props } = usePage(); // Obtiene las props globales de Inertia
+    const userAuth = props.auth?.user; // Verifica si el usuario está autenticado
+
+    useEffect(() => {
+        if (!userAuth) {
+            Inertia.visit(route("login"), { replace: true }); // Redirige si el usuario no está autenticado
+        }
+    }, [userAuth]);
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -17,11 +28,12 @@ export default function Authenticated({ user, header, children }) {
                         <div className="flex">
                             <div className="shrink-0 flex items-center">
                                 <Link
-                                    href="/"
+                                    href={route("dashboard")}
                                     onClick={(e) => {
                                         e.preventDefault(); // Previene la navegación predeterminada de Inertia
-                                        Inertia.visit("dashboard", { replace: true });
-                                        Inertia.reload(); // Recarga la página completamente
+                                        Inertia.visit(route("dashboard"), {
+                                            replace: true, // Evita agregar una nueva entrada en el historial
+                                        });
                                     }}
                                 >
                                     <ApplicationLogo size={48} />
@@ -67,10 +79,18 @@ export default function Authenticated({ user, header, children }) {
 
                                     <Dropdown.Content>
                                         <Dropdown.Link
-                                            href={route("profile.edit")}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                Inertia.get(
+                                                    route("profile.edit"),
+                                                    {},
+                                                    { replace: true }
+                                                );
+                                            }}
                                         >
                                             Profile
                                         </Dropdown.Link>
+
                                         <Dropdown.Link
                                             as="button"
                                             onClick={(e) => {
@@ -81,6 +101,12 @@ export default function Authenticated({ user, header, children }) {
                                                     {
                                                         onSuccess: () => {
                                                             Inertia.reload();
+                                                            Inertia.visit(
+                                                                route("login"),
+                                                                {
+                                                                    replace: true,
+                                                                }
+                                                            );
                                                         },
                                                     }
                                                 );
