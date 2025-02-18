@@ -9,8 +9,7 @@ import { usePage } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 
 export default function Authenticated({ user, header, children }) {
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
     const { props } = usePage(); // Obtiene las props globales de Inertia
     const userAuth = props.auth?.user; // Verifica si el usuario está autenticado
 
@@ -79,38 +78,15 @@ export default function Authenticated({ user, header, children }) {
 
                                     <Dropdown.Content>
                                         <Dropdown.Link
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                Inertia.get(
-                                                    route("profile.edit"),
-                                                    {},
-                                                    { replace: true }
-                                                );
-                                            }}
+                                            href={route("profile.edit")}
                                         >
                                             Profile
                                         </Dropdown.Link>
 
                                         <Dropdown.Link
+                                            href={route("logout")}
+                                            method="post"
                                             as="button"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                Inertia.post(
-                                                    route("logout"),
-                                                    {},
-                                                    {
-                                                        onSuccess: () => {
-                                                            Inertia.reload();
-                                                            Inertia.visit(
-                                                                route("login"),
-                                                                {
-                                                                    replace: true,
-                                                                }
-                                                            );
-                                                        },
-                                                    }
-                                                );
-                                            }}
                                         >
                                             Log Out
                                         </Dropdown.Link>
