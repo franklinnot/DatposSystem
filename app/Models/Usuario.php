@@ -16,7 +16,6 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
     protected $table = 'usuario';
     protected $primaryKey = 'id_usuario';
     protected $fillable = [
-        'id_usuario',
         'email',
         'email_verified_at',
         'password',
@@ -54,11 +53,6 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
-        // Relationships 1 - N
-        'empresa',
-        'rol',
-        'sucursal',
-        'almacen',
     ];
 
 

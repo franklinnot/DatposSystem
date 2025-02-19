@@ -61,13 +61,13 @@ class HandleInertiaRequests extends Middleware
     // Obtener el usuario actualizado de la base de datos, si está autenticado
     private function get_usuarioData(Request $request)
     {
-        return $request->user() ? $request->user()->fresh() : null;
+        return $request->user() ? $request->user()->refresh() : null;
     }
 
     // Empresa asociada al usuario autenticado.
     private function get_empresaData($user)
     {
-        return $user ? $user->empresa : null;
+        return $user ? Empresa::get_empresa($user['id_empresa']) : null;
     }
 
 
