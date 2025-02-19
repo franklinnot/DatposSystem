@@ -26,7 +26,14 @@ export default function Authenticated({ user, header, children }) {
                     <div className="flex justify-between h-16">
                         <div className="flex">
                             <div className="shrink-0 flex items-center">
-                                <Link href={route("dashboard")}>
+                                <Link
+                                    href={route("dashboard")}
+                                    onSuccess={() =>
+                                        Inertia.reload({
+                                            only: ["auth"],
+                                        })
+                                    }
+                                >
                                     <ApplicationLogo size={48} />
                                 </Link>
                             </div>
@@ -35,6 +42,11 @@ export default function Authenticated({ user, header, children }) {
                                 <NavLink
                                     href={route("dashboard")}
                                     active={route().current("dashboard")}
+                                    onSuccess={() =>
+                                        Inertia.reload({
+                                            only: ["auth"],
+                                        })
+                                    }
                                 >
                                     Dashboard
                                 </NavLink>
@@ -71,6 +83,11 @@ export default function Authenticated({ user, header, children }) {
                                     <Dropdown.Content>
                                         <Dropdown.Link
                                             href={route("profile.edit")}
+                                            onSuccess={() =>
+                                                Inertia.reload({
+                                                    only: ["auth"],
+                                                })
+                                            }
                                         >
                                             Profile
                                         </Dropdown.Link>
@@ -140,6 +157,11 @@ export default function Authenticated({ user, header, children }) {
                         <ResponsiveNavLink
                             href={route("dashboard")}
                             active={route().current("dashboard")}
+                            onSuccess={() =>
+                                Inertia.reload({
+                                    only: ["auth"],
+                                })
+                            }
                         >
                             Dashboard
                         </ResponsiveNavLink>
