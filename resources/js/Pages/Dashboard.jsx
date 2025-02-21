@@ -8,7 +8,7 @@ import { useState } from "react";
 export default function Dashboard({ auth }) {
     const appName = import.meta.env.VITE_APP_NAME || "Laravel";
     return (
-        <AuthenticatedLayout user={auth.user} h2Prop={"Dashboard"}>
+        <AuthenticatedLayout user={auth.user}>
             <Head title={`Dashboard`} />
 
             <div className="py-12">

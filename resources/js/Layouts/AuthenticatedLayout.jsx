@@ -8,11 +8,13 @@ import { useEffect } from "react";
 import { usePage } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 
-export default function Authenticated({ user, header, children }) {
-    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-    const { props } = usePage(); // Obtiene las props globales de Inertia
-    const userAuth = props.auth?.user; // Verifica si el usuario está autenticado
+export default function Authenticated({ user, children }) {
+    const [showingNavigationDropdown, setShowingNavigationDropdown] =
+        useState(false);
+    const { props } = usePage(); // props globales de Inertia
+    const userAuth = props.auth?.user; // prop auth.user
 
+    // redirigir usuarios no autenticados a la página de inicio de sesión
     useEffect(() => {
         if (!userAuth) {
             Inertia.visit(route("login"), { replace: true }); // Redirige si el usuario no está autenticado
@@ -20,24 +22,66 @@ export default function Authenticated({ user, header, children }) {
     }, [userAuth]);
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="h-dvh w-dvw grid bg-white">
+            <header className="grid grid-flow-col place-items-center px-5 max-h-14 sm:max-h-16 bg-[#EFF4FF] border-b-2">
+                {/* Menu hamburguesa y logo */}
+                <div className="grid grid-flow-col place-items-center justify-self-start gap-2">
+                    {/* hamburguesita */}
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                        />
+                    </svg>
+
+                    {/* logo */}
+                    <Link
+                        className="inline-flex"
+                        href={route("dashboard")}
+                        onSuccess={() =>
+                            Inertia.reload({
+                                only: ["auth"], // seleccionar a las tablas globales
+                            })
+                        }
+                    >
+                        <ApplicationLogo scaleText={1.4} size={36} fontWeight={500} />
+                    </Link>
+                </div>
+
+                {/* Nombre e icono de usuario */}
+                <div className="grid grid-flow-col place-items-center justify-self-end gap-2">
+                    <span>{userAuth.nombre}</span>
+                    {/* Icono de perfil */}
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-8"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        />
+                    </svg>
+                </div>
+            </header>
+
             <nav className="bg-white border-b border-gray-100">
+                {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex">
-                            <div className="shrink-0 flex items-center">
-                                <Link
-                                    href={route("dashboard")}
-                                    // onSuccess={() =>
-                                    //     Inertia.reload({
-                                    //         only: ["auth"],
-                                    //     })
-                                    // }
-                                >
-                                    <ApplicationLogo size={48} />
-                                </Link>
-                            </div>
-
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
                                     href={route("dashboard")}
@@ -157,11 +201,6 @@ export default function Authenticated({ user, header, children }) {
                         <ResponsiveNavLink
                             href={route("dashboard")}
                             active={route().current("dashboard")}
-                            // onSuccess={() =>
-                            //     Inertia.reload({
-                            //         only: ["auth"],
-                            //     })
-                            // }
                         >
                             Dashboard
                         </ResponsiveNavLink>
@@ -192,14 +231,6 @@ export default function Authenticated({ user, header, children }) {
                     </div>
                 </div>
             </nav>
-
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {header}
-                    </div>
-                </header>
-            )}
 
             <main>{children}</main>
         </div>
