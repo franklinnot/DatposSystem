@@ -59,8 +59,7 @@ export default function Login({ status }) {
                     <Link
                         href="/"
                         onClick={(e) => {
-                            e.preventDefault(); // Previene la navegación predeterminada de Inertia
-                            Inertia.visit("dashboard", { replace: true });
+                            Inertia.visit("login", { replace: true });
                         }}
                     >
                         <ApplicationLogo size={72} />
