@@ -10,7 +10,6 @@ import { Inertia } from "@inertiajs/inertia"; // Importa Inertia
 import ApplicationLogo from "@/Components/ApplicationLogo";
 
 export default function Login({ status }) {
-    const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
     // quizas, en algun momento agregar canResetPassword como prop
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -48,7 +47,7 @@ export default function Login({ status }) {
 
     return (
         <GuestLayout>
-            <Head title={`Iniciar Sesión - ${appName}`} />
+            <Head title={`Iniciar Sesión`} />
 
             {/* Contenedor de todo el login */}
             <div
