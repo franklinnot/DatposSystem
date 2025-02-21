@@ -6,24 +6,10 @@ import { Inertia } from "@inertiajs/inertia";
 import { useState } from "react";
 
 export default function Dashboard({ auth }) {
-    const { props } = usePage(); // Obtiene las props globales de Inertia
-    const userAuth = props.auth?.user; // Verifica si el usuario está autenticado
-
-    useEffect(() => {
-        if (!userAuth) {
-            Inertia.visit(route("login"), { replace: true }); // Redirige si el usuario no está autenticado
-        }
-    }, [userAuth]);
+    const appName = import.meta.env.VITE_APP_NAME || "Laravel";
     return (
-        <AuthenticatedLayout
-            user={auth.user}
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Dashboard
-                </h2>
-            }
-        >
-            <Head title="Dashboard" />
+        <AuthenticatedLayout user={auth.user} h2Prop={"Dashboard"}>
+            <Head title={`Dashboard`} />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
