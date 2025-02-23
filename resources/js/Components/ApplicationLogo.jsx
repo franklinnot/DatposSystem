@@ -6,7 +6,7 @@ export default function ApplicationLogo({ size = 84 }) {
             viewBox="0 0 38 38"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="scale-100 sm:scale-105 md:scale-110 lg:scale-125"
+            className="relative top-[0.2rem] scale-100 sm:scale-105 md:scale-110 lg:scale-125"
         >
             <g filter="url(#filter0_d_84_162)">
                 <path

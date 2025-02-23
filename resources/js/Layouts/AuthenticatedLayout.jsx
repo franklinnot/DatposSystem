@@ -52,7 +52,7 @@ export default function Authenticated({ user, children }) {
                             })
                         }
                     >
-                        <ApplicationLogo scaleText={1.4} size={36} fontWeight={500} />
+                        <ApplicationLogo size={44} />
                     </Link>
                 </div>
 
@@ -77,8 +77,8 @@ export default function Authenticated({ user, children }) {
                 </div>
             </header>
 
+            {/* Rutaas de navegación */}
             <nav className="bg-white border-b border-gray-100">
-                {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex">
