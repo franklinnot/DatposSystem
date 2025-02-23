@@ -42,9 +42,9 @@ export default function ApplicationLogo({ size = 84 }) {
                     width="38"
                     height="38"
                     filterUnits="userSpaceOnUse"
-                    color-interpolation-filters="sRGB"
+                    colorInterpolationFilters="sRGB"
                 >
-                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feFlood floodOpacity="0" result="BackgroundImageFix" />
                     <feColorMatrix
                         in="SourceAlpha"
                         type="matrix"
@@ -78,8 +78,8 @@ export default function ApplicationLogo({ size = 84 }) {
                     y2="6.21429"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stop-color="#085078" />
-                    <stop offset="1" stop-color="#0875E4" />
+                    <stop stopColor="#085078" />
+                    <stop offset="1" stopColor="#0875E4" />
                 </linearGradient>
             </defs>
         </svg>
