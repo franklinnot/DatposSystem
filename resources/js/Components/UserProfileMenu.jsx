@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { IconPerfil, ArrowDown } from "./Icons"; // Asegúrate de tener estos componentes
+import { IconPerfil, ArrowDown } from "@/Components/Icons"; // Asegúrate de tener estos componentes
 
 const UserProfileMenu = ({ userAuth }) => {
     const [menuOpen, setMenuOpen] = useState(false);
