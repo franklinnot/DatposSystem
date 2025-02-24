@@ -23,13 +23,19 @@ export default function Header({ userAuth }) {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
+            const openMenuButton = document.getElementById("open_menu");
+
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(event.target) &&
+                openMenuButton !== event.target // Ignora el botón de abrir menú
+            ) {
                 setMenuOpen(false);
             }
         };
+
         document.addEventListener("mousedown", handleClickOutside);
-        return () =>
-            document.removeEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
     const menuItems = [
@@ -57,9 +63,10 @@ export default function Header({ userAuth }) {
         <header className="grid grid-flow-col place-items-center px-5 lg:px-6 max-h-14 sm:max-h-16 bg-[#EFF4FF] border-b-2">
             <div className="grid grid-flow-col place-items-center justify-self-start gap-2">
                 <button
+                    id="open_menu"
                     type="button"
                     onClick={toggleMenu}
-                    className="mt-1 py-1 px-2 bg-[#d4e0fc] hover:bg-[#c9d7fa] rounded-md transition-all ease-in-out"
+                    className="m-0 mt-1 py-1 px-2 bg-[#d4e0fc] hover:bg-[#c9d7fa] rounded-md transition-all ease-in-out"
                 >
                     {menuOpen ? (
                         <IconClose
