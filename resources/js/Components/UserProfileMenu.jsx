@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Link } from "@inertiajs/react";
 import { IconPerfil, ArrowDown } from "@/Components/Icons"; // Asegúrate de tener estos componentes
 
-const UserProfileMenu = ({ userAuth }) => {
+const UserProfileMenu = ({ auth }) => {
+    const usuario = auth?.user; // prop auth.user
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef(null);
 
@@ -30,7 +32,7 @@ const UserProfileMenu = ({ userAuth }) => {
             ref={menuRef}
         >
             {/* Nombre del usuario */}
-            <span className="text-gray-600 text-md">{userAuth.nombre}</span>
+            <span className="text-gray-600 text-md">{usuario.nombre}</span>
 
             {/* Contenedor del ícono de perfil y la flechita */}
             <div
@@ -58,25 +60,26 @@ const UserProfileMenu = ({ userAuth }) => {
             >
                 <ul>
                     <li className="px-4 py-2 hover:bg-[#e3ebff] border-b text-sm rounded-t-xl ">
-                        <a
-                            href="/perfil"
-                            className="flex flex-row items-center justify-between"
-                        >
-                            <span className="w-max">Perfil de usuario</span>
-                            <ArrowDown
-                                size={13}
-                                className="rotate-[-90deg]"
-                            ></ArrowDown>
-                        </a>
+                        <Link href={route("logout")} method="post" as="button">
+                            Perfil de Usuario
+                        </Link>
                     </li>
                     {/* Mostrar el perfil de empresa solo si el usuario tiene acceso */}
-                    {userAuth.hasCompanyAccess && (
+                    {usuario.hasCompanyAccess && (
                         <li className="px-4 py-2 hover:bg-[#e3ebff] border-b text-sm">
-                            <a href="/empresa">Perfil de empresa</a>
+                            <Link
+                                href={route("logout")}
+                                method="post"
+                                as="button"
+                            >
+                                Perfil de Empresa
+                            </Link>
                         </li>
                     )}
                     <li className="px-4 py-2 hover:bg-[#e3ebff] text-sm text-red-600 rounded-b-xl">
-                        <a href="/logout">Cerrar sesión</a>
+                        <Link href={route("logout")} method="post" as="button">
+                            Cerrar sesión
+                        </Link>
                     </li>
                 </ul>
             </div>

@@ -10,7 +10,8 @@ import {
 import UserProfileMenu from "@/Components/UserProfileMenu";
 import ApplicationLogo from "@/Components/ApplicationLogo"; // Ajusta la ruta si es necesario
 
-export default function Header({ userAuth }) {
+export default function Header({ auth }) {
+    const usuario = auth?.user; // prop auth.user
     const [menuOpen, setMenuOpen] = useState(false);
     const [openSubmenu, setOpenSubmenu] = useState(null);
     const menuRef = useRef(null);
@@ -35,7 +36,8 @@ export default function Header({ userAuth }) {
         };
 
         document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
+        return () =>
+            document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
     const menuItems = [
@@ -170,7 +172,7 @@ export default function Header({ userAuth }) {
             </div>
 
             <div className="grid grid-flow-col place-items-center justify-self-end gap-2 mt-1">
-                <UserProfileMenu userAuth={userAuth} />
+                <UserProfileMenu auth={auth} />
             </div>
         </header>
     );

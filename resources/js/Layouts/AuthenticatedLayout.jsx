@@ -9,21 +9,20 @@ import { useEffect } from "react";
 import { usePage } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 
-export default function Authenticated({ user, children }) {
-    const { props } = usePage(); // props globales de Inertia
-    const userAuth = props.auth?.user; // prop auth.user
+export default function Authenticated({ auth, children }) {
+    const usuario = auth?.user; // prop auth.user
 
     // redirigir usuarios no autenticados a la página de inicio de sesión
     useEffect(() => {
-        if (!userAuth) {
+        if (!usuario) {
             Inertia.visit(route("login"), { replace: true }); // Redirige si el usuario no está autenticado
         }
-    }, [userAuth]);
+    }, [usuario]);
 
     return (
         <div className="h-dvh w-dvw grid bg-white">
             {/* header */}
-            <Header userAuth={userAuth}></Header>
+            <Header auth={auth}></Header>
 
             <main>{children}</main>
         </div>

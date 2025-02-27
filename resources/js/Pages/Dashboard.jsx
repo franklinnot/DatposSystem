@@ -6,11 +6,11 @@ import { Inertia } from "@inertiajs/inertia";
 import { useState } from "react";
 
 export default function Dashboard({ auth }) {
-    const appName = import.meta.env.VITE_APP_NAME || "Laravel";
+    const usuario = auth?.user; // prop auth.user
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout auth={auth}>
             <Head title={`Dashboard`} />
-            <p>Yupi yupi!!! Hola {auth.user.nombre}!</p>
+            <p>Yupi yupi!!! Hola {usuario.nombre}!</p>
         </AuthenticatedLayout>
     );
 }
