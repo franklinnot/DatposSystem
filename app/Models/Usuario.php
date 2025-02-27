@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
 class Usuario extends Authenticatable // implements MustVerifyEmail
@@ -17,20 +18,13 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
     protected $primaryKey = 'id_usuario';
     protected $fillable = [
         'email',
-        'email_verified_at',
         'password',
-        'remember_token',
-        'created_at',
-        'updated_at',
         'nombre',
         'direccion',
         'foto',
         'estado',
         'id_rol',
-        'id_sucursal',
-        'id_empresa',
     ];
-    #endregion
 
     // nombre del identificador unico del usuario => el pk
     public function getAuthIdentifierName()
@@ -46,44 +40,28 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
         ];
     }
     
-    #endregion
-    
-
     // Atributos y funciones que deben ser ocultadas al serializar el modelo en el data-page
     protected $hidden = [
         'password',
         'remember_token',
     ];
+    #endregion
+    
 
-
-    #region CRUD
-    public static function get_usuario($idUsuario): ?Usuario
+    #region crud
+    public static function get_usuario($id_usuario): ?Usuario
     {
-        return self::find($idUsuario);
+        $result = DB::select("EXEC sp_get_usuario_by_id @id_usuario = ?", [$id_usuario]);
+        return $result ? new Usuario((array) $result[0]) : null;
     }
     #endregion
 
-
-    #region Relationships 1 - N
-
-    public function empresa()
-    {
-        return $this->belongsTo(Empresa::class, 'id_rol');
-    }
     
-    public function rol()
+    #region Relaciones 
+    
+    public function rol(): ?Rol
     {
-        return $this->belongsTo(Rol::class, 'id_rol');
-    }
-
-    public function sucursal()
-    {
-        return $this->belongsTo(Sucursal::class, 'id_sucursal');
-    }
-
-    public function almacen()
-    {
-        return $this->belongsTo(Almacen::class, 'id_almacen');
+        return Rol::get_rol($this->id_rol);
     }
 
     #endregion

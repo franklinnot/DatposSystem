@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Empresa extends Model
 {
@@ -12,7 +13,6 @@ class Empresa extends Model
     protected $table = 'empresa';
     protected $primaryKey = 'id_empresa';
     protected $fillable = [
-        'id_empresa',
         'ruc',
         'razon_social',
         'nombre_comercial',
@@ -23,28 +23,26 @@ class Empresa extends Model
         'igv',
         'monto_maximo_boleta',
         'numero_tributario',
-        'cantidad_sucursales',
-        'cantidad_usuarios',
         'facturacion_electronica',
         'logo',
         'estado',
-        'dias_plazo',
     ];
-    #endregion
 
     // Atributos y funciones que deben ser ocultadas al serializar el modelo en el data-page
     protected $hidden = [
         
     ];
+    #endregion
 
-    #region CRUD
+    #region crud
     public static function get_empresa($id_empresa): ?Empresa
     {
-        return self::find($id_empresa);
+        $result = DB::select("EXEC sp_get_usuario_by_id @id_usuario = ?", [$id_empresa]);
+        return $result ? new Empresa((array) $result[0]) : null;
     }
     #endregion
 
-    #region Relationships 1 - N
+    #region Relaciones
     public function usuarios()
     {
         return $this->hasMany(Usuario::class, 'id_empresa');
@@ -60,4 +58,6 @@ class Empresa extends Model
         return $this->hasMany(Usuario::class, 'id_empresa');
     }
     #endregion
+
+    
 }

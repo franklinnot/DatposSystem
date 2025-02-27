@@ -41,17 +41,21 @@ class HandleInertiaRequests extends Middleware
 
         // DATA que por cada solicitud siempre estara siendo actualizada
         $user = $this->get_usuarioData($request);
+        $usuarioRol = $this->get_usuarioRolData($user);
+        $usuarioAccesos = $this->get_usuarioAccesosData($user);
         $empresa = $this->get_empresaData($user);
 
         return array_merge($parentData, [
             'auth' => [
                 'user' => $user ? $user->toArray() : null,
+                'rol' => $usuarioRol ? $usuarioRol->toArray() : null,
+                'accesos' => $usuarioAccesos ? $usuarioAccesos : null,
                 'empresa' => $empresa ? $empresa->toArray() : null,
+            ],
+            'data' => [
+                // Puedes agregar más datos de forma modular aquí
                 // 'roles'     => $this->get_rolesData(),
 
-                // 'productos' => $this->get_productosData(),
-                // 'ventas'    => $this->get_ventasData(),
-                // Puedes agregar más datos de forma modular aquí
             ],
         ]);
     }
@@ -64,31 +68,22 @@ class HandleInertiaRequests extends Middleware
         return $request->user() ? $request->user()->refresh() : null;
     }
 
+    // Obtener el rol del usuario 
+    private function get_usuarioRolData($user)
+    {
+        return $user ? Rol::get_rol($user['id_rol']) : null;
+    }
+
+    private function get_usuarioAccesosData($user)
+    {
+        return $user ? Rol::accesos_by_id($user['id_rol']) : null;
+    }
+
     // Empresa asociada al usuario autenticado.
     private function get_empresaData($user)
     {
         return $user ? Empresa::get_empresa($user['id_empresa']) : null;
     }
 
-
-    // Consulta y retorna la lista actualizada de roles.
-    // private function get_rolesData(): array
-    // {
-    //     return Rol::all()->toArray();
-    // }
-
-    #endregion
-
-    // Consulta y retorna la lista actualizada de productos.
-    // private function get_productosData(): array
-    // {
-    //     return Producto::all()->toArray();
-    // }
-
-    // Consulta y retorna la lista actualizada de ventas.
-    // private function get_ventasData(): array
-    // {
-    //     return Venta::all()->toArray();
-    // }
 
 }

@@ -16,12 +16,8 @@ class Acceso extends Model
         'id_acceso',
         'nombre',
         'ruta',
-        'estado',
     ];
     #endregion
 
-    public function accesos_rol()
-    {
-        return $this->hasMany(Acceso_rol::class, 'id_acceso');
-    } 
+
 }
