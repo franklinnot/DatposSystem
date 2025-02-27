@@ -10,7 +10,6 @@ import { Inertia } from "@inertiajs/inertia"; // Importa Inertia
 import ApplicationLogo from "@/Components/ApplicationLogo";
 
 export default function Login({ status }) {
-
     // quizas, en algun momento agregar canResetPassword como prop
     const { data, setData, post, processing, errors, reset } = useForm({
         email: "",
@@ -56,12 +55,7 @@ export default function Login({ status }) {
             >
                 {/* Titulo y saludo */}
                 <div className="grid place-items-center text-center gap-8">
-                    <Link
-                        href="/"
-                        onClick={(e) => {
-                            Inertia.visit("login", { replace: true });
-                        }}
-                    >
+                    <Link href={route("dashboard")}>
                         <ApplicationLogo size={72} />
                     </Link>
                     <div className="grid place-items-center">
