@@ -56,8 +56,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $request->session()->regenerate();
-
         // En lugar de redireccionar al home, le decimos a inertia que recargue la
         // pagina de origen y al hacer esto automaticamente se mostrara el dashboard
         // al volver a ejectuar el codigo javascript del componente
