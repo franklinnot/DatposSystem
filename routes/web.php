@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\Authenticate;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,10 +20,21 @@ use Inertia\Response;
 |
 */
 
+Route::middleware('guest', 'no.cache')->group(function () {
+
+    Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
+
+    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+});
+
+
 Route::middleware(['auth', 'no.cache'])->group(
     function () {
         
-        Route::get('/', function (Request $request) {
+        #region Dashboard
+
+        // ruta raiz que redirige al dashboard
+        Route::get('/', function () {
             $dashboardUrl = route('dashboard');
         
             return response(
@@ -43,15 +56,57 @@ Route::middleware(['auth', 'no.cache'])->group(
                 </html>'
             );
         });
-        
+
+        // vista del dashboard
         Route::get('/dashboard', function () {
             return Inertia::render('Dashboard');
         })->name('dashboard');
 
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+        #endregion
 
+        // Perfil de Usuario
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+        Route::patch('/profile/edit', [ProfileController::class, 'update'])->name('profile/edit');
+        Route::delete('/profile/edit/password', [ProfileController::class, 'destroy'])->name('profile/edit/password');
+
+        #region Sucursales
+
+        // vista para listar sucursales
+        Route::get('/stores', function () {
+            return Inertia::render('Dashboard');
+        })->name('stores');
+        
+
+
+        // vista para crear una nueva sucursal
+        Route::get('/stores/new', function () {
+            return Inertia::render('Dashboard');
+        })->name('stores/new');
+
+        // metodo para crear una sucursal
+        Route::post('/stores/new', function () {
+            return Inertia::render('Dashboard');
+        });
+
+
+
+        // vista para editar una sucursal
+        Route::get('/stores/edit', function () {
+            return Inertia::render('Dashboard');
+        })->name('stores/edit');
+
+        // metodo para editar una sucursal
+        Route::patch('/stores/edit', function () {
+            return Inertia::render('Dashboard');
+        });
+
+
+        // metodo para eliminar una sucursal
+        Route::post('/stores/delete', function () {
+            return Inertia::render('Dashboard');
+        })->name('stores/delete');
+
+        #endregion
     }
 );
 
