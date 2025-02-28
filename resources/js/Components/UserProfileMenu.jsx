@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "@inertiajs/react";
 import { IconPerfil, ArrowDown } from "@/Components/Icons"; // Asegúrate de tener estos componentes
+import { rutas_perfilEmpresa } from "../Utils/rutas.js";
 
 const UserProfileMenu = ({ auth }) => {
-    const usuario = auth?.user; // prop auth.user
+    let accesos = auth?.accesos; 
+    let rts_perfilEmpresa = rutas_perfilEmpresa(accesos);
+
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef(null);
-
     // Cerrar el menú si se hace clic fuera
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -32,7 +34,9 @@ const UserProfileMenu = ({ auth }) => {
             ref={menuRef}
         >
             {/* Nombre del usuario */}
-            <span className="text-gray-600 text-md">{usuario.nombre}</span>
+            <span className="text-gray-600 text-md">
+                {auth.empresa.razon_social}
+            </span>
 
             {/* Contenedor del ícono de perfil y la flechita */}
             <div
@@ -60,15 +64,15 @@ const UserProfileMenu = ({ auth }) => {
             >
                 <ul>
                     <li className="px-4 py-2 hover:bg-[#e3ebff] border-b text-sm rounded-t-xl ">
-                        <Link href={route("logout")} method="post" as="button">
+                        <Link href={route("profile")} method="get" as="button">
                             Perfil de Usuario
                         </Link>
                     </li>
                     {/* Mostrar el perfil de empresa solo si el usuario tiene acceso */}
-                    {usuario.hasCompanyAccess && (
-                        <li className="px-4 py-2 hover:bg-[#e3ebff] border-b text-sm">
+                    {rts_perfilEmpresa.length > 0 && (
+                        <li className="px-4 py-2 hover:bg-[#050505] border-b text-sm">
                             <Link
-                                href={route("logout")}
+                                href={route(rts_perfilEmpresa[0].routeName)}
                                 method="post"
                                 as="button"
                             >

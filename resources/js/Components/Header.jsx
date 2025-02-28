@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "@inertiajs/react";
 import { ArrowDown, ArrowUp, IconClose, MenuBurger, IconPerfil,} from "@/Components/Icons";
 import UserProfileMenu from "@/Components/UserProfileMenu";
-import filterRoutes  from "../Utils/filtrar_rutas";
+import { rutas_navegacion } from "../Utils/rutas";
 import ApplicationLogo from "@/Components/ApplicationLogo"; 
 
 export default function Header({ auth }) {
@@ -35,21 +35,9 @@ export default function Header({ auth }) {
     }, []);
     
     const accesos = auth?.accesos; // prop auth.user
-    let menuItems = [
-        { label: "Dashboard", routeName: "dashboard", subItems: [] },
-        {
-            label: "Sucursal",
-            routeName: "stores",
-            subItems: [
-                { label: "Nueva Sucursal", routeName: "stores/new" },
-                { label: "Ver Sucursales", routeName: "stores" },
-                { label: "Editar información", routeName: "stores/edit" },
-            ],
-        },
-    ];
 
     // filtrar las rutas permitidas
-    menuItems = filterRoutes(menuItems, accesos);
+    let rts_navegacion = rutas_navegacion(accesos);
 
     return (
         <header className="grid grid-flow-col place-items-center px-5 lg:px-6 max-h-14 sm:max-h-16 bg-[#EFF4FF] border-b-2">
@@ -86,7 +74,7 @@ export default function Header({ auth }) {
                                 }`}
                 >
                     <nav className="flex flex-col bg-[#EFF4FF] rounded-2xl overflow-hidden">
-                        {menuItems.map((item, index) => (
+                        {rts_navegacion.map((item, index) => (
                             <div
                                 key={index}
                                 className="border-b last:border-b-0"
