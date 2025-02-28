@@ -16,6 +16,7 @@ class Acceso extends Model
         'id_acceso',
         'nombre',
         'ruta',
+        'estado',
     ];
     #endregion
 

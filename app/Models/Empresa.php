@@ -13,6 +13,7 @@ class Empresa extends Model
     protected $table = 'empresa';
     protected $primaryKey = 'id_empresa';
     protected $fillable = [
+        'id_empresa',
         'ruc',
         'razon_social',
         'nombre_comercial',
@@ -23,9 +24,12 @@ class Empresa extends Model
         'igv',
         'monto_maximo_boleta',
         'numero_tributario',
+        'cantidad_sucursales',
+        'cantidad_usuarios',
         'facturacion_electronica',
         'logo',
         'estado',
+        'dias_plazo',
     ];
 
     // Atributos y funciones que deben ser ocultadas al serializar el modelo en el data-page
@@ -37,7 +41,7 @@ class Empresa extends Model
     #region crud
     public static function get_empresa($id_empresa): ?Empresa
     {
-        $result = DB::select("EXEC sp_get_usuario_by_id @id_usuario = ?", [$id_empresa]);
+        $result = DB::select("EXEC sp_get_empresa_by_id @id_empresa = ?", [$id_empresa]);
         return $result ? new Empresa((array) $result[0]) : null;
     }
     #endregion

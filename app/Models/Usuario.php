@@ -17,13 +17,19 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
     protected $table = 'usuario';
     protected $primaryKey = 'id_usuario';
     protected $fillable = [
+        'id_usuario',
         'email',
+        'email_verified_at',
         'password',
+        'remember_token',
+        'created_at',
+        'updated_at',
         'nombre',
         'direccion',
         'foto',
         'estado',
         'id_rol',
+        'id_empresa',
     ];
 
     // nombre del identificador unico del usuario => el pk

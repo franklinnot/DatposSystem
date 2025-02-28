@@ -17,6 +17,7 @@ class Rol extends Model
         'id_rol',
         'nombre',
         'estado',
+        'id_empresa',
     ];
     #endregion
 
@@ -37,13 +38,13 @@ class Rol extends Model
 
     public function accesos()
     {
-        $result = DB::select("EXEC sp_get_accesos_rol @id_rol = ?", [$this->id_rol]);
+        $result = DB::select("EXEC sp_get_accesos_rol_by_id @id_rol = ?", [$this->id_rol]);
         return collect($result)->map(fn($acceso) => new Acceso((array) $acceso));
     }
 
     public static function accesos_by_id($id_rol)
     {
-        $result = DB::select("EXEC sp_get_accesos_rol @id_rol = ?", [$id_rol]);
+        $result = DB::select("EXEC sp_get_accesos_rol_by_id @id_rol = ?", [$id_rol]);
         return collect($result)->map(fn($acceso) => new Acceso((array) $acceso));
     }
     #endregion

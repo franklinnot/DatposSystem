@@ -21,6 +21,7 @@ class Sucursal extends Model
         'telefono',
         'estado',
         'id_empresa',
+        'id_almacen',
     ];
     #endregion
 
