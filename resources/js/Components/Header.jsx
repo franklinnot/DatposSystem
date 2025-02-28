@@ -1,23 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "@inertiajs/react";
-import {
-    ArrowDown,
-    ArrowUp,
-    IconClose,
-    MenuBurger,
-    IconPerfil,
-} from "@/Components/Icons";
+import { ArrowDown, ArrowUp, IconClose, MenuBurger, IconPerfil,} from "@/Components/Icons";
 import UserProfileMenu from "@/Components/UserProfileMenu";
-import ApplicationLogo from "@/Components/ApplicationLogo"; // Ajusta la ruta si es necesario
+import filterRoutes  from "../Utils/filtrar_rutas";
+import ApplicationLogo from "@/Components/ApplicationLogo"; 
 
 export default function Header({ auth }) {
-    const usuario = auth?.user; // prop auth.user
     const [menuOpen, setMenuOpen] = useState(false);
     const [openSubmenu, setOpenSubmenu] = useState(null);
     const menuRef = useRef(null);
-
+    
     const toggleMenu = () => setMenuOpen(!menuOpen);
-
+    
     const toggleSubmenu = (index) => {
         setOpenSubmenu(openSubmenu === index ? null : index);
     };
@@ -25,7 +19,7 @@ export default function Header({ auth }) {
     useEffect(() => {
         const handleClickOutside = (event) => {
             const openMenuButton = document.getElementById("open_menu");
-
+            
             if (
                 menuRef.current &&
                 !menuRef.current.contains(event.target) &&
@@ -34,32 +28,28 @@ export default function Header({ auth }) {
                 setMenuOpen(false);
             }
         };
-
+        
         document.addEventListener("mousedown", handleClickOutside);
         return () =>
             document.removeEventListener("mousedown", handleClickOutside);
     }, []);
-
-    const menuItems = [
+    
+    const accesos = auth?.accesos; // prop auth.user
+    let menuItems = [
         { label: "Dashboard", routeName: "dashboard", subItems: [] },
-        { label: "Sucursal", routeName: "dashboard", subItems: [] },
         {
-            label: "Productos",
-            routeName: "dashboard",
+            label: "Sucursal",
+            routeName: "stores",
             subItems: [
-                { label: "Dashboard", routeName: "dashboard" },
-                { label: "Dashboard", routeName: "dashboard" },
-            ],
-        },
-        {
-            label: "Operaciones de almacén",
-            routeName: "dashboard",
-            subItems: [
-                { label: "Dashboard", routeName: "dashboard" },
-                { label: "Dashboard", routeName: "dashboard" },
+                { label: "Nueva Sucursal", routeName: "stores/new" },
+                { label: "Ver Sucursales", routeName: "stores" },
+                { label: "Editar información", routeName: "stores/edit" },
             ],
         },
     ];
+
+    // filtrar las rutas permitidas
+    menuItems = filterRoutes(menuItems, accesos);
 
     return (
         <header className="grid grid-flow-col place-items-center px-5 lg:px-6 max-h-14 sm:max-h-16 bg-[#EFF4FF] border-b-2">
