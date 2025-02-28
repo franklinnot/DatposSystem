@@ -74,6 +74,7 @@ class HandleInertiaRequests extends Middleware
         return $user ? Rol::get_rol($user['id_rol']) : null;
     }
 
+    // obtener los accesos del usuario
     private function get_usuarioAccesosData($user)
     {
         return $user ? Rol::accesos_by_id($user['id_rol']) : null;
@@ -85,5 +86,5 @@ class HandleInertiaRequests extends Middleware
         return $user ? Empresa::get_empresa($user['id_empresa']) : null;
     }
 
-
+    #endregion
 }
