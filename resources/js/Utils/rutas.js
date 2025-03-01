@@ -15,7 +15,7 @@ let rts_navegacion = [
 ];
 
 
-// Rutas del perfil de la empresa
+// Rutas de perfil -- empresa y usuarioc
 let rts_perfilEmpresa = [
     {
         label: "Ver información de la Empresa",

@@ -6,7 +6,7 @@ import { Inertia } from "@inertiajs/inertia";
 import { useState } from "react";
 
 export default function Dashboard({ auth }) {
-    const usuario = auth?.user; // prop auth.user
+    let usuario = auth?.user; // prop auth.user
     return (
         <AuthenticatedLayout auth={auth}>
             <Head title={`Dashboard`} />
