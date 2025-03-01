@@ -118,6 +118,7 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
         })->name('stores/delete');
 
         #endregion
+    
     }
 );
 

@@ -4,7 +4,7 @@
 let rts_navegacion = [
     { label: "Dashboard", routeName: "dashboard", subItems: [] },
     {
-        label: "Sucursal",
+        label: "Sucursales",
         routeName: "stores",
         subItems: [
             { label: "Nueva Sucursal", routeName: "stores/new" },
@@ -46,24 +46,23 @@ let rts_permisoTotal = [
 // Función para filtrar las rutas permitidas
 function filterRoutes(rutas, accesos) {
     // Extraer las rutas permitidas del array de accesos
-    const rutasAccesibles = accesos.map((acceso) => acceso.ruta);
+    const rutasAccesibles = new Set(accesos.map((acceso) => acceso.ruta));
 
     return rutas
         .map((item) => {
-            // Si no tiene subRutas, comprobar si su ruta está permitida
-            if (!item.subRutas || item.subRutas.length === 0) {
-                return rutasAccesibles.includes(item.routeName) ? item : null;
-            } else {
-                // Filtrar subRutas que tienen acceso permitido
-                const filteredsubRutas = item.subRutas.filter((subRuta) =>
-                    rutasAccesibles.includes(subRuta.routeName)
-                );
+            // Filtrar los subItems que tienen acceso permitido
+            const filteredSubItems = item.subItems
+                ? item.subItems.filter((subItem) =>
+                      rutasAccesibles.has(subItem.routeName)
+                  )
+                : [];
 
-                // Si hay subRutas visibles, devolver el ítem con los subRutas filtrados
-                return filteredsubRutas.length > 0
-                    ? { ...item, subRutas: filteredsubRutas }
-                    : null;
+            // Verificar si el elemento principal es accesible o si tiene subItems accesibles
+            if (rutasAccesibles.has(item.routeName) || filteredSubItems.length > 0) {
+                return { ...item, subItems: filteredSubItems };
             }
+
+            return null;
         })
         .filter((item) => item !== null); // Eliminar ítems nulos
 }
