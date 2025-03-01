@@ -23,12 +23,19 @@ use Inertia\Response;
 Route::middleware('guest', 'no.cache')->group(function () {
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
-
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
+    
 });
 
 
-Route::middleware(['auth', 'no.cache'])->group(
+Route::middleware(['auth', 'no.cache'])->group(function () {
+
+    // Perfil de Usuario
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+
+});
+
+Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
     function () {
         
         #region Dashboard
@@ -64,10 +71,14 @@ Route::middleware(['auth', 'no.cache'])->group(
 
         #endregion
 
-        // Perfil de Usuario
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+
+        #region Perfil de Usuario -> editar y cambiar contraseña
+
         Route::patch('/profile/edit', [ProfileController::class, 'update'])->name('profile/edit');
         Route::delete('/profile/edit/password', [ProfileController::class, 'destroy'])->name('profile/edit/password');
+
+        #endregion
+
 
         #region Sucursales
 
