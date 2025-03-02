@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Sucursales\NuevaSucursal;
 use App\Http\Middleware\Authenticate;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
@@ -38,6 +39,21 @@ Route::middleware(['auth', 'no.cache'])->group(function () {
 Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
     function () {
         
+        #region Perfil de Usuario -> editar y cambiar contraseña
+        
+        Route::patch('/profile/edit', [ProfileController::class, 'update'])->name('profile/edit');
+        Route::delete('/profile/edit/password', [ProfileController::class, 'destroy'])->name('profile/edit/password');
+        
+        #endregion
+        
+        #region Perfil de Empresa -> ver info y suscripciones y editar info
+        
+        Route::get('/business', [ProfileController::class, 'update'])->name('business');
+        Route::get('/business/edit', [ProfileController::class, 'destroy'])->name('business/edit');
+        Route::get('/business/subscriptions', [ProfileController::class, 'destroy'])->name('/business/subscriptions');
+        
+        #endregion
+
         #region Dashboard
 
         // ruta raiz que redirige al dashboard
@@ -71,28 +87,18 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
 
         #endregion
 
-
-        #region Perfil de Usuario -> editar y cambiar contraseña
-
-        Route::patch('/profile/edit', [ProfileController::class, 'update'])->name('profile/edit');
-        Route::delete('/profile/edit/password', [ProfileController::class, 'destroy'])->name('profile/edit/password');
-
-        #endregion
-
-
         #region Sucursales
 
         // vista para listar sucursales
         Route::get('/stores', function () {
             return Inertia::render('Dashboard');
         })->name('stores');
-        
+
 
 
         // vista para crear una nueva sucursal
-        Route::get('/stores/new', function () {
-            return Inertia::render('Dashboard');
-        })->name('stores/new');
+        Route::get('/stores/new', [NuevaSucursal::class, 'show'])
+            ->name('stores/new');
 
         // metodo para crear una sucursal
         Route::post('/stores/new', function () {
