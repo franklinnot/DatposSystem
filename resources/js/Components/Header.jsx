@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "@inertiajs/react";
 import { ArrowDown, ArrowUp, IconClose, MenuBurger, IconPerfil,} from "@/Components/Icons";
 import UserProfileMenu from "@/Components/UserProfileMenu";
-import { rutas_navegacion } from "../Utils/rutas";
+import { rutas_navegacion, verificarRuta } from "../Utils/rutas";
 import ApplicationLogo from "@/Components/ApplicationLogo"; 
 
 export default function Header({ auth }) {
@@ -42,6 +42,7 @@ export default function Header({ auth }) {
     return (
         <header className="grid grid-flow-col place-items-center px-5 lg:px-6 max-h-14 sm:max-h-16 bg-[#EFF4FF] border-b-2">
             <div className="grid grid-flow-col place-items-center justify-self-start gap-2">
+                {/* Boton de menu de hamburguesa o de cerrar */}
                 <button
                     id="open_menu"
                     type="button"
@@ -63,13 +64,14 @@ export default function Header({ auth }) {
                     )}
                 </button>
 
+                {/* Logica y diseño de las rutas de navegacion */}
                 <div
                     ref={menuRef}
                     className={`absolute top-[4.08rem] sm:top-[4.58rem] lg:top-[4.6rem] left-0 w-56 bg-[#EFF4FF] 
                                 transition-transform duration-150 z-50 shadow-md rounded-xl 
                                 ${
                                     menuOpen
-                                        ? "translate-x-3"
+                                        ? "translate-x-[0.8rem]"
                                         : "-translate-x-full"
                                 }`}
                 >
@@ -144,11 +146,16 @@ export default function Header({ auth }) {
                     </nav>
                 </div>
 
-                <Link className="inline-flex ml-1" href={route("dashboard")}>
+                {/* Logo de la aplicacion */}
+                <Link
+                    className="inline-flex ml-1"
+                    href={route("dashboard")}
+                >
                     <ApplicationLogo size={44} />
                 </Link>
             </div>
 
+            {/* Boton de perfil */}
             <div className="grid grid-flow-col place-items-center justify-self-end gap-2 mt-1">
                 <UserProfileMenu auth={auth} />
             </div>

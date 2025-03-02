@@ -54,7 +54,7 @@ const UserProfileMenu = ({ auth }) => {
 
             {/* Menú desplegable */}
             <div
-                className={`absolute top-[3.2rem] right-0 w-[10rem] bg-[#EFF4FF]
+                className={`absolute top-[3.2rem] sm:top-[3.55rem] right-[-6px] w-[10rem] bg-[#EFF4FF]
                             transition-all duration-150 z-50 shadow-md rounded-xl transform ${
                                 menuOpen
                                     ? "translate-x-0 opacity-100"
@@ -63,24 +63,18 @@ const UserProfileMenu = ({ auth }) => {
                 style={{ pointerEvents: menuOpen ? "auto" : "none" }}
             >
                 <ul>
-                    <li className="px-4 py-2 hover:bg-[#e3ebff] border-b text-sm rounded-t-xl ">
-                        <Link href={route("profile")} method="get" as="button">
-                            Perfil de Usuario
-                        </Link>
+                    <li className="px-4 py-2 hover:bg-[#e3ebff] border-b text-gray-600 text-sm font-normal text-left rounded-t-xl ">
+                        <Link href={route("profile")}>Perfil de Usuario</Link>
                     </li>
                     {/* Mostrar el perfil de empresa solo si el usuario tiene acceso */}
                     {rts_perfilEmpresa.length > 0 && (
-                        <li className="px-4 py-2 hover:bg-[#050505] border-b text-sm">
-                            <Link
-                                href={route(rts_perfilEmpresa[0].routeName)}
-                                method="post"
-                                as="button"
-                            >
+                        <li className="px-4 py-2 hover:bg-[#e3ebff] border-b text-gray-600 text-sm font-normal text-left">
+                            <Link href={route(rts_perfilEmpresa[0].routeName)}>
                                 Perfil de Empresa
                             </Link>
                         </li>
                     )}
-                    <li className="px-4 py-2 hover:bg-[#e3ebff] text-sm text-red-600 rounded-b-xl">
+                    <li className="px-4 py-2 hover:bg-[#e3ebff] text-sm font-normal text-left text-red-600 rounded-b-xl">
                         <Link href={route("logout")} method="post" as="button">
                             Cerrar sesión
                         </Link>
