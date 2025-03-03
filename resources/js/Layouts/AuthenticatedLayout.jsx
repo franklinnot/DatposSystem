@@ -15,11 +15,11 @@ export default function Authenticated({ auth, children }) {
     }, [usuario]);
 
     return (
-        <div className="h-dvh w-dvw grid bg-white">
+        <div className="h-dvh w-dvw grid grid-rows-[auto_1fr] bg-white">
             {/* header */}
             <Header auth={auth}></Header>
 
-            <main>{children}</main>
+            <main className="p-4">{children}</main>
         </div>
     );
 }

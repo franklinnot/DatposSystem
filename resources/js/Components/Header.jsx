@@ -40,7 +40,7 @@ export default function Header({ auth }) {
     let rts_navegacion = rutas_navegacion(accesos);
 
     return (
-        <header className="grid grid-flow-col place-items-center px-5 lg:px-6 max-h-14 sm:max-h-16 bg-[#EFF4FF] border-b-2">
+        <header className="grid grid-flow-col place-items-center px-5 lg:px-6 h-14 sm:max-h-16 bg-[#EFF4FF] border-b-2">
             <div className="grid grid-flow-col place-items-center justify-self-start gap-2">
                 {/* Boton de menu de hamburguesa o de cerrar */}
                 <button
