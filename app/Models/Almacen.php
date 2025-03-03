@@ -16,10 +16,11 @@ class Almacen extends Model
         'id_almacen',
         'codigo',
         'nombre',
-        'estado',
-        'id_empresa',
+        'departamento',
         'ciudad',
-        'direccion'
+        'direccion',
+        'estado',
+        'id_empresa'
     ];
     #endregion
 

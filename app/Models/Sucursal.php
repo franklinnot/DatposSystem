@@ -15,13 +15,15 @@ class Sucursal extends Model
     protected $primaryKey = 'id_sucursal';
     protected $fillable = [
         'id_sucursal',
+        'codigo',
         'nombre',
+        'departamento',
         'ciudad',
         'direccion',
         'telefono',
         'estado',
-        'id_empresa',
         'id_almacen',
+        'id_empresa',
     ];
     #endregion
 
