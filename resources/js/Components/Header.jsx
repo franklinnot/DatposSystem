@@ -67,7 +67,7 @@ export default function Header({ auth }) {
                 {/* Logica y diseño de las rutas de navegacion */}
                 <div
                     ref={menuRef}
-                    className={`absolute top-[4.08rem] sm:top-[4.58rem] lg:top-[4.6rem] left-0 w-56 bg-[#EFF4FF] 
+                    className={`absolute top-[4.2rem] left-0 w-56 bg-[#EFF4FF] 
                                 transition-transform duration-150 z-50 shadow-md rounded-xl 
                                 ${
                                     menuOpen

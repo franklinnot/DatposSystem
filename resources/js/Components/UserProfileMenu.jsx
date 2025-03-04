@@ -54,7 +54,7 @@ const UserProfileMenu = ({ auth }) => {
 
             {/* Menú desplegable */}
             <div
-                className={`absolute top-[3.2rem] sm:top-[3.55rem] right-[-6px] w-[10rem] bg-[#EFF4FF]
+                className={`absolute top-[3.4rem] right-[-6px] w-[10rem] bg-[#EFF4FF]
                             transition-all duration-150 z-50 shadow-md rounded-xl transform ${
                                 menuOpen
                                     ? "translate-x-0 opacity-100"
