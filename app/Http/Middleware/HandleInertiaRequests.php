@@ -9,6 +9,7 @@ use App\Models\Usuario;
 use App\Models\Venta;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Inertia\Inertia;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -41,21 +42,17 @@ class HandleInertiaRequests extends Middleware
 
         // DATA que por cada solicitud siempre estara siendo actualizada
         $user = $this->get_usuarioData($request);
-        $usuarioRol = $this->get_usuarioRolData($user);
         $usuarioAccesos = $this->get_usuarioAccesosData($user);
         $empresa = $this->get_empresaData($user);
 
         return array_merge($parentData, [
             'auth' => [
                 'user' => $user ? $user->toArray() : null,
-                'rol' => $usuarioRol ? $usuarioRol->toArray() : null,
                 'accesos' => $usuarioAccesos ? $usuarioAccesos : null,
                 'empresa' => $empresa ? $empresa->toArray() : null,
             ],
-            'data' => [
-                // Puedes agregar más datos de forma modular aquí
-                // 'roles'     => $this->get_rolesData(),
-
+            'flash' => [
+                'message' => fn() => $request->session()->get('message')
             ],
         ]);
     }
@@ -65,13 +62,7 @@ class HandleInertiaRequests extends Middleware
     // Obtener el usuario actualizado de la base de datos, si está autenticado
     private function get_usuarioData(Request $request)
     {
-        return $request->user() ? $request->user()->refresh() : null;
-    }
-
-    // Obtener el rol del usuario 
-    private function get_usuarioRolData($user)
-    {
-        return $user ? Rol::get_rol($user['id_rol']) : null;
+        return $request->user() ? $request->user() : null;
     }
 
     // obtener los accesos del usuario
@@ -87,4 +78,5 @@ class HandleInertiaRequests extends Middleware
     }
 
     #endregion
+
 }
