@@ -8,9 +8,14 @@ import { useEffect } from "react";
 import { usePage } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 import { useState } from "react";
+import {
+    getProvincias_by_department,
+    getProvincias,
+    getDepartamentos,
+    getDepartamentos_by_provincia,
+} from "../../Utils/ubigeo.js";
 
 export default function NuevaSucursal({ auth }) {
-
     const [frontendErros, setFrontendErrors] = useState({});
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -24,8 +29,27 @@ export default function NuevaSucursal({ auth }) {
         telefono: "",
     });
 
+    // Estado para mostrar errores en el frontend
+    const [errorMessage, setErrorMessage] = useState("");
+
     const submit = (e) => {
         e.preventDefault();
+
+        // Verificar si todos los campos obligatorios están llenos
+        if (
+            !data.nombre ||
+            !data.codigo ||
+            !data.departamento ||
+            !data.ciudad ||
+            !data.direccion
+        ) {
+            setErrorMessage(
+                "Por favor, llena todos los campos obligatorios antes de registrar la sucursal. *"
+            );
+            return;
+        }
+        // Si todo está bien, limpiamos el mensaje de error
+        setErrorMessage("");
 
         post(route("stores/new"), {
             onFinish: () => reset(),
@@ -34,8 +58,8 @@ export default function NuevaSucursal({ auth }) {
 
     return (
         <AuthenticatedLayout auth={auth}>
-            <Head title={`Dashboard`} />
-            <div className="grid grid-rows-[auto_1fr] gap-2 sm:gap-6 lg:gap-8">
+            <Head title={`Nueva Sucursal`} />
+            <div className="grid grid-rows-[auto_1fr] gap-2 sm:gap-6 lg:gap-10">
                 <div className="grid mx-5 mt-4 h-14 border-b-2 border-gray-200 items-start">
                     <h2 className="text-xl font-semibold">Nueva Sucursal</h2>
                 </div>
@@ -78,7 +102,7 @@ export default function NuevaSucursal({ auth }) {
                             name="codigo"
                             value={data.codigo}
                             className="mt-1 block w-full"
-                            isFocused={true}
+                            isFocused={false}
                             onChange={(e) => setData("codigo", e.target.value)}
                         />
 
@@ -99,7 +123,7 @@ export default function NuevaSucursal({ auth }) {
                             name="departamento"
                             value={data.departamento}
                             className="mt-1 block w-full"
-                            isFocused={true}
+                            isFocused={false}
                             onChange={(e) =>
                                 setData("departamento", e.target.value)
                             }
@@ -125,7 +149,7 @@ export default function NuevaSucursal({ auth }) {
                             name="ciudad"
                             value={data.ciudad}
                             className="mt-1 block w-full"
-                            isFocused={true}
+                            isFocused={false}
                             onChange={(e) => setData("ciudad", e.target.value)}
                         />
 
@@ -146,7 +170,7 @@ export default function NuevaSucursal({ auth }) {
                             name="direccion"
                             value={data.direccion}
                             className="mt-1 block w-full"
-                            isFocused={true}
+                            isFocused={false}
                             onChange={(e) =>
                                 setData("direccion", e.target.value)
                             }
@@ -172,7 +196,7 @@ export default function NuevaSucursal({ auth }) {
                             name="telefono"
                             value={data.telefono}
                             className="mt-1 block w-full"
-                            isFocused={true}
+                            isFocused={false}
                             onChange={(e) =>
                                 setData("telefono", e.target.value)
                             }
@@ -185,13 +209,20 @@ export default function NuevaSucursal({ auth }) {
                     </div>
 
                     {/* Boton de Registrar */}
-                    <div className="flex items-center mt-3">
+                    <div className="grid grid-flow-row items-center mt-3">
                         <PrimaryButton
                             className="font-medium text-md w-full justify-center rounded-lg bg-gradient-to-r from-[#0B6ACB] via-[#0875E4] to-[#0B6ACB] hover:bg-[#3c78fa] focus:ring-[#3c78fa]"
                             disabled={processing}
                         >
                             Registrar
                         </PrimaryButton>
+                        {/* Mensaje de error debajo del botón si hay problemas en el frontend */}
+                        {errorMessage && (
+                            <InputError
+                                message={errorMessage}
+                                className="mt-2"
+                            />
+                        )}
                     </div>
                 </form>
             </div>
