@@ -2,6 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import TextInput from "@/Components/TextInput";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
+import SelectInput from "@/Components/SelectInput.jsx";
 import { Head, Link, useForm } from "@inertiajs/react";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { useEffect } from "react";
@@ -28,6 +29,20 @@ export default function NuevaSucursal({ auth }) {
         direccion: "",
         telefono: "",
     });
+
+    const [departamentos, setDepartamentos] = useState([]);
+    const [provincias, setProvincias] = useState([]);
+
+    useEffect(() => {
+        setDepartamentos(getDepartamentos()); // Carga los departamentos al montar el componente
+    }, []);
+
+    const handleDepartamentoChange = (e) => {
+        const department_id = e.target.value;
+        setData("departamento", department_id);
+        setProvincias(getProvincias_by_department(department_id)); // Filtra provincias por departamento
+        setData("ciudad", ""); // Resetea la ciudad al cambiar de departamento
+    };
 
     // Estado para mostrar errores en el frontend
     const [errorMessage, setErrorMessage] = useState("");
@@ -87,7 +102,6 @@ export default function NuevaSucursal({ auth }) {
 
                         <InputError message={errors.nombre} className="mt-2" />
                     </div>
-
                     {/* Input de Codigo */}
                     <div>
                         <InputLabel
@@ -114,46 +128,33 @@ export default function NuevaSucursal({ auth }) {
                         <InputLabel
                             htmlFor="departamento"
                             value="Departamento"
-                            className="font-normal text-[#2B2B2B]"
                         />
-
-                        <TextInput
+                        <SelectInput
                             id="departamento"
-                            type="text"
                             name="departamento"
+                            options={departamentos}
                             value={data.departamento}
-                            className="mt-1 block w-full"
-                            isFocused={false}
-                            onChange={(e) =>
-                                setData("departamento", e.target.value)
-                            }
+                            onChange={handleDepartamentoChange}
+                            placeholder="Selecciona un departamento"
+                            className=""
                         />
-
-                        <InputError
-                            message={errors.departamento}
-                            className="mt-2"
-                        />
+                        <InputError message={errors.departamento} />
                     </div>
 
                     {/* Input de Ciudad */}
                     <div>
-                        <InputLabel
-                            htmlFor="ciudad"
-                            value="Ciudad"
-                            className="font-normal text-[#2B2B2B]"
-                        />
-
-                        <TextInput
+                        <InputLabel htmlFor="ciudad" value="Ciudad" />
+                        <SelectInput
                             id="ciudad"
-                            type="text"
                             name="ciudad"
+                            options={provincias}
                             value={data.ciudad}
-                            className="mt-1 block w-full"
-                            isFocused={false}
                             onChange={(e) => setData("ciudad", e.target.value)}
+                            placeholder="Selecciona una ciudad"
+                            className=""
+                            isDisabled={!data.departamento}
                         />
-
-                        <InputError message={errors.ciudad} className="mt-2" />
+                        <InputError message={errors.ciudad} />
                     </div>
 
                     {/* Input de Direccion */}
@@ -181,7 +182,6 @@ export default function NuevaSucursal({ auth }) {
                             className="mt-2"
                         />
                     </div>
-
                     {/* Input de Telefono */}
                     <div>
                         <InputLabel
@@ -207,7 +207,6 @@ export default function NuevaSucursal({ auth }) {
                             className="mt-2"
                         />
                     </div>
-
                     {/* Boton de Registrar */}
                     <div className="grid grid-flow-row items-center mt-3">
                         <PrimaryButton
