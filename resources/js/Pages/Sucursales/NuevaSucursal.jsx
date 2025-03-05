@@ -145,6 +145,7 @@ export default function NuevaSucursal({ auth }) {
                         <InputLabel
                             htmlFor="departamento"
                             value="Departamento"
+                            className="font-normal text-[#2B2B2B]"
                         />
                         <SelectInput
                             id="departamento"
@@ -160,7 +161,11 @@ export default function NuevaSucursal({ auth }) {
 
                     {/* Input de Ciudad */}
                     <div>
-                        <InputLabel htmlFor="ciudad" value="Ciudad" />
+                        <InputLabel
+                            htmlFor="ciudad"
+                            value="Ciudad"
+                            className="font-normal text-[#2B2B2B]"
+                        />
                         <SelectInput
                             id="ciudad"
                             name="ciudad"
