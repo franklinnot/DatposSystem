@@ -23,11 +23,12 @@ export default forwardRef(function SelectInput(
     setHasValue(value !== "");
   }, [value]);
 
+  // Funcion para manejar el cambio de valor en el select
   const handleChange = (e) => {
-    const newValue = e.target.value;
-    setSelectedValue(newValue);
-    setHasValue(newValue !== "");
-    props.onChange?.(e);
+      const newValue = e.target.value;
+      setSelectedValue(newValue);
+      setHasValue(newValue !== "");
+      props.onChange?.(e);
   };
 
   return (

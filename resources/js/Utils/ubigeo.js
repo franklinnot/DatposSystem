@@ -227,19 +227,41 @@ const provincias = [
     { id: "2504", name: "Purús", department_id: "25" },
 ];
 
-
-export function getProvincias_by_department(department_id) {
-    return provincias.filter((provincia) => provincia.department_id === department_id);
+function getProvincias() {
+    return provincias.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export function getProvincias() {
-    return provincias;
+function getDepartamentos() {
+    return departamentos.sort((a,b) => a.name.localeCompare(b.name));
 }
 
-export function getDepartamentos() {
-    return departamentos;
+function getProvinciaById(id_provincia) {
+    return provincias.find((provincia) => provincia.id === id_provincia);
 }
 
-export function getDepartamentos_by_provincia(id_provincia) {
-    return departamentos.find((departamento) => departamento.id === id_provincia);
+function getDepartamentoById(id_deparamento){
+    return departamentos.find((deparamento) => deparamento.id === id_deparamento);
 }
+
+function getProvinciasByDepartment(department_id) {
+    return provincias.filter(
+        (provincia) => provincia.department_id === department_id
+    );
+}
+
+function getDepartamentoByProvincia(id_provincia) {
+    const provincia = getProvinciaById(id_provincia);
+    return provincia
+        ? departamentos.find((d) => d.id === provincia.department_id)
+        : null;
+}
+
+export {
+    getProvincias,
+    getDepartamentos,
+    getProvinciaById,
+    getDepartamentoById,
+    getProvinciasByDepartment,
+    getDepartamentoByProvincia,
+};
+

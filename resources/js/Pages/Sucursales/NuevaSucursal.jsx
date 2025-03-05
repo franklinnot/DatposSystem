@@ -10,15 +10,16 @@ import { usePage } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 import { useState } from "react";
 import {
-    getProvincias_by_department,
     getProvincias,
     getDepartamentos,
-    getDepartamentos_by_provincia,
+    getProvinciaById,
+    getDepartamentoById,
+    getProvinciasByDepartment,
+    getDepartamentoByProvincia,
 } from "../../Utils/ubigeo.js";
 
 export default function NuevaSucursal({ auth }) {
-    const [frontendErros, setFrontendErrors] = useState({});
-
+    // datos necesarios para el post y otras props
     const { data, setData, post, processing, errors, reset } = useForm({
         // obligatorio
         nombre: "",
@@ -30,23 +31,37 @@ export default function NuevaSucursal({ auth }) {
         telefono: "",
     });
 
-    const [departamentos, setDepartamentos] = useState([]);
-    const [provincias, setProvincias] = useState([]);
-
-    useEffect(() => {
-        setDepartamentos(getDepartamentos()); // Carga los departamentos al montar el componente
-    }, []);
-
-    const handleDepartamentoChange = (e) => {
-        const department_id = e.target.value;
-        setData("departamento", department_id);
-        setProvincias(getProvincias_by_department(department_id)); // Filtra provincias por departamento
-        setData("ciudad", ""); // Resetea la ciudad al cambiar de departamento
-    };
-
     // Estado para mostrar errores en el frontend
     const [errorMessage, setErrorMessage] = useState("");
 
+    
+    // Estados para manejar la seleccion de departamento y provincia
+    const [departamentos, setDepartamentos] = useState();
+    const [provincias, setProvincias] = useState();
+
+    useEffect(() => {
+        setDepartamentos(getDepartamentos());
+        setProvincias(getProvincias());
+    }, []);
+    
+    // Función para manejar el cambio de departamento
+    const handleDepartamentoChange = (e) => {
+        const department_id = e.target.value;
+        setData("departamento", department_id);
+        setProvincias(getProvinciasByDepartment(department_id)); // Filtra provincias por departamento
+        setData("ciudad", ""); // Resetea la ciudad al cambiar de departamento
+    };
+
+    // Funcion para manejar el cambio de provincia
+    const handleProvinciaChange = (e) => {
+        const provincia_id = e.target.value;
+        const departamento = getDepartamentoByProvincia(provincia_id);
+        setProvincias(getProvinciasByDepartment(departamento.id));
+        setData("departamento", departamento.id); // Resetea el departamento al cambiar de provincia
+        setData("ciudad", provincia_id);
+    };
+
+    // Función para enviar el formulario
     const submit = (e) => {
         e.preventDefault();
 
@@ -65,6 +80,8 @@ export default function NuevaSucursal({ auth }) {
         }
         // Si todo está bien, limpiamos el mensaje de error
         setErrorMessage("");
+        data.departamento = getDepartamentoById(data.departamento).name;
+        data.ciudad = getProvinciaById(data.ciudad).name;
 
         post(route("stores/new"), {
             onFinish: () => reset(),
@@ -149,10 +166,10 @@ export default function NuevaSucursal({ auth }) {
                             name="ciudad"
                             options={provincias}
                             value={data.ciudad}
-                            onChange={(e) => setData("ciudad", e.target.value)}
+                            onChange={handleProvinciaChange}
                             placeholder="Selecciona una ciudad"
                             className=""
-                            isDisabled={!data.departamento}
+                            // isDisabled={!data.departamento}
                         />
                         <InputError message={errors.ciudad} />
                     </div>

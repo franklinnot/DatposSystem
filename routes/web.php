@@ -21,37 +21,36 @@ use Inertia\Response;
 |
 */
 
+// Rutas globales para usuarios NO autenticados
 Route::middleware('guest', 'no.cache')->group(function () {
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
-    
 });
 
-
+// Rutas globales para usuarios autenticados
 Route::middleware(['auth', 'no.cache'])->group(function () {
 
     // Perfil de Usuario
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
-
 });
 
 Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
     function () {
-        
+
         #region Perfil de Usuario -> editar y cambiar contraseña
-        
+
         Route::patch('/profile/edit', [ProfileController::class, 'update'])->name('profile/edit');
         Route::delete('/profile/edit/password', [ProfileController::class, 'destroy'])->name('profile/edit/password');
-        
+
         #endregion
-        
+
         #region Perfil de Empresa -> ver info y suscripciones y editar info
-        
+
         Route::get('/business', [ProfileController::class, 'update'])->name('business');
         Route::get('/business/edit', [ProfileController::class, 'destroy'])->name('business/edit');
         Route::get('/business/subscriptions', [ProfileController::class, 'destroy'])->name('/business/subscriptions');
-        
+
         #endregion
 
         #region Dashboard
@@ -59,7 +58,7 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
         // ruta raiz que redirige al dashboard
         Route::get('/', function () {
             $dashboardUrl = route('dashboard');
-        
+
             return response(
                 '<!DOCTYPE html>
                 <html lang="es">
@@ -95,16 +94,12 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
         })->name('stores');
 
 
-
         // vista para crear una nueva sucursal
         Route::get('/stores/new', [NuevaSucursal::class, 'show'])
             ->name('stores/new');
 
         // metodo para crear una sucursal
-        Route::post('/stores/new', function () {
-            return Inertia::render('Dashboard');
-        });
-
+        Route::post('/stores/new', [ProfileController::class, 'edit']);
 
 
         // vista para editar una sucursal
@@ -124,7 +119,7 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
         })->name('stores/delete');
 
         #endregion
-    
+
     }
 );
 
