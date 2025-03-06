@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Sucursal extends Model
 {
@@ -26,5 +27,25 @@ class Sucursal extends Model
         'id_empresa',
     ];
     #endregion
+
+    public static function registrar(array $data): ?Sucursal
+    {
+        $result = DB::select(
+            "EXEC sp_registrar_sucursal 
+            @codigo = ?, @nombre = ?, @departamento = ?, @ciudad = ?, @direccion = ?, @telefono = ?, @id_almacen = ?, @id_empresa = ?",
+            [
+                $data['codigo'],
+                $data['nombre'],
+                $data['departamento'] ?? null,
+                $data['ciudad'] ?? null,
+                $data['direccion'] ?? null,
+                $data['telefono'] ?? null,
+                $data['id_almacen'],
+                $data['id_empresa'],
+            ]
+        );
+
+        return $result ? new Sucursal(['id_sucursal' => $result[0]->nuevo_id] + $data) : null;
+    }
 
 }

@@ -99,7 +99,7 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
             ->name('stores/new');
 
         // metodo para crear una sucursal
-        Route::post('/stores/new', [ProfileController::class, 'edit']);
+        Route::post('/stores/new', [NuevaSucursal::class, 'store']);
 
 
         // vista para editar una sucursal

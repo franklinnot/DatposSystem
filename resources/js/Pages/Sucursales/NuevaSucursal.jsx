@@ -20,21 +20,24 @@ import {
 
 export default function NuevaSucursal({ auth }) {
     // datos necesarios para el post y otras props
-    const { data, setData, post, processing, errors, reset } = useForm({
-        // obligatorio
-        nombre: "",
-        codigo: "",
-        // opcional
-        departamento: "",
-        ciudad: "",
-        direccion: "",
-        telefono: "",
-    });
+    const { data, setData, post, processing, errors, transform, reset } =
+        useForm({
+            // obligatorio
+            nombre: "",
+            codigo: "",
+            // opcional
+            departamento: "",
+            ciudad: "",
+            direccion: "",
+            telefono: "",
+            id_empresa: auth?.empresa?.id_empresa
+                ? auth?.empresa?.id_empresa
+                : "",
+        });
 
     // Estado para mostrar errores en el frontend
     const [errorMessage, setErrorMessage] = useState("");
 
-    
     // Estados para manejar la seleccion de departamento y provincia
     const [departamentos, setDepartamentos] = useState();
     const [provincias, setProvincias] = useState();
@@ -43,7 +46,7 @@ export default function NuevaSucursal({ auth }) {
         setDepartamentos(getDepartamentos());
         setProvincias(getProvincias());
     }, []);
-    
+
     // Función para manejar el cambio de departamento
     const handleDepartamentoChange = (e) => {
         const department_id = e.target.value;
@@ -80,8 +83,14 @@ export default function NuevaSucursal({ auth }) {
         }
         // Si todo está bien, limpiamos el mensaje de error
         setErrorMessage("");
-        data.departamento = getDepartamentoById(data.departamento).name;
-        data.ciudad = getProvinciaById(data.ciudad).name;
+
+        transform((data) => ({
+            ...data,
+            departamento: data.departamento
+                ? getDepartamentoById(data.departamento).name
+                : "",
+            ciudad: data.ciudad ? getProvinciaById(data.ciudad).name : "",
+        }));
 
         post(route("stores/new"), {
             onFinish: () => reset(),
@@ -119,6 +128,7 @@ export default function NuevaSucursal({ auth }) {
 
                         <InputError message={errors.nombre} className="mt-2" />
                     </div>
+
                     {/* Input de Codigo */}
                     <div>
                         <InputLabel
@@ -204,6 +214,7 @@ export default function NuevaSucursal({ auth }) {
                             className="mt-2"
                         />
                     </div>
+
                     {/* Input de Telefono */}
                     <div>
                         <InputLabel
@@ -229,6 +240,7 @@ export default function NuevaSucursal({ auth }) {
                             className="mt-2"
                         />
                     </div>
+
                     {/* Boton de Registrar */}
                     <div className="grid grid-flow-row items-center mt-3">
                         <PrimaryButton
@@ -241,6 +253,13 @@ export default function NuevaSucursal({ auth }) {
                         {errorMessage && (
                             <InputError
                                 message={errorMessage}
+                                className="mt-2"
+                            />
+                        )}
+
+                        {errors.break && (
+                            <InputError
+                                message={errors.break}
                                 className="mt-2"
                             />
                         )}
