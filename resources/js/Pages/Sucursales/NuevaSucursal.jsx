@@ -20,35 +20,19 @@ import {
 import useToast from "@/Components/Toast";
 
 export default function NuevaSucursal({ auth }) {
-    // datos necesarios para el post y otras props
     const { data, setData, post, processing, errors, transform, reset } =
         useForm({
-            // obligatorio
             nombre: "",
             codigo: "",
-            // opcional
             departamento: "",
             ciudad: "",
             direccion: "",
             telefono: "",
-            id_empresa: auth?.empresa?.id_empresa
-                ? auth?.empresa?.id_empresa
-                : "",
+            id_empresa: auth?.empresa?.id_empresa || "",
         });
 
-    // Toast para mostrar resultados
     const { showToast, ToastComponent } = useToast();
 
-    // mensaje flash
-    const flash = usePage().props?.flash;
-    useEffect(() => {
-        if (flash?.message) {
-            showToast(flash.message, "success");
-        }
-    }, [flash]);
-
-
-    // Estados para manejar la seleccion de departamento y provincia
     const [departamentos, setDepartamentos] = useState();
     const [provincias, setProvincias] = useState();
 
@@ -57,28 +41,24 @@ export default function NuevaSucursal({ auth }) {
         setProvincias(getProvincias());
     }, []);
 
-    // Función para manejar el cambio de departamento
     const handleDepartamentoChange = (e) => {
         const department_id = e.target.value;
         setData("departamento", department_id);
-        setProvincias(getProvinciasByDepartment(department_id)); // Filtra provincias por departamento
-        setData("ciudad", ""); // Resetea la ciudad al cambiar de departamento
+        setProvincias(getProvinciasByDepartment(department_id));
+        setData("ciudad", "");
     };
 
-    // Funcion para manejar el cambio de provincia
     const handleProvinciaChange = (e) => {
         const provincia_id = e.target.value;
         const departamento = getDepartamentoByProvincia(provincia_id);
         setProvincias(getProvinciasByDepartment(departamento.id));
-        setData("departamento", departamento.id); // Resetea el departamento al cambiar de provincia
+        setData("departamento", departamento.id);
         setData("ciudad", provincia_id);
     };
 
-    // Función para enviar el formulario
     const submit = (e) => {
         e.preventDefault();
 
-        // Verificar si todos los campos obligatorios están llenos
         if (
             !data.nombre ||
             !data.codigo ||
@@ -105,6 +85,11 @@ export default function NuevaSucursal({ auth }) {
             onFinish: () => {
                 reset();
                 processing = false;
+            },
+            onSuccess:() => {
+                if (flash?.message) {
+                    showToast(flash.message, "success");
+                }
             },
         });
     };

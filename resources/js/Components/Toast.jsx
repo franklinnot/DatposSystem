@@ -1,40 +1,132 @@
-import React, { useState, useEffect } from "react";
 import * as ToastPrimitives from "@radix-ui/react-toast";
+import { useState, useEffect } from "react"; // <-- Importa useState y useEffect
+
+const ToastTypeIcons = {
+    success: (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6"
+        >
+            <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m4.5 12.75 6 6 9-13.5"
+            />
+        </svg>
+    ),
+    error: (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6"
+        >
+            <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+            />
+        </svg>
+    ),
+    close: (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6"
+        >
+            <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+            />
+        </svg>
+    ),
+};
 
 export default function useToast() {
-    const [message, setMessage] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [toast, setToast] = useState({
+        message: null,
+        type: "default",
+        open: false,
+        duration: 3000,
+    });
 
-    const showToast = (msg) => {
-        setMessage(msg);
-        setOpen(true);
+    const showToast = (message, type = "default", duration = 3000) => {
+        setToast((prev) => ({
+            message,
+            type,
+            open: true,
+            duration,
+        }));
     };
 
     useEffect(() => {
-        if (open) {
-            const timer = setTimeout(() => setOpen(false), 3000);
+        if (toast.open) {
+            const timer = setTimeout(() => {
+                setToast((prev) => ({ ...prev, open: false }));
+            }, toast.duration);
             return () => clearTimeout(timer);
         }
-    }, [open]);
+    }, [toast.open, toast.duration]);
 
     const ToastComponent = () => (
         <ToastPrimitives.Provider>
             <ToastPrimitives.Root
-                open={open}
-                onOpenChange={setOpen}
-                className="fixed bottom-4 right-4 z-50 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-md flex items-center space-x-2 transition-all duration-300 ease-in-out"
+                open={toast.open}
+                onOpenChange={(open) => setToast((prev) => ({ ...prev, open }))}
+                className={`
+          fixed
+          top-[4.5rem]
+          right-4
+          z-50
+          flex
+          items-center
+          gap-3
+          rounded-lg
+          px-4
+          py-3
+          shadow-[0px_5px_20px_rgba(0,0,0,0.1)]
+          transition-all
+          duration-300
+          ease-in-out
+          ${
+              toast.type === "success"
+                  ? "bg-emerald-500 text-white"
+                  : toast.type === "error"
+                  ? "bg-rose-500 text-white"
+                  : "bg-gray-900 text-gray-100"
+          }
+        `}
             >
-                <ToastPrimitives.Title className="font-semibold">
-                    {message}
-                </ToastPrimitives.Title>
+                {ToastTypeIcons?.[toast.type] || ToastTypeIcons.close}
+
+                <div className="flex-1 min-w-0">
+                    <ToastPrimitives.Title className="font-semibold text-sm leading-6">
+                        {toast.message}
+                    </ToastPrimitives.Title>
+                </div>
+
                 <ToastPrimitives.Close
-                    className="ml-auto text-gray-400 hover:text-gray-200 transition cursor-pointer"
-                    onClick={() => setOpen(false)}
+                    className="ml-4 p-1 hover:bg-white/20 rounded focus:outline-none"
+                    onClick={() =>
+                        setToast((prev) => ({ ...prev, open: false }))
+                    }
                 >
-                    ✖
+                    {ToastTypeIcons.close}
+                    <span className="sr-only">Cerrar</span>
                 </ToastPrimitives.Close>
             </ToastPrimitives.Root>
-            <ToastPrimitives.Viewport className="fixed bottom-4 right-4 w-auto max-w-sm" />
+
+            <ToastPrimitives.Viewport className="fixed bottom-4 right-4 w-[320px]" />
         </ToastPrimitives.Provider>
     );
 
