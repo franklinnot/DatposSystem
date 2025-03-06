@@ -17,6 +17,7 @@ import {
     getProvinciasByDepartment,
     getDepartamentoByProvincia,
 } from "../../Utils/ubigeo.js";
+import useToast from "@/Components/Toast";
 
 export default function NuevaSucursal({ auth }) {
     // datos necesarios para el post y otras props
@@ -35,8 +36,17 @@ export default function NuevaSucursal({ auth }) {
                 : "",
         });
 
-    // Estado para mostrar errores en el frontend
-    const [errorMessage, setErrorMessage] = useState("");
+    // Toast para mostrar resultados
+    const { showToast, ToastComponent } = useToast();
+
+    // mensaje flash
+    const flash = usePage().props?.flash;
+    useEffect(() => {
+        if (flash?.message) {
+            showToast(flash.message, "success");
+        }
+    }, [flash]);
+
 
     // Estados para manejar la seleccion de departamento y provincia
     const [departamentos, setDepartamentos] = useState();
@@ -76,13 +86,12 @@ export default function NuevaSucursal({ auth }) {
             !data.ciudad ||
             !data.direccion
         ) {
-            setErrorMessage(
-                "Por favor, llena todos los campos obligatorios antes de registrar la sucursal. *"
+            showToast(
+                "Por favor, llena todos los campos obligatorios.",
+                "error"
             );
             return;
         }
-        // Si todo está bien, limpiamos el mensaje de error
-        setErrorMessage("");
 
         transform((data) => ({
             ...data,
@@ -93,13 +102,17 @@ export default function NuevaSucursal({ auth }) {
         }));
 
         post(route("stores/new"), {
-            onFinish: () => reset(),
+            onFinish: () => {
+                reset();
+                processing = false;
+            },
         });
     };
 
     return (
         <AuthenticatedLayout auth={auth}>
             <Head title={`Nueva Sucursal`} />
+            <ToastComponent />
             <div className="grid grid-rows-[auto_1fr] gap-2 sm:gap-6 lg:gap-10">
                 <div className="grid mx-5 mt-4 h-14 border-b-2 border-gray-200 items-start">
                     <h2 className="text-xl font-semibold">Nueva Sucursal</h2>
@@ -249,20 +262,6 @@ export default function NuevaSucursal({ auth }) {
                         >
                             Registrar
                         </PrimaryButton>
-                        {/* Mensaje de error debajo del botón si hay problemas en el frontend */}
-                        {errorMessage && (
-                            <InputError
-                                message={errorMessage}
-                                className="mt-2"
-                            />
-                        )}
-
-                        {errors.break && (
-                            <InputError
-                                message={errors.break}
-                                className="mt-2"
-                            />
-                        )}
                     </div>
                 </form>
             </div>
