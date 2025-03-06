@@ -33,6 +33,15 @@ export default function NuevaSucursal({ auth }) {
 
     const { showToast, ToastComponent } = useToast();
 
+    let flash = usePage().props?.flash;
+    useEffect(() => {
+        if (flash?.message) {
+            showToast(flash.message, "success");
+            flash = null;
+            delete auth.flash;
+        }
+    }, [flash]);
+
     const [departamentos, setDepartamentos] = useState();
     const [provincias, setProvincias] = useState();
 
@@ -85,11 +94,6 @@ export default function NuevaSucursal({ auth }) {
             onFinish: () => {
                 reset();
                 processing = false;
-            },
-            onSuccess:() => {
-                if (flash?.message) {
-                    showToast(flash.message, "success");
-                }
             },
         });
     };

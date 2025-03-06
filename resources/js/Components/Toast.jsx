@@ -1,5 +1,5 @@
 import * as ToastPrimitives from "@radix-ui/react-toast";
-import { useState, useEffect } from "react"; // <-- Importa useState y useEffect
+import { useState, useEffect } from "react";
 
 const ToastTypeIcons = {
     success: (
@@ -58,15 +58,22 @@ export default function useToast() {
         type: "default",
         open: false,
         duration: 3000,
+        extraClassName: "", // Permite agregar estilos personalizados
     });
 
-    const showToast = (message, type = "default", duration = 3000) => {
-        setToast((prev) => ({
+    const showToast = (
+        message,
+        type = "default",
+        duration = 3000,
+        extraClassName = ""
+    ) => {
+        setToast({
             message,
             type,
             open: true,
             duration,
-        }));
+            extraClassName, // Asignar los estilos adicionales
+        });
     };
 
     useEffect(() => {
@@ -84,28 +91,17 @@ export default function useToast() {
                 open={toast.open}
                 onOpenChange={(open) => setToast((prev) => ({ ...prev, open }))}
                 className={`
-          fixed
-          top-[4.5rem]
-          right-4
-          z-50
-          flex
-          items-center
-          gap-3
-          rounded-lg
-          px-4
-          py-3
-          shadow-[0px_5px_20px_rgba(0,0,0,0.1)]
-          transition-all
-          duration-300
-          ease-in-out
-          ${
-              toast.type === "success"
-                  ? "bg-emerald-500 text-white"
-                  : toast.type === "error"
-                  ? "bg-rose-500 text-white"
-                  : "bg-gray-900 text-gray-100"
-          }
-        `}
+                    fixed top-[4.5rem] right-4 z-50 flex items-center gap-3 rounded-lg px-4 py-3
+                    shadow-[0px_5px_20px_rgba(0,0,0,0.1)]
+                    ${
+                        toast.type === "success"
+                            ? "bg-emerald-500 text-white"
+                            : toast.type === "error"
+                            ? "bg-rose-500 text-white"
+                            : "bg-gray-900 text-gray-100"
+                    }
+                    ${toast.extraClassName} /* Estilos personalizados */
+                `}
             >
                 {ToastTypeIcons?.[toast.type] || ToastTypeIcons.close}
 
