@@ -57,14 +57,14 @@ export default function useToast() {
         message: null,
         type: "default",
         open: false,
-        duration: 3000,
+        duration: 8000,
         extraClassName: "", // Permite agregar estilos personalizados
     });
 
     const showToast = (
         message,
         type = "default",
-        duration = 3000,
+        duration = 8000,
         extraClassName = ""
     ) => {
         setToast({
@@ -91,8 +91,8 @@ export default function useToast() {
                 open={toast.open}
                 onOpenChange={(open) => setToast((prev) => ({ ...prev, open }))}
                 className={`
-                    fixed top-[4.5rem] right-4 z-50 flex items-center gap-3 rounded-lg px-4 py-3
-                    shadow-[0px_5px_20px_rgba(0,0,0,0.1)]
+                    fixed top-[4.5rem] right-4 w-[320px] sm:w-max z-50 flex items-center gap-3 rounded-lg px-4 py-3
+                    shadow-md
                     ${
                         toast.type === "success"
                             ? "bg-emerald-500 text-white"
