@@ -9,9 +9,9 @@ export default function Header({ auth }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [openSubmenu, setOpenSubmenu] = useState(null);
     const menuRef = useRef(null);
-    
+
     const toggleMenu = () => setMenuOpen(!menuOpen);
-    
+
     const toggleSubmenu = (index) => {
         setOpenSubmenu(openSubmenu === index ? null : index);
     };
@@ -19,7 +19,7 @@ export default function Header({ auth }) {
     useEffect(() => {
         const handleClickOutside = (event) => {
             const openMenuButton = document.getElementById("open_menu");
-            
+
             if (
                 menuRef.current &&
                 !menuRef.current.contains(event.target) &&
@@ -28,16 +28,21 @@ export default function Header({ auth }) {
                 setMenuOpen(false);
             }
         };
-        
+
         document.addEventListener("mousedown", handleClickOutside);
         return () =>
             document.removeEventListener("mousedown", handleClickOutside);
     }, []);
-    
-    const accesos = auth?.accesos; // prop auth.user
 
-    // filtrar las rutas permitidas
-    let rts_navegacion = rutas_navegacion(accesos);
+    const accesos = auth?.accesos; // Prop auth.user
+    const empresa = auth?.empresa; // Prop de empresa
+
+    const [rts_navegacion, setRtsNavegacion] = useState([]);
+
+    useEffect(() => {
+        // Actualizar rutas cuando cambien accesos o empresa
+        setRtsNavegacion(rutas_navegacion(accesos, empresa));
+    }, [accesos, empresa]); // Dependencias del useEffect
 
     return (
         <header className="grid grid-flow-col place-items-center px-5 lg:px-6 h-14 sm:max-h-16 bg-[#EFF4FF] border-b-2">
@@ -147,10 +152,7 @@ export default function Header({ auth }) {
                 </div>
 
                 {/* Logo de la aplicacion */}
-                <Link
-                    className="inline-flex ml-1"
-                    href={route("profile")}
-                >
+                <Link className="inline-flex ml-1" href={route("profile")}>
                     <ApplicationLogo size={44} />
                 </Link>
             </div>

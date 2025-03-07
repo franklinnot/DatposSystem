@@ -14,7 +14,6 @@ let rts_navegacion = [
     },
 ];
 
-
 // Rutas de perfil -- empresa y usuarioc
 let rts_perfilEmpresa = [
     {
@@ -44,21 +43,32 @@ let rts_permisoTotal = [
 ];
 
 // Función para filtrar las rutas permitidas
-function filterRoutes(rutas, accesos) {
+function filterRoutes(rutas, accesos, empresa) {
     // Extraer las rutas permitidas del array de accesos
     const rutasAccesibles = new Set(accesos.map((acceso) => acceso.ruta));
 
     return rutas
         .map((item) => {
-            // Filtrar los subItems que tienen acceso permitido
+            // Filtrar los subItems que tienen acceso permitido y no violan la condición
             const filteredSubItems = item.subItems
-                ? item.subItems.filter((subItem) =>
-                      rutasAccesibles.has(subItem.routeName)
-                  )
+                ? item.subItems.filter((subItem) => {
+                      // Si la empresa alcanzó el límite de sucursales y la ruta es "stores/new", omitirla
+                      if (
+                          empresa.cantidad_sucursales ===
+                              empresa.sucursales_registradas &&
+                          subItem.routeName === "stores/new"
+                      ) {
+                          return false;
+                      }
+                      return rutasAccesibles.has(subItem.routeName);
+                  })
                 : [];
 
             // Verificar si el elemento principal es accesible o si tiene subItems accesibles
-            if (rutasAccesibles.has(item.routeName) || filteredSubItems.length > 0) {
+            if (
+                rutasAccesibles.has(item.routeName) ||
+                filteredSubItems.length > 0
+            ) {
                 return { ...item, subItems: filteredSubItems };
             }
 
@@ -67,15 +77,17 @@ function filterRoutes(rutas, accesos) {
         .filter((item) => item !== null); // Eliminar ítems nulos
 }
 
+
 // rutas permitidas relacionadas a la empresa
 export function rutas_perfilEmpresa(accesos) {
     return filterRoutes(rts_perfilEmpresa, accesos);
 }
 
 // rutas permitidas para la navegación
-export function rutas_navegacion(accesos) {
-    return filterRoutes(rts_navegacion, accesos);
+export function rutas_navegacion(accesos, empresa) {
+    return filterRoutes(rts_navegacion, accesos, empresa);
 }
+
 
 // funcion para verificar si la ruta actual está permitida
 export function verificarRuta(route, accesos) {

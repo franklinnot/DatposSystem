@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Rol;
+use App\Models\Empresa;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,35 +21,28 @@ class CheckUserAccess
     {
         $user = Auth::user();
 
-        // Si el usuario no está autenticado, redirigir al login
+        // Verificar si el usuario está autenticado
         if (!$user) {
             return redirect()->route('login');
         }
 
+        // Obtener la empresa y verificar la restricción de "stores/new"
+        $empresa = Empresa::get_empresa($user['id_empresa']);
+        $currentRoute = rtrim($request->path(), '/');
+
+        if ($empresa && $empresa->cantidad_sucursales == $empresa->sucursales_registradas && $currentRoute === 'stores/new') {
+            return redirect()->route('profile');
+        }
+
         // Obtener las rutas permitidas para el usuario según su rol
         $allowedRoutes = Rol::accesos_by_id($user['id_rol'])->pluck('ruta')->toArray();
-        
-        // Ruta actual sin el prefijo de dominio
-        $currentRoute = $request->path();
-        
+
         // Si la ruta está permitida, continuar
         if (in_array($currentRoute, $allowedRoutes)) {
             return $next($request);
         }
 
-        // URL anterior
-        $previousUrl = url()->previous();
-        $previousRoute = parse_url($previousUrl, PHP_URL_PATH); // Extraer la ruta
-        
-        // Si la ruta no esta permitda, Verificar si ruta anterior es una ruta válida para el usuario
-        if (in_array(ltrim($previousRoute, '/'), $allowedRoutes)) {
-            return redirect($previousUrl);
-        }
-
-        // Si no tiene acceso y la URL anterior tampoco es válida, redirigir al perfil
+        // Si la ruta no es permitida, redirigir siempre al perfil
         return redirect()->route('profile');
     }
 }
-
-
-

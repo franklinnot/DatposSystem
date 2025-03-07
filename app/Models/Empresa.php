@@ -26,6 +26,8 @@ class Empresa extends Model
         'numero_tributario',
         'cantidad_sucursales',
         'cantidad_usuarios',
+        'sucursales_registradas',
+        'usuarios_registrados',
         'facturacion_electronica',
         'logo',
         'estado',

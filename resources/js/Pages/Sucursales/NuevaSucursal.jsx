@@ -7,7 +7,7 @@ import { Head, Link, useForm } from "@inertiajs/react";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { useEffect } from "react";
 import { usePage } from "@inertiajs/react";
-import { Inertia } from "@inertiajs/inertia";
+import { Inertia, router } from "@inertiajs/inertia";
 import { useState } from "react";
 import {
     getProvincias,
@@ -39,7 +39,7 @@ export default function NuevaSucursal({ auth }) {
             showToast(flash.message, "success");
             flash = null;
         }
-    }, []);
+    }, [flash]);
 
     const [departamentos, setDepartamentos] = useState();
     const [provincias, setProvincias] = useState();
@@ -92,6 +92,7 @@ export default function NuevaSucursal({ auth }) {
         post(route("stores/new"), {
             onFinish: () => {
                 reset();
+                Inertia.reload();
             },
         });
     };
