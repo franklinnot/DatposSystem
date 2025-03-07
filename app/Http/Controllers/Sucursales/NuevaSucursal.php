@@ -62,8 +62,12 @@ class NuevaSucursal extends Controller
         }
 
         // Guardar mensaje flash en la sesión
-        session()->flash('message', 'Sucursal y almacén registrados con éxito.');
-        return Inertia::render('Sucursales/NuevaSucursal');
+        return Inertia::render('Sucursales/NuevaSucursal', [
+            'responseData' => [
+                'message' => 'Sucursal y almacén registrados con éxito.',
+                'status' => 'success', // Puedes agregar más claves si es necesario
+            ]
+        ]);
     }
 
 

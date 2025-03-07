@@ -51,9 +51,6 @@ class HandleInertiaRequests extends Middleware
                 'accesos' => $usuarioAccesos ? $usuarioAccesos : null,
                 'empresa' => $empresa ? $empresa->toArray() : null,
             ],
-            'flash' => [
-                'message' => fn() => $request->session()->get('message')
-            ],
         ]);
     }
 

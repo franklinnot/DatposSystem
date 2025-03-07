@@ -57,14 +57,14 @@ export default function useToast() {
         message: null,
         type: "default",
         open: false,
-        duration: 8000,
+        duration: 5000,
         extraClassName: "", // Permite agregar estilos personalizados
     });
 
     const showToast = (
         message,
         type = "default",
-        duration = 8000,
+        duration = 5000,
         extraClassName = ""
     ) => {
         setToast({
