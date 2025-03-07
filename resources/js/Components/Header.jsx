@@ -149,7 +149,7 @@ export default function Header({ auth }) {
                 {/* Logo de la aplicacion */}
                 <Link
                     className="inline-flex ml-1"
-                    href={route("dashboard")}
+                    href={route("profile")}
                 >
                     <ApplicationLogo size={44} />
                 </Link>
