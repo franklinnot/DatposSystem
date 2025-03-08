@@ -33,6 +33,17 @@ class NuevaSucursal extends Controller
             'id_empresa' => 'required|integer',
         ]);
 
+        // verificar que la empresa exista
+        $empresa = Empresa::get_empresa_by_id($data_sucursal["id_empresa"]);
+        if (!$empresa) {
+            return $this->error();
+        }
+
+        // Si ya llego al limite de sucursales por registrar
+        if ($empresa->sucursales_registradas === $empresa->cantidad_sucursales) {
+            return $this->errorLimit();
+        }
+
         // verificar que el código de la sucursal sea único antes de registrar
         if (Sucursal::existencia_sucursal_by_codigo($data_sucursal["codigo"], $data_sucursal["id_empresa"])) {
             $this->error_samecode();
@@ -67,8 +78,7 @@ class NuevaSucursal extends Controller
 
         // verificamos si debe recargar la pagina cuando ya no pueda registrar mas almacenes
         $refresh = false;
-        $empresa = Empresa::get_empresa_by_id($data_sucursal["id_empresa"]);
-        if ($empresa->sucursales_registradas === $empresa->cantidad_sucursales) {
+        if (($empresa->sucursales_registradas + 1) === $empresa->cantidad_sucursales) {
             $refresh = true;
         }
 
