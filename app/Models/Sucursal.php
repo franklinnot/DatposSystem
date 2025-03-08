@@ -28,6 +28,9 @@ class Sucursal extends Model
     ];
     #endregion
 
+
+    #region crud
+
     public static function registrar(array $data): ?Sucursal
     {
         $result = DB::select(
@@ -47,5 +50,28 @@ class Sucursal extends Model
 
         return $result ? new Sucursal(['id_sucursal' => $result[0]->nuevo_id] + $data) : null;
     }
+
+    public static function get_sucursal_by_id($id_sucursal): ?Sucursal
+    {
+        $result = DB::select("EXEC sp_get_sucursal_by_id @id_sucursal = ?", [$id_sucursal]);
+        return $result ? new Sucursal((array) $result[0]) : null;
+    }
+
+    public static function get_sucursal_by_codigo($codigo): ?Sucursal
+    {
+        $result = DB::select("EXEC sp_get_sucursal_by_codigo @codigo = ?", [$codigo]);
+        return $result ? new Sucursal((array) $result[0]) : null;
+    }
+
+    public static function existencia_sucursal_by_codigo($codigo): ?bool
+    {
+        $result = DB::select("EXEC sp_existencia_sucursal_by_codigo @codigo = ?", [$codigo]);
+        if (isset($result[0]->existe)) {
+            return $result[0]->existe === 'true';
+        }
+        return null;
+    }
+
+    #endregion
 
 }
