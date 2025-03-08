@@ -35,14 +35,13 @@ export default function Header({ auth }) {
     }, []);
 
     const accesos = auth?.accesos; // Prop auth.user
-    const empresa = auth?.empresa; // Prop de empresa
 
     const [rts_navegacion, setRtsNavegacion] = useState([]);
 
     useEffect(() => {
         // Actualizar rutas cuando cambien accesos o empresa
-        setRtsNavegacion(rutas_navegacion(accesos, empresa));
-    }, [accesos, empresa]); // Dependencias del useEffect
+        setRtsNavegacion(rutas_navegacion(accesos));
+    }, [accesos]); // Dependencias del useEffect
 
     return (
         <header className="grid grid-flow-col place-items-center px-5 lg:px-6 h-14 sm:max-h-16 bg-[#EFF4FF] border-b-2">

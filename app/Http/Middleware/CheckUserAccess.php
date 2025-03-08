@@ -26,13 +26,7 @@ class CheckUserAccess
             return redirect()->route('login');
         }
 
-        // Obtener la empresa y verificar la restricción de "stores/new"
-        $empresa = Empresa::get_empresa_by_id($user['id_empresa']);
         $currentRoute = rtrim($request->path(), '/');
-
-        if ($empresa && $empresa->cantidad_sucursales == $empresa->sucursales_registradas && $currentRoute === 'stores/new') {
-            return redirect()->route('profile');
-        }
 
         // Obtener las rutas permitidas para el usuario según su rol
         $allowedRoutes = Rol::accesos_by_id($user['id_rol'])->pluck('ruta')->toArray();
