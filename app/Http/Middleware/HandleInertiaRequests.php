@@ -71,7 +71,7 @@ class HandleInertiaRequests extends Middleware
     // Empresa asociada al usuario autenticado.
     private function get_empresaData($user)
     {
-        return $user ? Empresa::get_empresa($user['id_empresa']) : null;
+        return $user ? Empresa::get_empresa_by_id($user['id_empresa']) : null;
     }
 
     #endregion

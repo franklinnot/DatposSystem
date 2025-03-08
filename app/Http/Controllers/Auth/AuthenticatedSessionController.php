@@ -37,7 +37,7 @@ class AuthenticatedSessionController extends Controller
 
         // si se autentico el email y contraseña, verificamos los estados de empresa y usuario
         $usuario = Auth::user();
-        $empresa = Empresa::get_empresa($usuario->id_empresa);
+        $empresa = Empresa::get_empresa_by_id($usuario->id_empresa);
 
         if ($empresa->estado == 0) {
             // si la empresa esta inactiva

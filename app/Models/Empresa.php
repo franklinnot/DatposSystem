@@ -41,7 +41,7 @@ class Empresa extends Model
     #endregion
 
     #region crud
-    public static function get_empresa($id_empresa): ?Empresa
+    public static function get_empresa_by_id($id_empresa): ?Empresa
     {
         $result = DB::select("EXEC sp_get_empresa_by_id @id_empresa = ?", [$id_empresa]);
         return $result ? new Empresa((array) $result[0]) : null;

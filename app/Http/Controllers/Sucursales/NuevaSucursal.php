@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Sucursales;
 
 use App\Http\Controllers\Controller;
 use App\Models\Almacen;
+use App\Models\Empresa;
 use App\Models\Sucursal;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
@@ -64,11 +65,19 @@ class NuevaSucursal extends Controller
             $this->error();
         }
 
+        // verificamos si debe recargar la pagina cuando ya no pueda registrar mas almacenes
+        $refresh = false;
+        $empresa = Empresa::get_empresa_by_id($data_sucursal["id_empresa"]);
+        if ($empresa->sucursales_registradas === $empresa->cantidad_sucursales) {
+            $refresh = true;
+        }
+
         // Guardar mensaje flash en la sesión
         return Inertia::render('Sucursales/NuevaSucursal', [
             'response' => [
                 'message' => 'Sucursal y almacén registrados con éxito.',
-                'status' => 'success', // Puedes agregar más claves si es necesario
+                'status' => true, // Puedes agregar más claves si es necesario
+                'refresh' => $refresh,
             ]
         ]);
     }

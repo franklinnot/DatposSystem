@@ -34,21 +34,30 @@ export default function NuevaSucursal({ auth }) {
 
     const { showToast, ToastComponent } = useToast();
 
-    let flash = usePage().props?.response;
+    let message = usePage().props?.response?.message;
     useEffect(() => {
-        if (flash?.message) {
-            showToast(flash.message, "success");
-            flash = null;
+        if (message) {
+            showToast(message, "success");
         }
-    }, [flash]);
+    }, [message]);
 
-
-    let mensaje_error = errors.break;
+    let refresh = usePage().props?.response?.refresh;
     useEffect(() => {
-        if (mensaje_error) {
-            showToast(mensaje_error, "error");
+        if (refresh) {
+            setTimeout(() => {
+                Inertia.reload({ only: ["auth"] });
+            }, 1000);
         }
-    }, [mensaje_error]);
+    }, [refresh]);
+
+    const [ultimoError, setUltimoError] = useState(null);
+
+    useEffect(() => {
+        if (errors.break && errors.break !== ultimoError) {
+            showToast(errors.break, "error");
+            setUltimoError(errors.break); // Actualizamos el error mostrado
+        }
+    }, [errors.break]); // Se ejecuta siempre que el error cambie
 
     const [departamentos, setDepartamentos] = useState();
     const [provincias, setProvincias] = useState();
@@ -99,15 +108,13 @@ export default function NuevaSucursal({ auth }) {
         }));
 
         post(route("stores/new"), {
-            onFinish: () => {
-                reset();
-                setTimeout(Inertia.reload({ only: ["auth"] }), 2000);
-                if (
-                    usePage().props?.auth?.empresa?.cantidad_sucursales ===
-                    usePage().props?.auth?.empresa?.sucursales_registradas
-                ) {
-                    Inertia.reload();
+            onError: (errors) => {
+                if (errors.break) {
+                    showToast(errors.break, "error");
                 }
+            },
+            onSuccess: () => {
+                reset();
             },
         });
     };
