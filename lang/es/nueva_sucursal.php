@@ -10,6 +10,6 @@ return [
 
     'error' => 'No fue posible registrar su nueva sucursal.',
 
-    'success' => 'Sucursal registrada exitosamente!',
+    'limit_registers' => 'Ha llegado al límite de sucursales por registrar.',
 
 ];
