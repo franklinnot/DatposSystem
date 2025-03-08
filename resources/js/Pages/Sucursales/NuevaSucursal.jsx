@@ -29,17 +29,26 @@ export default function NuevaSucursal({ auth }) {
             direccion: "",
             telefono: "",
             id_empresa: auth?.empresa?.id_empresa || "",
+            break: "",
         });
 
     const { showToast, ToastComponent } = useToast();
 
-    let flash = usePage().props?.responseData;
+    let flash = usePage().props?.response;
     useEffect(() => {
         if (flash?.message) {
             showToast(flash.message, "success");
             flash = null;
         }
     }, [flash]);
+
+
+    let mensaje_error = errors.break;
+    useEffect(() => {
+        if (mensaje_error) {
+            showToast(mensaje_error, "error");
+        }
+    }, [mensaje_error]);
 
     const [departamentos, setDepartamentos] = useState();
     const [provincias, setProvincias] = useState();
@@ -92,7 +101,7 @@ export default function NuevaSucursal({ auth }) {
         post(route("stores/new"), {
             onFinish: () => {
                 reset();
-                Inertia.reload({ only: ["auth"] });
+                setTimeout(Inertia.reload({ only: ["auth"] }), 2000);
                 if (
                     usePage().props?.auth?.empresa?.cantidad_sucursales ===
                     usePage().props?.auth?.empresa?.sucursales_registradas

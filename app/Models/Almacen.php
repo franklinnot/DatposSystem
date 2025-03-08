@@ -52,17 +52,35 @@ class Almacen extends Model
         return $result ? new Almacen((array) $result[0]) : null;
     }
 
-    public static function get_almacen_by_codigo($codigo): ?Almacen
+    public static function get_almacen_by_codigo($codigo, $id_empresa): ?Almacen
     {
-        $result = DB::select("EXEC sp_get_almacen_by_codigo @codigo = ?", [$codigo]);
+        $result = DB::select("EXEC sp_get_almacen_by_codigo @codigo = ?, @id_empresa = ?", [$codigo, $id_empresa]);
         return $result ? new Almacen((array) $result[0]) : null;
     }
 
-    public static function existencia_almacen_by_codigo($codigo): ?bool
+    public static function existencia_almacen_by_codigo($codigo, $id_empresa): ?bool
     {
-        $result = DB::select("EXEC sp_existencia_almacen_by_codigo @codigo = ?", [$codigo]);
-        if (isset($result[0]->existe)) {
-            return $result[0]->existe === 'true';
+        $result = DB::select("EXEC sp_existencia_almacen_by_codigo @codigo = ?, @id_empresa = ?", [$codigo, $id_empresa]);
+        if (isset($result[0]->verificar)) {
+            return $result[0]->verificar === 'true';
+        }
+        return null;
+    }
+
+    public static function eliminar_almacen_by_id($id_almacen): ?bool
+    {
+        $result = DB::select("EXEC sp_eliminar_almacen_by_id @id_almacen = ?", [$id_almacen]);
+        if (isset($result[0]->verificar)) {
+            return $result[0]->verificar === 'true';
+        }
+        return null;
+    }
+
+    public static function eliminar_almacen_by_codigo($codigo, $id_empresa): ?bool
+    {
+        $result = DB::select("EXEC sp_eliminar_almacen_by_id @codigo = ?, @id_empresa = ?", [$codigo, $id_empresa]);
+        if (isset($result[0]->verificar)) {
+            return $result[0]->verificar === 'true';
         }
         return null;
     }

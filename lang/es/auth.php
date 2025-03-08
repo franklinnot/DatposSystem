@@ -20,9 +20,4 @@ return [
     'password' => 'La contraseña es incorrecta.',
     'throttle' => 'Haz realizado muchos intentos. Por favor, inténtalo nuevamente en :seconds segundos.',
 
-    // error devuelto a la hora de intentar registrar el almacen de la nueva sucursal
-    'insert_almacen' => 'No fue posible registrar el inventario de su nueva sucursal.',
-    // error al intentar registrar una nueva sucursal
-    'insert_sucursal' => 'No fue posible registrar su nueva sucursal.',
-
 ];

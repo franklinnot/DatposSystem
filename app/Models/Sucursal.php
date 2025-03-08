@@ -57,17 +57,17 @@ class Sucursal extends Model
         return $result ? new Sucursal((array) $result[0]) : null;
     }
 
-    public static function get_sucursal_by_codigo($codigo): ?Sucursal
+    public static function get_sucursal_by_codigo($codigo, $id_empresa): ?Sucursal
     {
-        $result = DB::select("EXEC sp_get_sucursal_by_codigo @codigo = ?", [$codigo]);
+        $result = DB::select("EXEC sp_get_sucursal_by_codigo @codigo = ?, @id_empresa = ?", [$codigo, $id_empresa]);
         return $result ? new Sucursal((array) $result[0]) : null;
     }
 
-    public static function existencia_sucursal_by_codigo($codigo): ?bool
+    public static function existencia_sucursal_by_codigo($codigo, $id_empresa): ?bool
     {
-        $result = DB::select("EXEC sp_existencia_sucursal_by_codigo @codigo = ?", [$codigo]);
-        if (isset($result[0]->existe)) {
-            return $result[0]->existe === 'true';
+        $result = DB::select("EXEC sp_existencia_sucursal_by_codigo @codigo = ?, @id_empresa = ?", [$codigo, $id_empresa]);
+        if (isset($result[0]->verificar)) {
+            return $result[0]->verificar === 'true';
         }
         return null;
     }
