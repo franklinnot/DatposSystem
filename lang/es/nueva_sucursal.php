@@ -8,6 +8,8 @@ return [
 
     'samecode' => 'Porfavor, intente registrar con otro código.',
 
-    'ups' => 'No fue posible registrar su nueva sucursal.',
-    
+    'error' => 'No fue posible registrar su nueva sucursal.',
+
+    'success' => 'Sucursal registrada exitosamente!',
+
 ];
