@@ -92,7 +92,13 @@ export default function NuevaSucursal({ auth }) {
         post(route("stores/new"), {
             onFinish: () => {
                 reset();
-                Inertia.reload();
+                Inertia.reload({ only: ["auth"] });
+                if (
+                    usePage().props?.auth?.empresa?.cantidad_sucursales ===
+                    usePage().props?.auth?.empresa?.sucursales_registradas
+                ) {
+                    Inertia.reload();
+                }
             },
         });
     };
