@@ -26,6 +26,8 @@ class Almacen extends Model
     ];
     #endregion
 
+    #region crud
+
     public static function registrar(array $data): ?Almacen
     {
         $result = DB::select(
@@ -44,4 +46,26 @@ class Almacen extends Model
         return $result ? new Almacen(['id_almacen' => $result[0]->nuevo_id] + $data) : null;
     }
 
+    public static function get_almacen_by_id($id_almacen): ?Almacen
+    {
+        $result = DB::select("EXEC sp_get_almacen_by_id @id_almacen = ?", [$id_almacen]);
+        return $result ? new Almacen((array) $result[0]) : null;
+    }
+
+    public static function get_almacen_by_codigo($codigo): ?Almacen
+    {
+        $result = DB::select("EXEC sp_get_almacen_by_codigo @codigo = ?", [$codigo]);
+        return $result ? new Almacen((array) $result[0]) : null;
+    }
+
+    public static function existencia_almacen_by_codigo($codigo): ?bool
+    {
+        $result = DB::select("EXEC sp_existencia_almacen_by_codigo @codigo = ?", [$codigo]);
+        if (isset($result[0]->existe)) {
+            return $result[0]->existe === 'true';
+        }
+        return null;
+    }
+
+    #endregion
 }
