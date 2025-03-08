@@ -46,6 +46,16 @@ class Empresa extends Model
         $result = DB::select("EXEC sp_get_empresa_by_id @id_empresa = ?", [$id_empresa]);
         return $result ? new Empresa((array) $result[0]) : null;
     }
+
+    public static function existencia_empresa_by_id($id_empresa): ?bool
+    {
+        $result = DB::select("EXEC sp_existencia_empresa_by_id @id_empresa = ?", [$id_empresa]);
+        if (isset($result[0]->verificar)) {
+            return $result[0]->verificar === 'true';
+        }
+        return null;
+    }
+
     #endregion
 
     #region Relaciones
