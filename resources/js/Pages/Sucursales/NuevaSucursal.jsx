@@ -18,7 +18,7 @@ import {
 import useToast from "@/Components/Toast";
 
 export default function NuevaSucursal({ auth }) {
-    const { data, setData, post, reset, processing, errors } = useForm({
+    const { data, setData, post, reset, processing, transform, errors } = useForm({
         nombre: "",
         codigo: "",
         departamento: "",
@@ -82,16 +82,13 @@ export default function NuevaSucursal({ auth }) {
         }
 
         // Se transforma el ID del departamento y la ciudad a nombres, de acuerdo al controlador.
-        const payload = {
+        transform((data) => ({
             ...data,
-            departamento: data.departamento
-                ? getDepartamentoById(data.departamento).name
-                : "",
-            ciudad: data.ciudad ? getProvinciaById(data.ciudad).name : "",
-        };
+            departamento: getDepartamentoById(data.departamento).name,
+            ciudad: getProvinciaById(data.ciudad).name,
+        }));
 
         post(route("stores/new"), {
-            data: payload,
             onError: (serverErrors) => {
                 // Manejar error duplicado de código con el campo correcto
                 if (serverErrors.codigo) {
