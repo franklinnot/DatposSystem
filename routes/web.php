@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Cajas\NuevaCaja;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Sucursales\NuevaSucursal;
 use App\Http\Middleware\Authenticate;
@@ -117,6 +118,40 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
         Route::post('/stores/delete', function () {
             return Inertia::render('Dashboard');
         })->name('stores/delete');
+
+        #endregion
+
+        #region Cajas
+
+        // vista para listar cajas
+        Route::get('/cashregisters', function () {
+            return Inertia::render('Dashboard');
+        })->name('cashregisters');
+
+
+        // vista para crear una nueva sucursal
+        Route::get('/cashregisters/new', [NuevaCaja::class, 'show'])
+            ->name('cashregisters/new');
+
+        // metodo para crear una sucursal
+        Route::post('/cashregisters/new', [NuevaCaja::class, 'store']);
+
+
+        // vista para editar una sucursal
+        Route::get('/cashregisters/edit', function () {
+            return Inertia::render('Dashboard');
+        })->name('cashregisters/edit');
+
+        // metodo para editar una sucursal
+        Route::patch('/cashregisters/edit', function () {
+            return Inertia::render('Dashboard');
+        });
+
+
+        // metodo para eliminar una sucursal
+        Route::post('/cashregisters/delete', function () {
+            return Inertia::render('Dashboard');
+        })->name('cashregisters/delete');
 
         #endregion
 
