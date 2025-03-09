@@ -57,6 +57,14 @@ class Sucursal extends Model
         return $result ? new Sucursal((array) $result[0]) : null;
     }
 
+    public static function get_sucursales_by_id_empresa($id_empresa): ?array
+    {
+        $result = DB::select("EXEC sp_get_sucursales_by_id_empresa @id_empresa = ?", [$id_empresa]);
+        return $result ? array_map(function ($item) {
+            return new Sucursal((array) $item);
+        }, $result) : null;
+    }
+
     public static function get_sucursal_by_codigo($codigo, $id_empresa): ?Sucursal
     {
         $result = DB::select("EXEC sp_get_sucursal_by_codigo @codigo = ?, @id_empresa = ?", [$codigo, $id_empresa]);
