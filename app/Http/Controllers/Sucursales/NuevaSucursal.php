@@ -93,7 +93,7 @@ class NuevaSucursal extends Controller
     public function errorSameCode(): Response
     {
         throw ValidationException::withMessages([
-            'codigo' => trans('Sucursales.nueva_sucursal.samecode'),
+            'codigo' => trans('nueva_sucursal.samecode'),
         ]);
     }
 
@@ -102,7 +102,7 @@ class NuevaSucursal extends Controller
         return Inertia::render(self::COMPONENTE, [
             'toast' => [
                 'type' => 'error',
-                'message' => trans('Sucursales.nueva_sucursal.error'),
+                'message' => trans('nueva_sucursal.error'),
             ]
         ]);
     }
@@ -112,7 +112,7 @@ class NuevaSucursal extends Controller
         return Inertia::render(self::COMPONENTE, [
             'toast' => [
                 'type' => 'error',
-                'message' => trans('Sucursales.nueva_sucursal.limit_registers'),
+                'message' => trans('nueva_sucursal.limit_registers'),
             ]
         ]);
     }
