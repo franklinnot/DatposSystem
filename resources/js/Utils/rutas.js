@@ -12,9 +12,18 @@ let rts_navegacion = [
             { label: "Editar información", routeName: "stores/edit" },
         ],
     },
+    {
+        label: "Cajas",
+        routeName: "cashregisters",
+        subItems: [
+            { label: "Nueva Caja", routeName: "cashregisters/new" },
+            { label: "Ver Cajas", routeName: "cashregisters" },
+            { label: "Editar información", routeName: "cashregisters/edit" },
+        ],
+    },
 ];
 
-// Rutas de perfil -- empresa y usuarioc
+// Rutas de perfil -- empresa y usuarios
 let rts_perfilEmpresa = [
     {
         label: "Ver información de la Empresa",
