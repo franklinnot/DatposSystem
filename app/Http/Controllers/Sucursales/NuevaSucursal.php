@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class NuevaSucursal extends Controller
@@ -33,14 +34,13 @@ class NuevaSucursal extends Controller
             'ciudad' => 'required|string|max:128',
             'direccion' => 'required|string|max:128',
             'telefono' => 'nullable|string|max:128',
-            'id_empresa' => 'required|integer',
         ]);
 
-        // verificamos que la empresa exista
-        $empresa = Empresa::get_empresa_by_id($data_sucursal['id_empresa']);
-        if (!$empresa) {
-            return $this->error();
-        }
+        $user = Auth::user();
+        $data_sucursal['id_empresa'] = $user->id_empresa;
+
+        // obtenemos a la empresa
+        $empresa = Empresa::get_empresa_by_id($user->id_empresa);
         
         // verificamos que aun pueda seguir registrando sucursales
         if ($empresa->sucursales_registradas >= $empresa->cantidad_sucursales) {

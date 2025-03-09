@@ -25,7 +25,6 @@ export default function NuevaSucursal({ auth }) {
         ciudad: "",
         direccion: "",
         telefono: "",
-        id_empresa: auth?.empresa?.id_empresa || "",
     });
 
     const { toast } = usePage().props;
