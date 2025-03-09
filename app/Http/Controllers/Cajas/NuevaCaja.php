@@ -27,6 +27,11 @@ class NuevaCaja extends Controller
         $user = Auth::user();
         $sucursales = Sucursal::get_sucursales_by_id_empresa($user->id_empresa);
 
+        // Filtrar sucursales con estado = 1
+        $sucursales = array_filter($sucursales, function ($sucursal) {
+            return $sucursal->estado == 1;
+        });
+
         // Mapear los datos a la estructura requerida
         $sucursales_mapeadas = array_map(function ($sucursal) {
             return [
@@ -57,7 +62,18 @@ class NuevaCaja extends Controller
         }
 
         // si la sucursal no existe
-        if (!Sucursal::existencia_sucursal_by_id($data_caja['id_sucursal'])) {
+        $sucursal = Sucursal::get_sucursal_by_id($data_caja['id_sucursal']);
+        if (!$sucursal) {
+            return $this->error();
+        }
+
+        // si la sucursal no está activa
+        if ($sucursal->estado != 1) {
+            return $this->error();
+        }
+
+        // si la sucursal no pertenece a la empresa del usuario
+        if ($sucursal->id_empresa != $user->id_empresa) {
             return $this->error();
         }
 
