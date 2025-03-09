@@ -77,6 +77,7 @@ class NuevaSucursal extends Controller
         // si no se registró correctamente la sucursal
         if (!$nueva_sucursal) {
             // eliminamos el almacen que se registro
+            Almacen::eliminar_almacen_by_id($nuevo_almacen->id_almacen);
             return $this->error();
         }
 
