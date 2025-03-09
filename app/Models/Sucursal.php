@@ -80,6 +80,15 @@ class Sucursal extends Model
         return null;
     }
 
+    public static function existencia_sucursal_by_id($id_sucursal): ?bool
+    {
+        $result = DB::select("EXEC sp_existencia_sucursal_by_id @id_sucursal = ?", [$id_sucursal]);
+        if (isset($result[0]->verificar)) {
+            return $result[0]->verificar === 'true';
+        }
+        return null;
+    }
+
     #endregion
 
 }
