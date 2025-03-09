@@ -81,7 +81,7 @@ class NuevaCaja extends Controller
     public function errorSameCode(): Response
     {
         throw ValidationException::withMessages([
-            'codigo' => trans('nueva_caja.samecode'),
+            'codigo' => trans('cajas_nueva.samecode'),
         ]);
     }
 
@@ -90,7 +90,7 @@ class NuevaCaja extends Controller
         return Inertia::render(self::COMPONENTE, [
             'toast' => [
                 'type' => 'error',
-                'message' => trans('nueva_caja.error'),
+                'message' => trans('cajas_nueva.error'),
             ]
         ]);
     }
