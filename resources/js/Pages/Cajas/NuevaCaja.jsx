@@ -33,7 +33,7 @@ export default function NuevaCaja({ auth }) {
         setSucursales(lista_sucursales || []);
     }, []);
 
-    // Se utiliza el manejo de cambios propuesto para el departmento.
+    // Se utiliza el manejo de cambios para la sucursal
     const handleSucursalChange = (e) => {
         const id_sucursal = e.target.value;
         setData("id_sucursal", id_sucursal);
@@ -41,7 +41,7 @@ export default function NuevaCaja({ auth }) {
 
     const submit = (e) => {
         e.preventDefault();
-
+        
         // Validación simple en cliente; si falta un campo obligatorio no se envía
         if (
             !data.nombre ||
@@ -49,14 +49,13 @@ export default function NuevaCaja({ auth }) {
             !data.id_sucursal
         ) {
             showToast(
-                "Por favor, llena todos los campos obligatorios.",
+                "Por favor, llena todos los campos.",
                 "error"
             );
             return;
         }
-
+        
         post(route("cashregisters/new"), {
-            data: payload,
             onError: (serverErrors) => {
                 // Manejar error duplicado de código con el campo correcto
                 if (serverErrors.codigo) {
@@ -64,7 +63,7 @@ export default function NuevaCaja({ auth }) {
                 }
             },
             onSuccess: () => {
-                reset();
+                reset('nombre', 'codigo');
             },
         });
     };

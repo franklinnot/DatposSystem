@@ -129,26 +129,27 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
         })->name('cashregisters');
 
 
-        // vista para crear una nueva sucursal
+        // vista para crear una nueva caja
         Route::get('/cashregisters/new', [NuevaCaja::class, 'show'])
             ->name('cashregisters/new');
 
-        // metodo para crear una sucursal
-        Route::post('/cashregisters/new', [NuevaCaja::class, 'store']);
+        // metodo para crear una caja
+        Route::post('/cashregisters/new', [NuevaCaja::class, 'store'])
+            ->name('cashregisters/new');
 
 
-        // vista para editar una sucursal
+        // vista para editar una caja
         Route::get('/cashregisters/edit', function () {
             return Inertia::render('Dashboard');
         })->name('cashregisters/edit');
 
-        // metodo para editar una sucursal
+        // metodo para editar una caja
         Route::patch('/cashregisters/edit', function () {
             return Inertia::render('Dashboard');
         });
 
 
-        // metodo para eliminar una sucursal
+        // metodo para eliminar una caja
         Route::post('/cashregisters/delete', function () {
             return Inertia::render('Dashboard');
         })->name('cashregisters/delete');
