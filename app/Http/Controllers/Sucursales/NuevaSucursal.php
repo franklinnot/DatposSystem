@@ -16,9 +16,12 @@ use Illuminate\Validation\ValidationException;
 class NuevaSucursal extends Controller
 {
     //
+    public const COMPONENTE = "Sucursales/NuevaSucursal";
+    public const RUTA = "stores/new";
+
     public function show(): Response
     {
-        return Inertia::render('Sucursales/NuevaSucursal');
+        return Inertia::render(self::COMPONENTE);
     }
 
     public function store(Request $request): Response
@@ -33,76 +36,84 @@ class NuevaSucursal extends Controller
             'id_empresa' => 'required|integer',
         ]);
 
-        // verificar que la empresa exista
-        $empresa = Empresa::get_empresa_by_id($data_sucursal["id_empresa"]);
+        // verificamos que la empresa exista
+        $empresa = Empresa::get_empresa_by_id($data_sucursal['id_empresa']);
         if (!$empresa) {
             return $this->error();
         }
-
-        // Si ya llego al limite de sucursales por registrar
-        if ($empresa->sucursales_registradas === $empresa->cantidad_sucursales) {
-            return $this->errorLimit();
+        
+        // verificamos que aun pueda seguir registrando sucursales
+        if ($empresa->sucursales_registradas >= $empresa->cantidad_sucursales) {
+            return $this->errorLimitRegister();
         }
 
         // verificar que el código de la sucursal sea único antes de registrar
-        if (Sucursal::existencia_sucursal_by_codigo($data_sucursal["codigo"], $data_sucursal["id_empresa"])) {
-            $this->error_samecode();
+        if (Sucursal::existencia_sucursal_by_codigo($data_sucursal['codigo'], $data_sucursal['id_empresa'])) {
+            return $this->errorSameCode();
         }
 
         // Datos para registrar el nuevo almacen de stock de tienda
         $data_almacen = array_merge([], $data_sucursal); // una copia del data_sucursal
-        $data_almacen["nombre"] = "Inventario de {$data_sucursal['nombre']}";
-        $data_almacen["codigo"] = "SCR-{$data_sucursal['codigo']}";
+        $data_almacen['nombre'] = "Inventario de {$data_sucursal['nombre']}";
+        $data_almacen['codigo'] = "SCR-{$data_sucursal['codigo']}";
 
         // verificar que el código del almacén sea único antes de registrar
-        if (Almacen::existencia_almacen_by_codigo($data_almacen["codigo"], $data_almacen["id_empresa"])) {
-            $this->error_samecode();
+        if (Almacen::existencia_almacen_by_codigo($data_almacen['codigo'], $data_almacen['id_empresa'])) {
+            return $this->errorSameCode();
         }
 
+        // registramos el almacen de la sucursal
         $nuevo_almacen = Almacen::registrar($data_almacen);
 
         // si no se registró correctamente el almacen
-        if(!$nuevo_almacen){
-            $this->error();
+        if (!$nuevo_almacen) {
+            return $this->error();
         }
 
-        $data_sucursal["id_almacen"] = $nuevo_almacen->id_almacen;
+        // tomamos el id del almacen registrado
+        $data_sucursal['id_almacen'] = $nuevo_almacen->id_almacen;
         $nueva_sucursal = Sucursal::registrar($data_sucursal);
 
         // si no se registró correctamente la sucursal
-        if(!$nueva_sucursal){
+        if (!$nueva_sucursal) {
             // eliminamos el almacen que se registro
             Almacen::eliminar_almacen_by_id($nuevo_almacen->id_almacen);
-            $this->error();
+            return $this->error();
         }
 
-        // verificamos si debe recargar la pagina cuando ya no pueda registrar mas almacenes
-        $refresh = false;
-        if (($empresa->sucursales_registradas + 1) === $empresa->cantidad_sucursales) {
-            $refresh = true;
-        }
+        // Guardar mensaje flash en la sesión y enviar datos actualizados al cliente
+        return Inertia::render(self::COMPONENTE, [
+            'toast' => [
+                'type' => 'success',
+                'message' => 'Sucursal registrada exitosamente!',
+            ],
+        ]);
+    }
 
-        // Guardar mensaje flash en la sesión
-        return Inertia::render('Sucursales/NuevaSucursal', [
-            'response' => [
-                'message' => 'Sucursal y almacén registrados con éxito.',
-                'status' => true, // Puedes agregar más claves si es necesario
-                'refresh' => $refresh,
+    public function errorSameCode(): Response
+    {
+        throw ValidationException::withMessages([
+            'codigo' => trans('nueva_sucursal.samecode'),
+        ]);
+    }
+
+    public function error(): Response
+    {
+        return Inertia::render(self::COMPONENTE, [
+            'toast' => [
+                'type' => 'error',
+                'message' => trans('nueva_sucursal.error'),
             ]
         ]);
     }
 
-    public function error_samecode(){
-        throw ValidationException::withMessages([
-            'break' => trans('nueva_sucursal.samecode'),
-        ]);
-    }
-
-    public function error()
+    public function errorLimitRegister(): Response
     {
-        throw ValidationException::withMessages([
-            'break' => trans('nueva_sucursal.ups'),
+        return Inertia::render(self::COMPONENTE, [
+            'toast' => [
+                'type' => 'error',
+                'message' => trans('nueva_sucursal.limit_registers'),
+            ]
         ]);
     }
-
 }

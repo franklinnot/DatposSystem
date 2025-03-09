@@ -3,15 +3,13 @@ import TextInput from "@/Components/TextInput";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import SelectInput from "@/Components/SelectInput.jsx";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import PrimaryButton from "@/Components/PrimaryButton";
-import { useEffect } from "react";
-import { usePage } from "@inertiajs/react";
-import { Inertia, router } from "@inertiajs/inertia";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Inertia } from "@inertiajs/inertia";
 import {
-    getProvincias,
     getDepartamentos,
+    getProvincias,
     getProvinciaById,
     getDepartamentoById,
     getProvinciasByDepartment,
@@ -20,53 +18,35 @@ import {
 import useToast from "@/Components/Toast";
 
 export default function NuevaSucursal({ auth }) {
-    const { data, setData, post, processing, errors, transform, reset } =
-        useForm({
-            nombre: "",
-            codigo: "",
-            departamento: "",
-            ciudad: "",
-            direccion: "",
-            telefono: "",
-            id_empresa: auth?.empresa?.id_empresa || "",
-            break: "",
-        });
+    const { data, setData, post, reset, processing, errors } = useForm({
+        nombre: "",
+        codigo: "",
+        departamento: "",
+        ciudad: "",
+        direccion: "",
+        telefono: "",
+        id_empresa: auth?.empresa?.id_empresa || "",
+    });
 
+    const { toast } = usePage().props;
     const { showToast, ToastComponent } = useToast();
 
-    let message = usePage().props?.response?.message;
+    // Mostrar toast si hay respuesta del servidor
     useEffect(() => {
-        if (message) {
-            showToast(message, "success");
+        if (toast && toast.message) {
+            showToast(toast.message, toast.type);
         }
-    }, [message]);
+    }, [toast]);
 
-    let refresh = usePage().props?.response?.refresh;
-    useEffect(() => {
-        if (refresh) {
-            setTimeout(() => {
-                Inertia.reload({ only: ["auth"] });
-            }, 1000);
-        }
-    }, [refresh]);
-
-    const [ultimoError, setUltimoError] = useState(null);
-
-    useEffect(() => {
-        if (errors.break && errors.break !== ultimoError) {
-            showToast(errors.break, "error");
-            setUltimoError(errors.break); // Actualizamos el error mostrado
-        }
-    }, [errors.break]); // Se ejecuta siempre que el error cambie
-
-    const [departamentos, setDepartamentos] = useState();
-    const [provincias, setProvincias] = useState();
+    const [departamentos, setDepartamentos] = useState([]);
+    const [provincias, setProvincias] = useState([]);
 
     useEffect(() => {
         setDepartamentos(getDepartamentos());
         setProvincias(getProvincias());
     }, []);
 
+    // Se utiliza el manejo de cambios propuesto para el departmento.
     const handleDepartamentoChange = (e) => {
         const department_id = e.target.value;
         setData("departamento", department_id);
@@ -74,9 +54,11 @@ export default function NuevaSucursal({ auth }) {
         setData("ciudad", "");
     };
 
+    // Se utiliza el manejo de cambios propuesto para la provincia y se sincroniza el departamento.
     const handleProvinciaChange = (e) => {
         const provincia_id = e.target.value;
         const departamento = getDepartamentoByProvincia(provincia_id);
+        // Se actualiza la lista de provincias en función del departamento obtenido
         setProvincias(getProvinciasByDepartment(departamento.id));
         setData("departamento", departamento.id);
         setData("ciudad", provincia_id);
@@ -85,6 +67,7 @@ export default function NuevaSucursal({ auth }) {
     const submit = (e) => {
         e.preventDefault();
 
+        // Validación simple en cliente; si falta un campo obligatorio no se envía
         if (
             !data.nombre ||
             !data.codigo ||
@@ -99,18 +82,21 @@ export default function NuevaSucursal({ auth }) {
             return;
         }
 
-        transform((data) => ({
+        // Se transforma el ID del departamento y la ciudad a nombres, de acuerdo al controlador.
+        const payload = {
             ...data,
             departamento: data.departamento
                 ? getDepartamentoById(data.departamento).name
                 : "",
             ciudad: data.ciudad ? getProvinciaById(data.ciudad).name : "",
-        }));
+        };
 
         post(route("stores/new"), {
-            onError: (errors) => {
-                if (errors.break) {
-                    showToast(errors.break, "error");
+            data: payload,
+            onError: (serverErrors) => {
+                // Manejar error duplicado de código con el campo correcto
+                if (serverErrors.codigo) {
+                    showToast(serverErrors.codigo, "error");
                 }
             },
             onSuccess: () => {
@@ -121,7 +107,7 @@ export default function NuevaSucursal({ auth }) {
 
     return (
         <AuthenticatedLayout auth={auth}>
-            <Head title={`Nueva Sucursal`} />
+            <Head title="Nueva Sucursal" />
             <ToastComponent />
             <div className="grid grid-rows-[auto_1fr] gap-2 sm:gap-6 lg:gap-10">
                 <div className="grid mx-5 mt-4 h-14 border-b-2 border-gray-200 items-start">
@@ -138,7 +124,6 @@ export default function NuevaSucursal({ auth }) {
                             value="Nombre"
                             className="font-normal text-[#2B2B2B]"
                         />
-
                         <TextInput
                             id="nombre"
                             type="text"
@@ -148,28 +133,24 @@ export default function NuevaSucursal({ auth }) {
                             isFocused={true}
                             onChange={(e) => setData("nombre", e.target.value)}
                         />
-
                         <InputError message={errors.nombre} className="mt-2" />
                     </div>
 
-                    {/* Input de Codigo */}
+                    {/* Input de Código */}
                     <div>
                         <InputLabel
                             htmlFor="codigo"
                             value="Código"
                             className="font-normal text-[#2B2B2B]"
                         />
-
                         <TextInput
                             id="codigo"
                             type="text"
                             name="codigo"
                             value={data.codigo}
                             className="mt-1 block w-full"
-                            isFocused={false}
                             onChange={(e) => setData("codigo", e.target.value)}
                         />
-
                         <InputError message={errors.codigo} className="mt-2" />
                     </div>
 
@@ -187,7 +168,7 @@ export default function NuevaSucursal({ auth }) {
                             value={data.departamento}
                             onChange={handleDepartamentoChange}
                             placeholder="Selecciona un departamento"
-                            className=""
+                            closeOnSelect={true}
                         />
                         <InputError message={errors.departamento} />
                     </div>
@@ -206,65 +187,58 @@ export default function NuevaSucursal({ auth }) {
                             value={data.ciudad}
                             onChange={handleProvinciaChange}
                             placeholder="Selecciona una ciudad"
-                            className=""
-                            // isDisabled={!data.departamento}
+                            closeOnSelect={true}
                         />
                         <InputError message={errors.ciudad} />
                     </div>
 
-                    {/* Input de Direccion */}
+                    {/* Input de Dirección */}
                     <div>
                         <InputLabel
                             htmlFor="direccion"
-                            value="Direccion"
+                            value="Dirección"
                             className="font-normal text-[#2B2B2B]"
                         />
-
                         <TextInput
                             id="direccion"
                             type="text"
                             name="direccion"
                             value={data.direccion}
                             className="mt-1 block w-full"
-                            isFocused={false}
                             onChange={(e) =>
                                 setData("direccion", e.target.value)
                             }
                         />
-
                         <InputError
                             message={errors.direccion}
                             className="mt-2"
                         />
                     </div>
 
-                    {/* Input de Telefono */}
+                    {/* Input de Teléfono */}
                     <div>
                         <InputLabel
                             htmlFor="telefono"
                             value="Teléfono (opcional)"
                             className="font-normal text-[#2B2B2B]"
                         />
-
                         <TextInput
                             id="telefono"
                             type="text"
                             name="telefono"
                             value={data.telefono}
                             className="mt-1 block w-full"
-                            isFocused={false}
                             onChange={(e) =>
                                 setData("telefono", e.target.value)
                             }
                         />
-
                         <InputError
                             message={errors.telefono}
                             className="mt-2"
                         />
                     </div>
 
-                    {/* Boton de Registrar */}
+                    {/* Botón de Registrar */}
                     <div className="grid grid-flow-row items-center mt-3">
                         <PrimaryButton
                             className="font-medium text-md w-full justify-center rounded-lg bg-gradient-to-r from-[#0B6ACB] via-[#0875E4] to-[#0B6ACB] hover:bg-[#3c78fa] focus:ring-[#3c78fa]"
