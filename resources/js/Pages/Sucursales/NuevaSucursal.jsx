@@ -49,11 +49,16 @@ export default function NuevaSucursal({ auth }) {
 
     useEffect(() => {
         setDepartamentos(getDepartamentos());
-        setProvincias(
-            getProvinciasByDepartment(
-                getDepartamentoByName(auth?.empresa?.departamento).id
-            )
-        );
+        if (auth?.empresa?.departamento) {
+            setProvincias(
+                getProvinciasByDepartment(
+                    getDepartamentoByName(auth?.empresa?.departamento).id
+                )
+            );
+        }
+        else{
+            setProvincias(getProvincias());
+        }
     }, []);
 
     // Se utiliza el manejo de cambios propuesto para el departmento.
