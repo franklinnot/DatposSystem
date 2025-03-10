@@ -4,6 +4,7 @@ use App\Http\Controllers\Almacenes\NuevoAlmacen;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Cajas\NuevaCaja;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Roles\NuevoRol;
 use App\Http\Controllers\Sucursales\NuevaSucursal;
 use App\Http\Middleware\Authenticate;
 use Illuminate\Foundation\Application;
@@ -189,6 +190,41 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
         Route::post('/warehouses/delete', function () {
             return Inertia::render('Dashboard');
         })->name('warehouses/delete');
+
+        #endregion
+
+        #region Roles
+
+        // vista para listar
+        Route::get('/roles', function () {
+            return Inertia::render('Dashboard');
+        })->name('roles');
+
+
+        // vista para registrar
+        Route::get('/roles/new', [NuevoRol::class, 'show'])
+            ->name('roles/new');
+
+        // metodo para registrar
+        Route::post('/roles/new', [NuevoRol::class, 'store'])
+            ->name('roles/new');
+
+
+        // vista para editar
+        Route::get('/roles/edit', function () {
+            return Inertia::render('Dashboard');
+        })->name('roles/edit');
+
+        // metodo para editar 
+        Route::patch('/roles/edit', function () {
+            return Inertia::render('Dashboard');
+        });
+
+
+        // metodo para eliminar
+        Route::post('/roles/delete', function () {
+            return Inertia::render('Dashboard');
+        })->name('roles/delete');
 
         #endregion
 
