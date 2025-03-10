@@ -34,9 +34,9 @@ let rts_navegacion = [
         label: "Roles",
         routeName: "roles",
         subItems: [
-            { label: "Nuevo Rol", routeName: "warehouses/new" },
-            { label: "Ver Roles", routeName: "warehouses" },
-            { label: "Editar información", routeName: "warehouses/edit" },
+            { label: "Nuevo Rol", routeName: "roles/new" },
+            { label: "Ver Roles", routeName: "roles" },
+            { label: "Editar información", routeName: "roles/edit" },
         ],
     },
 ];
