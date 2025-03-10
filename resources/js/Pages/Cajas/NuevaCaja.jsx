@@ -41,20 +41,13 @@ export default function NuevaCaja({ auth }) {
 
     const submit = (e) => {
         e.preventDefault();
-        
+
         // Validación simple en cliente; si falta un campo obligatorio no se envía
-        if (
-            !data.nombre ||
-            !data.codigo ||
-            !data.id_sucursal
-        ) {
-            showToast(
-                "Por favor, llena todos los campos.",
-                "error"
-            );
+        if (!data.nombre || !data.codigo || !data.id_sucursal) {
+            showToast("Por favor, llena todos los campos.", "error");
             return;
         }
-        
+
         post(route("cashregisters/new"), {
             onError: (serverErrors) => {
                 // Manejar error duplicado de código con el campo correcto
@@ -63,7 +56,7 @@ export default function NuevaCaja({ auth }) {
                 }
             },
             onSuccess: () => {
-                reset('nombre', 'codigo');
+                reset("nombre", "codigo");
             },
         });
     };
@@ -112,7 +105,7 @@ export default function NuevaCaja({ auth }) {
                             name="codigo"
                             value={data.codigo}
                             className="mt-1 block w-full"
-                            onChange={(e) => setData("codigo", e.target.value)}
+                            onChange={(e) => setData("codigo", e.target.value.toUpperCase())}
                         />
                         <InputError message={errors.codigo} className="mt-2" />
                     </div>

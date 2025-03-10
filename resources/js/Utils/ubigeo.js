@@ -228,19 +228,28 @@ const provincias = [
 ];
 
 function getProvincias() {
-    return provincias.sort((a, b) => a.name.localeCompare(b.name));
+    return provincias
+        .map((provincia) => ({ ...provincia, name: provincia.name.trim() }))
+        .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 function getDepartamentos() {
-    return departamentos.sort((a,b) => a.name.localeCompare(b.name));
+    return departamentos
+        .map((departamento) => ({
+            ...departamento,
+            name: departamento.name.trim(),
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 function getProvinciaById(id_provincia) {
     return provincias.find((provincia) => provincia.id === id_provincia);
 }
 
-function getDepartamentoById(id_deparamento){
-    return departamentos.find((deparamento) => deparamento.id === id_deparamento);
+function getDepartamentoById(id_departamento) {
+    return departamentos.find(
+        (departamento) => departamento.id === id_departamento
+    );
 }
 
 function getProvinciasByDepartment(department_id) {
@@ -256,11 +265,26 @@ function getDepartamentoByProvincia(id_provincia) {
         : null;
 }
 
+function getDepartamentoByName(name) {
+    name = name.toLowerCase().trim();
+    return departamentos.find(
+        (departamento) => departamento.name.toLowerCase().trim() === name
+    );
+}
+
+function getProvinciaByName(name) {
+    name = name.toLowerCase().trim();
+    return provincias.find(
+        (provincia) => provincia.name.toLowerCase().trim() === name
+    );
+}
 export {
     getProvincias,
     getDepartamentos,
     getProvinciaById,
     getDepartamentoById,
+    getDepartamentoByName,
+    getProvinciaByName,
     getProvinciasByDepartment,
     getDepartamentoByProvincia,
 };

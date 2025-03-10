@@ -12,20 +12,26 @@ import {
     getProvincias,
     getProvinciaById,
     getDepartamentoById,
+    getDepartamentoByName,
+    getProvinciaByName,
     getProvinciasByDepartment,
     getDepartamentoByProvincia,
 } from "../../Utils/ubigeo.js";
 import useToast from "@/Components/Toast";
 
 export default function NuevaSucursal({ auth }) {
-    const { data, setData, post, reset, processing, transform, errors } = useForm({
-        nombre: "",
-        codigo: "",
-        departamento: "",
-        ciudad: "",
-        direccion: "",
-        telefono: "",
-    });
+    const { data, setData, post, reset, processing, transform, errors } =
+        useForm({
+            nombre: "",
+            codigo: "",
+            departamento: getDepartamentoByName(auth?.empresa?.departamento)
+                ? getDepartamentoByName(auth?.empresa?.departamento).id
+                : "",
+            ciudad: getProvinciaByName(auth?.empresa?.ciudad) ? getProvinciaByName(auth?.empresa?.ciudad).id
+                : "",
+            direccion: "",
+            telefono: "",
+        });
 
     const { toast } = usePage().props;
     const { showToast, ToastComponent } = useToast();
@@ -96,7 +102,7 @@ export default function NuevaSucursal({ auth }) {
                 }
             },
             onSuccess: () => {
-                reset();
+                reset('nombre', 'codigo', 'direccion', 'telefono');
             },
         });
     };
@@ -145,7 +151,7 @@ export default function NuevaSucursal({ auth }) {
                             name="codigo"
                             value={data.codigo}
                             className="mt-1 block w-full"
-                            onChange={(e) => setData("codigo", e.target.value)}
+                            onChange={(e) => setData("codigo", e.target.value.toUpperCase())}
                         />
                         <InputError message={errors.codigo} className="mt-2" />
                     </div>

@@ -55,6 +55,7 @@ class NuevaCaja extends Controller
 
         $user = Auth::user();
         $data_caja['id_empresa'] = $user->id_empresa;
+        $data_caja['codigo'] = strtoupper($data_caja['codigo']);
 
         // verificar que el código de la caja sea único antes de registrar
         if (Caja::existencia_caja_by_codigo($data_caja['codigo'], $data_caja['id_empresa'])) {

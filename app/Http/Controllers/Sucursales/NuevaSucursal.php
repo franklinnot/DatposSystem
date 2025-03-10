@@ -38,7 +38,8 @@ class NuevaSucursal extends Controller
 
         $user = Auth::user();
         $data_sucursal['id_empresa'] = $user->id_empresa;
-
+        $data_sucursal['codigo'] = strtoupper($data_sucursal['codigo']);
+        
         // obtenemos a la empresa
         $empresa = Empresa::get_empresa_by_id($user->id_empresa);
         

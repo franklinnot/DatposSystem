@@ -19,6 +19,7 @@ class Empresa extends Model
         'nombre_comercial',
         'email',
         'telefono',
+        'departamento',
         'ciudad',
         'direccion',
         'igv',
