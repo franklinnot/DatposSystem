@@ -27,7 +27,8 @@ export default function NuevaSucursal({ auth }) {
             departamento: getDepartamentoByName(auth?.empresa?.departamento)
                 ? getDepartamentoByName(auth?.empresa?.departamento).id
                 : "",
-            ciudad: getProvinciaByName(auth?.empresa?.ciudad) ? getProvinciaByName(auth?.empresa?.ciudad).id
+            ciudad: getProvinciaByName(auth?.empresa?.ciudad)
+                ? getProvinciaByName(auth?.empresa?.ciudad).id
                 : "",
             direccion: "",
             telefono: "",
@@ -48,7 +49,11 @@ export default function NuevaSucursal({ auth }) {
 
     useEffect(() => {
         setDepartamentos(getDepartamentos());
-        setProvincias(getProvincias());
+        setProvincias(
+            getProvinciasByDepartment(
+                getDepartamentoByName(auth?.empresa?.departamento).id
+            )
+        );
     }, []);
 
     // Se utiliza el manejo de cambios propuesto para el departmento.
@@ -102,7 +107,7 @@ export default function NuevaSucursal({ auth }) {
                 }
             },
             onSuccess: () => {
-                reset('nombre', 'codigo', 'direccion', 'telefono');
+                reset("nombre", "codigo", "direccion", "telefono");
             },
         });
     };
@@ -151,7 +156,9 @@ export default function NuevaSucursal({ auth }) {
                             name="codigo"
                             value={data.codigo}
                             className="mt-1 block w-full"
-                            onChange={(e) => setData("codigo", e.target.value.toUpperCase())}
+                            onChange={(e) =>
+                                setData("codigo", e.target.value.toUpperCase())
+                            }
                         />
                         <InputError message={errors.codigo} className="mt-2" />
                     </div>
