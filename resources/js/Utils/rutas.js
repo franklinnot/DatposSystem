@@ -21,6 +21,15 @@ let rts_navegacion = [
             { label: "Editar información", routeName: "cashregisters/edit" },
         ],
     },
+    {
+        label: "Almacenes",
+        routeName: "warehouses",
+        subItems: [
+            { label: "Nuevo Almacén", routeName: "warehouses/new" },
+            { label: "Ver Almacenes", routeName: "warehouses" },
+            { label: "Editar información", routeName: "warehouses/edit" },
+        ],
+    },
 ];
 
 // Rutas de perfil -- empresa y usuarios

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Almacenes\NuevoAlmacen;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Cajas\NuevaCaja;
 use App\Http\Controllers\ProfileController;
@@ -89,32 +90,32 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
 
         #region Sucursales
 
-        // vista para listar sucursales
+        // vista para listar
         Route::get('/stores', function () {
             return Inertia::render('Dashboard');
         })->name('stores');
 
 
-        // vista para crear una nueva sucursal
+        // vista para registrar
         Route::get('/stores/new', [NuevaSucursal::class, 'show'])
             ->name('stores/new');
 
-        // metodo para crear una sucursal
+        // metodo para registrar
         Route::post('/stores/new', [NuevaSucursal::class, 'store'])->name('stores/new');
 
 
-        // vista para editar una sucursal
+        // vista para editar
         Route::get('/stores/edit', function () {
             return Inertia::render('Dashboard');
         })->name('stores/edit');
 
-        // metodo para editar una sucursal
+        // metodo para editar 
         Route::patch('/stores/edit', function () {
             return Inertia::render('Dashboard');
         });
 
 
-        // metodo para eliminar una sucursal
+        // metodo para eliminar
         Route::post('/stores/delete', function () {
             return Inertia::render('Dashboard');
         })->name('stores/delete');
@@ -123,36 +124,71 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
 
         #region Cajas
 
-        // vista para listar cajas
+        // vista para listar
         Route::get('/cashregisters', function () {
             return Inertia::render('Dashboard');
         })->name('cashregisters');
 
 
-        // vista para crear una nueva caja
+        // vista para registrar
         Route::get('/cashregisters/new', [NuevaCaja::class, 'show'])
             ->name('cashregisters/new');
 
-        // metodo para crear una caja
+        // metodo para registrar
         Route::post('/cashregisters/new', [NuevaCaja::class, 'store'])
             ->name('cashregisters/new');
 
 
-        // vista para editar una caja
+        // vista para editar
         Route::get('/cashregisters/edit', function () {
             return Inertia::render('Dashboard');
         })->name('cashregisters/edit');
 
-        // metodo para editar una caja
+        // metodo para editar
         Route::patch('/cashregisters/edit', function () {
             return Inertia::render('Dashboard');
         });
 
 
-        // metodo para eliminar una caja
+        // metodo para eliminar
         Route::post('/cashregisters/delete', function () {
             return Inertia::render('Dashboard');
         })->name('cashregisters/delete');
+
+        #endregion
+
+        #region Almacenes
+
+        // vista para listar
+        Route::get('/warehouses', function () {
+            return Inertia::render('Dashboard');
+        })->name('warehouses');
+
+
+        // vista para registrar
+        Route::get('/warehouses/new', [NuevoAlmacen::class, 'show'])
+            ->name('warehouses/new');
+
+        // metodo para registrar
+        Route::post('/warehouses/new', [NuevoAlmacen::class, 'store'])
+            ->name('warehouses/new');
+
+
+        // vista para editar
+        Route::get('/warehouses/edit', function () {
+            return Inertia::render('Dashboard');
+        })->name('warehouses/edit');
+
+        // metodo para editar 
+        Route::patch('/warehouses/edit', function () {
+            return Inertia::render('Dashboard');
+        });
+
+
+        // metodo para eliminar
+        Route::post('/warehouses/delete', function () {
+            return Inertia::render('Dashboard');
+        })->name('warehouses/delete');
 
         #endregion
 
