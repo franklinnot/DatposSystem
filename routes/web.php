@@ -28,7 +28,7 @@ use Inertia\Response;
 Route::middleware('guest', 'no.cache')->group(function () {
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+    Route::post('login', [AuthenticatedSessionController::class, 'store'])->name('login');
 });
 
 // Rutas globales para usuarios autenticados

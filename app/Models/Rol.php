@@ -31,21 +31,26 @@ class Rol extends Model
 
 
     #region Relaciones
+    // usar sp
     public function usuarios()
     {
         return $this->hasMany(Usuario::class, 'id_rol');
     }
 
-    public function accesos()
+    public function accesos(): ?array
     {
-        $result = DB::select("EXEC sp_get_accesos_rol_by_id @id_rol = ?", [$this->id_rol]);
-        return collect($result)->map(fn($acceso) => new Acceso((array) $acceso));
+        $result = DB::select("EXEC sp_get_accesos_by_id_rol @id_rol = ?", [$this->id_rol]);
+        return $result ? array_map(function ($item) {
+            return new Acceso((array) $item);  // Conversión a Acceso
+        }, $result) : null;  // Array de Acceso[] o null
     }
 
-    public static function accesos_by_id($id_rol)
+    public static function get_accesos_rol_by_id($id_rol): ?array
     {
-        $result = DB::select("EXEC sp_get_accesos_rol_by_id @id_rol = ?", [$id_rol]);
-        return collect($result)->map(fn($acceso) => new Acceso((array) $acceso));
+        $result = DB::select("EXEC sp_get_accesos_by_id_rol @id_rol = ?", [$id_rol]);
+        return $result ? array_map(function ($item) {
+            return new Acceso((array) $item);  // Conversión a Acceso
+        }, $result) : null;  // Array de Acceso[] o null
     }
     #endregion
 
