@@ -43,21 +43,23 @@ let rts_navegacion = [
 
 // Rutas de perfil -- empresa y usuarios
 let rts_perfilEmpresa = [
-    {
-        label: "Ver información de la Empresa",
-        routeName: "business",
-        subItems: [],
-    },
-    {
-        label: "Editar información de la Empresa",
-        routeName: "business/edit",
-        subItems: [],
-    },
-    {
-        label: "Ver suscripciones de la Empresa",
-        routeName: "business/subscriptions",
-        subItems: [],
-    },
+    { label: "Empresa", routeName: "business", subItems: [
+        {
+            label: "Ver información de la Empresa",
+            routeName: "business",
+            subItems: [],
+        },
+        {
+            label: "Editar información de la Empresa",
+            routeName: "business/edit",
+            subItems: [],
+        },
+        {
+            label: "Ver suscripciones de la Empresa",
+            routeName: "business/subscriptions",
+            subItems: [],
+        },
+    ]},
 ];
 
 // Rutas a las que cualquier usuario tiene acceso
@@ -115,4 +117,31 @@ export function verificarRuta(route, accesos) {
     // verificar si este array de rutas incluye la ruta a consultar
     return rutasAccesibles.includes(route);
 }
+
+// funcion que retorna las rutas padre
+function rutasPadre(rutas) {
+    return rutas.map((item, index) => ({
+        id: index + 1, // Asignamos un ID único basado en el índice
+        name: item.label, // Tomamos el label de la ruta
+        ruta: item.routeName, // Tomamos el routeName de la ruta
+    }));
+}
+
+export function getRutasPadre(){
+    let rutas = rts_perfilEmpresa.concat(rts_navegacion);
+    return rutasPadre(rutas);
+}
+
+// Función que busca una ruta por su id
+export function getRutaPorId(rutas, id) {
+    return rutas.find((ruta) => ruta.id === id) || null;
+}
+
+
+
+
+
+
+
+
 
