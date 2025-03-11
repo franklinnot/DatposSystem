@@ -145,7 +145,7 @@ export default forwardRef(function SelectInput(
         <div className={`relative ${className}`} ref={dropdownRef}>
             <div
                 className={`
-                    cursor-pointer flex items-center justify-between py-3 px-4 max-h-10 outline-1 focus:outline focus:outline-[#0875E4] focus:ring-[#0875E4]  rounded-lg 
+                    cursor-pointer flex items-center justify-between mt-1 py-3 px-4 max-h-10 outline-1 focus:outline focus:outline-[#0875E4] focus:ring-[#0875E4]  rounded-lg 
                     ${hasValue ? "bg-[#e8f0fe]" : "bg-[#f2f2f2]"}
                     ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}
                 `}
