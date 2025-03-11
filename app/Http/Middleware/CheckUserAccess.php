@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 class CheckUserAccess
 {
@@ -18,7 +19,7 @@ class CheckUserAccess
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         $user = Auth::user();
 
@@ -29,15 +30,25 @@ class CheckUserAccess
 
         // Verificar que el usuario esté activo (estado = 1)
         if ($user->estado != 1) {
-            $this->forceLogout($request);
-            return redirect()->route('login')->with('error', 'Tu cuenta está inactiva.');
+            Auth::logout();
+            return Inertia::render('Auth/Login', [
+                'toast' => [
+                    'message' => 'Tu cuenta está inactiva.',
+                    'type' => 'error',
+                ],
+            ]);
         }
 
         // verificar que la empresa este activa
         $empresa = Empresa::get_empresa_by_id($user->id_empresa);
         if (!$empresa || $empresa->estado != 1) {
-            $this->forceLogout($request);
-            return redirect()->route('login')->with('error', 'Tu empresa están inactiva.');
+            Auth::logout();
+            return Inertia::render('Auth/Login', [
+                'toast' => [
+                    'message' => 'Tu cuenta está inactiva.',
+                    'type' => 'error',
+                ],
+            ]);
         }
 
         $currentRoute = rtrim($request->path(), '/');
@@ -67,21 +78,6 @@ class CheckUserAccess
 
         // Si la ruta no es permitida, redirigir siempre al perfil
         return redirect()->route('profile');
-    }
-
-    protected function forceLogout(Request $request)
-    {
-        // Simular una solicitud POST a la ruta de logout
-        $response = Http::withHeaders([
-            'X-CSRF-TOKEN' => $request->session()->token(),
-        ])->post(route('logout'));
-
-        // Si la solicitud falla, forzar el cierre de sesión manualmente
-        if (!$response->successful()) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-        }
     }
 
 }
