@@ -240,9 +240,7 @@ export default forwardRef(function SelectInput(
                                             handleChange(option.id);
                                         }
                                     }}
-                                    onMouseEnter={() =>
-                                        setHighlightedIndex(index)
-                                    }
+                                    
                                     tabIndex={0}
                                 >
                                     {option.name}
