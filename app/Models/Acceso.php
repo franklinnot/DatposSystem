@@ -30,4 +30,14 @@ class Acceso extends Model
         }, $result) : null;
     }
 
+    public static function existencia_acceso_by_id($id_acceso): ?bool
+    {
+        $result = DB::select("EXEC sp_existencia_acceso_by_id @id_acceso = ?", [$id_acceso]);
+        if (isset($result[0]->verificar)) {
+            return $result[0]->verificar === 'true';
+        }
+        return null;
+    }
+
+
 }

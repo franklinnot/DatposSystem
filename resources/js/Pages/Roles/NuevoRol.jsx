@@ -74,6 +74,12 @@ export default function NuevaCaja({ auth }) {
         }
 
         post(route("roles/new"), {
+            onError: (serverErrors) => {
+                // Manejar error duplicado de código con el campo correcto
+                if (serverErrors.nombre) {
+                    showToast(serverErrors.nombre, "error");
+                }
+            },
             onSuccess: () => {
                 reset();
             },
@@ -127,47 +133,51 @@ export default function NuevaCaja({ auth }) {
                             placeholder="Selecciona una ruta"
                             closeOnSelect={true}
                         />
-                        <InputError message={errors.rutapadre} />
-                    </div>
 
-                    {/* Checkboxes para las subrutas filtradas */}
-                    <div className="mt-4">
-                        {subRutasFiltradas.map((subRuta) => (
-                            <div key={subRuta.id} className="block mt-2">
-                                <label className="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        name="subrutas"
-                                        value={subRuta.id}
-                                        checked={data.subrutas.includes(
-                                            subRuta.id
-                                        )}
-                                        onChange={(e) => {
-                                            const isChecked = e.target.checked;
-                                            setData(
-                                                "subrutas",
-                                                (prev) =>
+                        {/* Checkboxes para las subrutas filtradas */}
+                        <div className="pl-2 sm:pl-3 mt-8 grid gap-2 max-h-28">
+                            {subRutasFiltradas.map((subRuta) => (
+                                <div key={subRuta.id} className="block">
+                                    <label className="flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            name="subrutas"
+                                            value={subRuta.id}
+                                            checked={data.subrutas.includes(
+                                                subRuta.id
+                                            )}
+                                            onChange={(e) => {
+                                                const isChecked =
+                                                    e.target.checked;
+                                                setData(
+                                                    "subrutas",
                                                     isChecked
-                                                        ? [...prev, subRuta.id] // Añadir el ID si está seleccionado
-                                                        : prev.filter(
+                                                        ? [
+                                                              ...data.subrutas,
+                                                              subRuta.id,
+                                                          ] // Agregar el id al array
+                                                        : data.subrutas.filter(
                                                               (id) =>
                                                                   id !==
                                                                   subRuta.id
-                                                          ) // Remover el ID si no está seleccionado
-                                            );
-                                        }}
-                                        className="form-checkbox h-4 w-4 text-[#0B6ACB] rounded focus:ring-[#0B6ACB]"
-                                    />
-                                    <span className="ms-2 text-sm font-medium text-gray-600">
-                                        {subRuta.name}
-                                    </span>
-                                </label>
-                            </div>
-                        ))}
+                                                          ) // Remover el id del array
+                                                );
+                                            }}
+                                            className="form-checkbox h-4 w-4 text-[#0B6ACB] rounded focus:ring-[#0B6ACB]"
+                                        />
+                                        <span className="ms-2 text-sm font-medium text-gray-600">
+                                            {subRuta.name}
+                                        </span>
+                                    </label>
+                                </div>
+                            ))}
+                        </div>
+
+                        <InputError message={errors.rutapadre} />
                     </div>
 
                     {/* Botón de Registrar */}
-                    <div className="grid grid-flow-row items-center mt-3">
+                    <div className="grid grid-flow-row items-center mt-1">
                         <PrimaryButton
                             className="font-medium text-md w-full justify-center rounded-lg bg-gradient-to-r from-[#0B6ACB] via-[#0875E4] to-[#0B6ACB] hover:bg-[#3c78fa] focus:ring-[#3c78fa]"
                             disabled={processing}
