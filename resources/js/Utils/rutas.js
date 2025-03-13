@@ -62,6 +62,26 @@ let rts_perfilEmpresa = [
     ]},
 ];
 
+
+// Rutas de perfil de usuario
+let rts_perfilUsuario = [
+    { label: "Perfil de Usuario", routeName: "profile", subItems: [
+        {
+            label: "Editar información",
+            routeName: "profile/edit",
+            subItems: [],
+        },
+        {
+            label: "Cambiar contraseña",
+            routeName: "profile/edit/password",
+            subItems: [],
+        },
+    ]},
+];
+
+
+// --------------------------------------------
+
 // Rutas a las que cualquier usuario tiene acceso
 let rts_permisoTotal = [
     {
@@ -106,17 +126,6 @@ export function rutas_navegacion(accesos) {
     return filterRoutes(rts_navegacion, accesos);
 }
 
-// funcion para verificar si la ruta actual está permitida
-export function verificarRuta(route, accesos) {
-    let rutasAccesibles = rts_permisoTotal.map((acceso) => acceso.routeName);
-    if (rutasAccesibles.includes(route)) {
-        return true;
-    }
-    // seleccionar solo el campo ruta de cada acceso
-    rutasAccesibles = accesos.map((acceso) => acceso.ruta);
-    // verificar si este array de rutas incluye la ruta a consultar
-    return rutasAccesibles.includes(route);
-}
 
 // funcion que retorna las rutas padre
 function rutasPadre(rutas) {
@@ -128,7 +137,8 @@ function rutasPadre(rutas) {
 }
 
 export function getRutasPadre(){
-    let rutas = rts_perfilEmpresa.concat(rts_navegacion);
+    let rutas = rts_perfilUsuario.concat(rts_perfilEmpresa);
+    rutas = rutas.concat(rts_navegacion);
     return rutasPadre(rutas);
 }
 

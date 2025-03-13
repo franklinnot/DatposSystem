@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "@inertiajs/react";
 import { ArrowDown, ArrowUp, IconClose, MenuBurger, IconPerfil,} from "@/Components/Icons";
 import UserProfileMenu from "@/Components/UserProfileMenu";
-import { rutas_navegacion, verificarRuta } from "../Utils/rutas";
+import { rutas_navegacion } from "../Utils/rutas";
 import ApplicationLogo from "@/Components/ApplicationLogo"; 
 
 export default function Header({ auth }) {

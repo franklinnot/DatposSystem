@@ -2,7 +2,6 @@ import Header from "@/Components/Header";
 import { useEffect } from "react";
 import { usePage } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
-import { verificarRuta } from "../Utils/rutas.js";
 
 export default function Authenticated({ auth, children }) {
     let usuario = auth?.user; // prop auth.user
