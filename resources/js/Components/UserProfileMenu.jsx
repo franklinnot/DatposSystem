@@ -35,7 +35,7 @@ const UserProfileMenu = ({ auth }) => {
         >
             {/* Nombre del usuario */}
             <span className="text-gray-600 text-md">
-                {auth.empresa.razon_social}
+                {auth.empresa.nombre_comercial}
             </span>
 
             {/* Contenedor del ícono de perfil y la flechita */}
