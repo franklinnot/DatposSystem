@@ -58,6 +58,14 @@ class Rol extends Model
         }, $result) : null;  // Array de Acceso[] o null
     }
 
+    public static function get_roles_by_id_empresa($id_empresa): ?array
+    {
+        $result = DB::select("EXEC sp_get_roles_by_id_empresa @id_empresa = ?", [$id_empresa]);
+        return $result ? array_map(function ($item) {
+            return new Rol((array) $item);  // Conversión a Rol
+        }, $result) : null;  // Array de Roles[] o null
+    }
+
     public static function existencia_rol_by_nombre($nombre, $id_empresa): ?bool
     {
         $result = DB::select("EXEC sp_existencia_rol_by_nombre @nombre = ?, @id_empresa = ?", [$nombre, $id_empresa]);
