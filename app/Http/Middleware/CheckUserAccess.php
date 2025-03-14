@@ -63,7 +63,7 @@ class CheckUserAccess
 
         // Filtrar los accesos para incluir solo aquellos con estado activo (estado = 1)
         $accesos = array_filter($accesos, function ($acceso) {
-            return $acceso->estado == 1;
+            return $acceso->estado == '1';
         });
 
         // Extraer las rutas permitidas del array de objetos Acceso
