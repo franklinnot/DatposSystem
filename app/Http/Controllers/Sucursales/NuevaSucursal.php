@@ -28,12 +28,12 @@ class NuevaSucursal extends Controller
     public function store(Request $request): Response
     {
         $data_sucursal = $request->validate([
-            'nombre' => 'required|string|max:128',
-            'codigo' => 'required|string|max:128',
-            'departamento' => 'required|string|max:128',
-            'ciudad' => 'required|string|max:128',
-            'direccion' => 'required|string|max:128',
-            'telefono' => 'nullable|string|max:128',
+            'nombre' => 'required|string|max:64',
+            'codigo' => 'required|string|max:24',
+            'departamento' => 'required|string|max:64',
+            'ciudad' => 'required|string|max:64',
+            'direccion' => 'required|string|max:255',
+            'telefono' => 'nullable|string|max:32',
         ]);
 
         $user = Auth::user();

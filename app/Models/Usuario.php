@@ -25,7 +25,6 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
         'created_at',
         'updated_at',
         'nombre',
-        'direccion',
         'foto',
         'estado',
         'id_rol',

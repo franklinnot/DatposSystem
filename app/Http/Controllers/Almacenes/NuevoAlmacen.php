@@ -31,9 +31,9 @@ class NuevoAlmacen extends Controller
         $data_almacen = $request->validate([
             'nombre' => 'required|string|max:128',
             'codigo' => 'required|string|max:24',
-            'departamento' => 'required|string|max:128',
+            'departamento' => 'required|string|max:64',
             'ciudad' => 'required|string|max:64',
-            'direccion' => 'required|string|max:64',
+            'direccion' => 'required|string|max:255',
         ]);
 
         $user = Auth::user();
