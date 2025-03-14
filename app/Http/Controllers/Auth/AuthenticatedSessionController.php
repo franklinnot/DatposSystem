@@ -39,7 +39,7 @@ class AuthenticatedSessionController extends Controller
         $usuario = Auth::user();
         $empresa = Empresa::get_empresa_by_id($usuario->id_empresa);
 
-        if ($empresa->estado == 0) {
+        if ($empresa->estado == '0') {
             // si la empresa esta inactiva
             $this->destroy($request);
             throw ValidationException::withMessages([
@@ -47,7 +47,7 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
-        if ($usuario->estado == 0) {
+        if ($usuario->estado == '0') {
             $this->destroy($request);
             throw ValidationException::withMessages([
                 'email' => trans('auth.user_inactive'),

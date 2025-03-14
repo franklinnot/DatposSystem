@@ -29,7 +29,7 @@ class NuevaCaja extends Controller
 
         // Filtrar sucursales con estado = 1
         $sucursales = array_filter($sucursales, function ($sucursal) {
-            return $sucursal->estado == 1;
+            return $sucursal->estado == '1';
         });
 
         // Mapear los datos a la estructura requerida
