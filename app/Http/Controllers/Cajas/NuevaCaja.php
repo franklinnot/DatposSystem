@@ -49,7 +49,7 @@ class NuevaCaja extends Controller
     {
         $data_caja = $request->validate([
             'nombre' => 'required|string|max:128',
-            'codigo' => 'required|string|max:128',
+            'codigo' => 'required|string|max:24',
             'id_sucursal' => 'required|integer',
         ]);
 

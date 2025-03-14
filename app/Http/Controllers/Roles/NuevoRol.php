@@ -66,7 +66,7 @@ class NuevoRol extends Controller
     public function store(Request $request): Response
     {
         $data_rol = $request->validate([
-            'nombre' => 'required|string|max:128',
+            'nombre' => 'required|string|max:64',
             'subrutas' => 'required|array',
         ]);
 
