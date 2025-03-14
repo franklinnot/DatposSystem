@@ -65,7 +65,18 @@ class HandleInertiaRequests extends Middleware
     // obtener los accesos del usuario
     private function get_usuarioAccesosData($user)
     {
-        return $user ? Rol::get_accesos_rol_by_id($user['id_rol']) : null;
+        if (!$user) {
+            return null;
+        }
+
+        $accesos = Rol::get_accesos_rol_by_id($user['id_rol']);
+
+        return array_map(function ($acceso) {
+            return [
+                'id_acceso' => $acceso['id_acceso'],
+                'ruta' => $acceso['ruta']
+            ];
+        }, $accesos);
     }
 
     // Empresa asociada al usuario autenticado.
