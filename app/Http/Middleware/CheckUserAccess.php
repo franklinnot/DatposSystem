@@ -29,7 +29,7 @@ class CheckUserAccess
         }
 
         // Verificar que el usuario esté activo (estado = 1)
-        if ($user->estado != 1) {
+        if ($user->estado != '1') {
             Auth::logout();
             return Inertia::render('Auth/Login', [
                 'toast' => [
