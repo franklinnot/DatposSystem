@@ -63,6 +63,15 @@ class NuevoUsuario extends Controller
         $user = Auth::user();
         $data_usuario['id_empresa'] = $user->id_empresa;
 
+        // obtenemos a la empresa
+        $empresa = Empresa::get_empresa_by_id($user->id_empresa);
+
+        // verificamos que aun pueda seguir registrando usuarios
+        if ($empresa->usuarios_registrados >= $empresa->cantidad_usuarios) {
+            return $this->errorLimitRegister();
+        }
+
+
         // verificar que el dni del usuario sea único antes de registrar
         if (Usuario::existencia_usuario_by_dni($data_usuario['dni'], $data_usuario['id_empresa'])) {
             return $this->errorSameDni();
@@ -115,6 +124,15 @@ class NuevoUsuario extends Controller
         ]);
     }
 
+    public function errorLimitRegister(): Response
+    {
+        return Inertia::render(self::COMPONENTE, [
+            'toast' => [
+                'type' => 'error',
+                'message' => trans('usuarios.limit_registers'),
+            ]
+        ]);
+    }
 
     public function error(): Response
     {

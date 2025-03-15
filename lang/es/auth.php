@@ -13,11 +13,10 @@ return [
     |
     */
 
-    'failed' => 'No hemos encontrado una cuenta que coincida con esos datos.',
-    'break' => 'Algo salió mal. Por favor, inténtalo nuevamente.',
+    'failed'       => 'No hemos encontrado una cuenta que coincida con esos datos.',
+    'break'        => 'Algo salió mal. Por favor, inténtalo nuevamente.',
     'user_inactive' => 'Tu cuenta está inactiva.',
-    'empresa_inactive' => 'Tu empresa están inactiva.',
-    'password' => 'La contraseña es incorrecta.',
-    'throttle' => 'Haz realizado muchos intentos. Por favor, inténtalo nuevamente en :seconds segundos.',
-
+    'empresa_inactive' => 'Tu empresa está inactiva.',
+    'password'     => 'La contraseña es incorrecta.',
+    'throttle'     => 'Haz realizado muchos intentos. Por favor, inténtalo nuevamente en :seconds segundos.',
 ];
