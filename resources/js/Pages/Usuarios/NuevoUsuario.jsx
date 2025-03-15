@@ -7,16 +7,6 @@ import { Head, useForm, usePage } from "@inertiajs/react";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { useEffect, useState } from "react";
 import { Inertia } from "@inertiajs/inertia";
-import {
-    getDepartamentos,
-    getProvincias,
-    getProvinciaById,
-    getDepartamentoById,
-    getDepartamentoByName,
-    getProvinciaByName,
-    getProvinciasByDepartment,
-    getDepartamentoByProvincia,
-} from "../../Utils/ubigeo.js";
 import useToast from "@/Components/Toast";
 
 export default function NuevaSucursal({ auth }) {
@@ -25,7 +15,7 @@ export default function NuevaSucursal({ auth }) {
             dni: "",
             nombre: "",
             id_rol: "",
-            correo: "",
+            email: "",
             password: "",
         });
 
@@ -44,6 +34,11 @@ export default function NuevaSucursal({ auth }) {
 
     useEffect(() => {
         setRoles(lista_roles || []);
+        setData({
+            ...data,
+            email: "",
+            password: "",
+        });
     }, []);
 
     // Se utiliza el manejo de cambios propuesto para el departmento.
@@ -60,7 +55,7 @@ export default function NuevaSucursal({ auth }) {
             !data.dni ||
             !data.nombre ||
             !data.id_rol ||
-            !data.correo ||
+            !data.email ||
             !data.password
         ) {
             showToast("Por favor, llena todos los campos.", "error");
@@ -73,9 +68,12 @@ export default function NuevaSucursal({ auth }) {
                 if (serverErrors.dni) {
                     showToast(serverErrors.dni, "error");
                 }
+                if (serverErrors.email) {
+                    showToast(serverErrors.email, "error");
+                }
             },
             onSuccess: () => {
-                reset("nombre", "dni", "correo", "password");
+                reset("nombre", "dni", "email", "password");
             },
         });
     };
@@ -102,6 +100,7 @@ export default function NuevaSucursal({ auth }) {
                         <TextInput
                             id="dni"
                             type="text"
+                            maxLength="8"
                             name="dni"
                             value={data.dni}
                             className="mt-1 block w-full"
@@ -115,7 +114,7 @@ export default function NuevaSucursal({ auth }) {
                     <div>
                         <InputLabel
                             htmlFor="nombre"
-                            value="Apellido y Nombre"
+                            value="Apellidos y Nombres"
                             className="font-normal text-[#2B2B2B]"
                         />
                         <TextInput
@@ -129,7 +128,7 @@ export default function NuevaSucursal({ auth }) {
                         <InputError message={errors.nombre} className="mt-2" />
                     </div>
 
-                    {/* Input de Departamento */}
+                    {/* Input de Roles */}
                     <div>
                         <InputLabel
                             htmlFor="rol"
@@ -162,6 +161,7 @@ export default function NuevaSucursal({ auth }) {
                             value={data.email}
                             className="mt-1 block w-full"
                             onChange={(e) => setData("email", e.target.value)}
+                            autoComplete="off"
                         />
                         <InputError message={errors.email} className="mt-2" />
                     </div>
@@ -171,7 +171,7 @@ export default function NuevaSucursal({ auth }) {
                         <InputLabel
                             htmlFor="password"
                             value="Contraseña"
-                            className="font-semibold"
+                            className="font-normal text-[#2B2B2B]"
                         />
 
                         <TextInput
@@ -183,6 +183,7 @@ export default function NuevaSucursal({ auth }) {
                             onChange={(e) =>
                                 setData("password", e.target.value)
                             }
+                            autoComplete="new-password"
                         />
 
                         <InputError

@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Almacen;
 use App\Models\Empresa;
 use App\Models\Rol;
-use App\Models\Sucursal;
+use App\Models\Usuario;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class NuevoUsuario extends Controller
@@ -43,4 +44,86 @@ class NuevoUsuario extends Controller
             'roles' => $roles_mapeados,
         ]);
     }
+
+    public function store(Request $request): Response
+    {
+        $data_usuario = $request->validate([
+            'dni' => 'required|digits:8',
+            'nombre' => 'required|string|max:128',
+            'id_rol' => 'required|integer',
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string|max:255',
+        ]);
+
+        // Convertir DNI a string antes de guardarlo (para que coincida con CHAR(8))
+        $data_usuario['dni'] = (string) $data_usuario['dni'];
+        // hasheamos la contraseña
+        $data_usuario['password'] = Hash::make($data_usuario['password']);
+
+        $user = Auth::user();
+        $data_usuario['id_empresa'] = $user->id_empresa;
+
+        // verificar que el dni del usuario sea único antes de registrar
+        if (Usuario::existencia_usuario_by_dni($data_usuario['dni'], $data_usuario['id_empresa'])) {
+            return $this->errorSameDni();
+        }
+
+        // verificar que el email del usuario sea único antes de registrar
+        if (Usuario::existencia_usuario_by_email($data_usuario['email'])) {
+            return $this->errorSameEmail();
+        }
+
+        // si el no existe
+        $rol = Rol::get_rol_by_id($data_usuario['id_rol'], $data_usuario['id_empresa']);
+        if (!$rol) {
+            return $this->error();
+        }
+
+        // si el rol no está activo
+        if ($rol->estado != '1') {
+            return $this->error();
+        }
+
+        // registramos el nuvo usuario
+        $nuevo_usuario = Usuario::registrar($data_usuario);
+
+        // si no se registró correctamente la caja
+        if (!$nuevo_usuario) {
+            return $this->error();
+        }
+
+        // Guardar mensaje flash en la sesión y enviar datos actualizados al cliente
+        return Inertia::render(self::COMPONENTE, [
+            'toast' => [
+                'type' => 'success',
+                'message' => 'Usuario registrado exitosamente!',
+            ],
+        ]);
+    }
+
+    public function errorSameDni(): Response
+    {
+        throw ValidationException::withMessages([
+            'dni' => trans('usuarios.samedni'),
+        ]);
+    }
+
+    public function errorSameEmail(): Response
+    {
+        throw ValidationException::withMessages([
+            'email' => trans('usuarios.sameemail'),
+        ]);
+    }
+
+
+    public function error(): Response
+    {
+        return Inertia::render(self::COMPONENTE, [
+            'toast' => [
+                'type' => 'error',
+                'message' => trans('usuarios.error'),
+            ]
+        ]);
+    }
+
 }
