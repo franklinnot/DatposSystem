@@ -46,9 +46,9 @@ class Almacen extends Model
         return $result ? new Almacen(['id_almacen' => $result[0]->nuevo_id] + $data) : null;
     }
 
-    public static function get_almacen_by_id($id_almacen): ?Almacen
+    public static function get_almacen_by_id($id_almacen, $id_empresa): ?Almacen
     {
-        $result = DB::select("EXEC sp_get_almacen_by_id @id_almacen = ?", [$id_almacen]);
+        $result = DB::select("EXEC sp_get_almacen_by_id @id_almacen = ?, @id_empresa = ?", [$id_almacen, $id_empresa]);
         return $result ? new Almacen((array) $result[0]) : null;
     }
 

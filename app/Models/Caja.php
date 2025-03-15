@@ -43,9 +43,9 @@ class Caja extends Model
         return $result ? new Caja(['id_caja' => $result[0]->nuevo_id] + $data) : null;
     }
 
-    public static function get_caja_by_id($id_caja): ?Caja
+    public static function get_caja_by_id($id_caja, $id_empresa): ?Caja
     {
-        $result = DB::select("EXEC sp_get_caja_by_id @id_caja = ?", [$id_caja]);
+        $result = DB::select("EXEC sp_get_caja_by_id @id_caja = ?, @id_empresa = ?", [$id_caja, $id_empresa]);
         return $result ? new Caja((array) $result[0]) : null;
     }
 

@@ -54,9 +54,9 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
     
 
     #region crud
-    public static function get_usuario($id_usuario): ?Usuario
+    public static function get_usuario($id_usuario, $id_empresa): ?Usuario
     {
-        $result = DB::select("EXEC sp_get_usuario_by_id @id_usuario = ?", [$id_usuario]);
+        $result = DB::select("EXEC sp_get_usuario_by_id @id_usuario = ?, @id_empresa = ?", [$id_usuario, $id_empresa]);
         return $result ? new Usuario((array) $result[0]) : null;
     }
     #endregion
@@ -66,7 +66,7 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
     
     public function rol(): ?Rol
     {
-        return Rol::get_rol($this->id_rol);
+        return Rol::get_rol($this->id_rol, $this->id_empresa);
     }
 
     #endregion

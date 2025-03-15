@@ -44,15 +44,15 @@ class Rol extends Model
         return $result ? new Rol(['id_rol' => $result[0]->nuevo_id] + $data) : null;
     }
 
-    public static function get_rol($id_rol): ?Rol
+    public static function get_rol($id_rol, $id_empresa): ?Rol
     {
-        $result = DB::select("EXEC sp_get_rol_by_id @id_rol = ?", [$id_rol]);
+        $result = DB::select("EXEC sp_get_rol_by_id @id_rol = ?, @id_empresa = ?", [$id_rol, $id_empresa]);
         return $result ? new Rol((array) $result[0]) : null;
     }
 
-    public static function get_accesos_rol_by_id($id_rol): ?array
+    public static function get_accesos_rol_by_id($id_rol, $id_empresa): ?array
     {
-        $result = DB::select("EXEC sp_get_accesos_by_id_rol @id_rol = ?", [$id_rol]);
+        $result = DB::select("EXEC sp_get_accesos_by_id_rol @id_rol = ?, @id_empresa = ?", [$id_rol, $id_empresa]);
         return $result ? array_map(function ($item) {
             return new Acceso((array) $item);  // Conversión a Acceso
         }, $result) : null;  // Array de Acceso[] o null
@@ -73,23 +73,6 @@ class Rol extends Model
             return $result[0]->verificar === 'true';
         }
         return null;
-    }
-    #endregion
-
-
-    #region Relaciones
-    // usar sp
-    public function usuarios()
-    {
-        return $this->hasMany(Usuario::class, 'id_rol');
-    }
-
-    public function accesos(): ?array
-    {
-        $result = DB::select("EXEC sp_get_accesos_by_id_rol @id_rol = ?", [$this->id_rol]);
-        return $result ? array_map(function ($item) {
-            return new Acceso((array) $item);  // Conversión a Acceso
-        }, $result) : null;  // Array de Acceso[] o null
     }
     #endregion
 

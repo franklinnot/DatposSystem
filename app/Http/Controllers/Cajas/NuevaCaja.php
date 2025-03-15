@@ -63,7 +63,7 @@ class NuevaCaja extends Controller
         }
 
         // si la sucursal no existe
-        $sucursal = Sucursal::get_sucursal_by_id($data_caja['id_sucursal']);
+        $sucursal = Sucursal::get_sucursal_by_id($data_caja['id_sucursal'], $data_caja['id_empresa']);
         if (!$sucursal) {
             return $this->error();
         }

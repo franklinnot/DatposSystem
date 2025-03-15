@@ -51,9 +51,9 @@ class Sucursal extends Model
         return $result ? new Sucursal(['id_sucursal' => $result[0]->nuevo_id] + $data) : null;
     }
 
-    public static function get_sucursal_by_id($id_sucursal): ?Sucursal
+    public static function get_sucursal_by_id($id_sucursal, $id_empresa): ?Sucursal
     {
-        $result = DB::select("EXEC sp_get_sucursal_by_id @id_sucursal = ?", [$id_sucursal]);
+        $result = DB::select("EXEC sp_get_sucursal_by_id @id_sucursal = ?, @id_empresa = ?", [$id_sucursal, $id_empresa]);
         return $result ? new Sucursal((array) $result[0]) : null;
     }
 
@@ -80,9 +80,9 @@ class Sucursal extends Model
         return null;
     }
 
-    public static function existencia_sucursal_by_id($id_sucursal): ?bool
+    public static function existencia_sucursal_by_id($id_sucursal, $id_empresa): ?bool
     {
-        $result = DB::select("EXEC sp_existencia_sucursal_by_id @id_sucursal = ?", [$id_sucursal]);
+        $result = DB::select("EXEC sp_existencia_sucursal_by_id @id_sucursal = ?, @id_empresa = ?", [$id_sucursal, $id_empresa]);
         if (isset($result[0]->verificar)) {
             return $result[0]->verificar === 'true';
         }

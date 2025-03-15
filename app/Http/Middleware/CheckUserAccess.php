@@ -54,7 +54,7 @@ class CheckUserAccess
         $currentRoute = rtrim($request->path(), '/');
 
         // Obtener las rutas permitidas para el usuario según su rol
-        $accesos = Rol::get_accesos_rol_by_id($user->id_rol);
+        $accesos = Rol::get_accesos_rol_by_id($user->id_rol, $user->id_empresa);
 
         // Si no hay accesos definidos para el rol, redirigir al perfil
         if (!$accesos) {

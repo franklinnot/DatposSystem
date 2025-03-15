@@ -69,7 +69,7 @@ class HandleInertiaRequests extends Middleware
             return null;
         }
 
-        $accesos = Rol::get_accesos_rol_by_id($user['id_rol']);
+        $accesos = Rol::get_accesos_rol_by_id($user['id_rol'], $user['id_empresa']);
 
         return array_map(function ($acceso) {
             return [
