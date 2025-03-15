@@ -96,7 +96,7 @@ return [
     'image' => 'El campo :attribute debe ser una imagen.',
     'in' => 'El campo :attribute seleccionado no es válido.',
     'in_array' => 'El campo :attribute no existe en :other.',
-    'integer' => 'El campo :attribute debe ser un número entero.',
+    'integer' => 'El campo :attribute debe ser un número.',
     'ip' => 'El campo :attribute debe ser una dirección IP válida.',
     'ipv4' => 'El campo :attribute debe ser una dirección IPv4 válida.',
     'ipv6' => 'El campo :attribute debe ser una dirección IPv6 válida.',
