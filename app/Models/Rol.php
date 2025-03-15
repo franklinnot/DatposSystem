@@ -44,7 +44,7 @@ class Rol extends Model
         return $result ? new Rol(['id_rol' => $result[0]->nuevo_id] + $data) : null;
     }
 
-    public static function get_rol($id_rol, $id_empresa): ?Rol
+    public static function get_rol_by_id($id_rol, $id_empresa): ?Rol
     {
         $result = DB::select("EXEC sp_get_rol_by_id @id_rol = ?, @id_empresa = ?", [$id_rol, $id_empresa]);
         return $result ? new Rol((array) $result[0]) : null;

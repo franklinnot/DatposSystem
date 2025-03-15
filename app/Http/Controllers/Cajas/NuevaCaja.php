@@ -69,12 +69,7 @@ class NuevaCaja extends Controller
         }
 
         // si la sucursal no está activa
-        if ($sucursal->estado != 1) {
-            return $this->error();
-        }
-
-        // si la sucursal no pertenece a la empresa del usuario
-        if ($sucursal->id_empresa != $user->id_empresa) {
+        if ($sucursal->estado != '1') {
             return $this->error();
         }
 

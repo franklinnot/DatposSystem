@@ -25,7 +25,6 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
         'created_at',
         'updated_at',
         'nombre',
-        'foto',
         'estado',
         'id_rol',
         'id_empresa',
@@ -51,22 +50,56 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
         'remember_token',
     ];
     #endregion
-    
+
 
     #region crud
-    public static function get_usuario($id_usuario, $id_empresa): ?Usuario
+
+    public static function registrar(array $data): ?Usuario
+    {
+        $result = DB::select(
+            "EXEC sp_registrar_usuario 
+            @dni = ?, @nombre = ?, @email = ?, @password = ?, @id_rol = ?, @id_empresa = ?",
+            [
+                $data['dni'],
+                $data['nombre'],
+                $data['email'] ?? null,
+                $data['password'] ?? null,
+                $data['id_rol'] ?? null,
+                $data['id_empresa']
+            ]
+        );
+
+        return $result ? new Usuario(['id_usuario' => $result[0]->nuevo_id] + $data) : null;
+    }
+
+    public static function get_usuario_by_id($id_usuario, $id_empresa): ?Usuario
     {
         $result = DB::select("EXEC sp_get_usuario_by_id @id_usuario = ?, @id_empresa = ?", [$id_usuario, $id_empresa]);
         return $result ? new Usuario((array) $result[0]) : null;
     }
-    #endregion
 
-    
-    #region Relaciones 
-    
-    public function rol(): ?Rol
+    public static function get_usuario_by_dni($dni, $id_empresa): ?Usuario
     {
-        return Rol::get_rol($this->id_rol, $this->id_empresa);
+        $result = DB::select("EXEC sp_get_usuario_by_dni @dni = ?, @id_empresa = ?", [$dni, $id_empresa]);
+        return $result ? new Usuario((array) $result[0]) : null;
+    }
+
+    public static function existencia_usuario_by_dni($dni, $id_empresa): ?bool
+    {
+        $result = DB::select("EXEC sp_existencia_usuario_by_dni @dni = ?, @id_empresa = ?", [$dni, $id_empresa]);
+        if (isset($result[0]->verificar)) {
+            return $result[0]->verificar === 'true';
+        }
+        return null;
+    }
+
+    public static function existencia_usuario_by_email($email): ?bool
+    {
+        $result = DB::select("EXEC sp_existencia_usuario_by_email @email = ?", [$email]);
+        if (isset($result[0]->verificar)) {
+            return $result[0]->verificar === 'true';
+        }
+        return null;
     }
 
     #endregion
