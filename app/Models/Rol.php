@@ -68,7 +68,10 @@ class Rol extends Model
 
     public static function existencia_rol_by_nombre($nombre, $id_empresa): ?bool
     {
-        $result = DB::select("EXEC sp_existencia_rol_by_nombre @nombre = ?, @id_empresa = ?", [$nombre, $id_empresa]);
+        $result = DB::select("EXEC sp_existencia_rol_by_nombre @nombre = ?, @id_empresa = ?", [
+            strtolower($nombre),
+            $id_empresa
+        ]);
         if (isset($result[0]->verificar)) {
             return $result[0]->verificar === 'true';
         }

@@ -59,22 +59,6 @@ class Empresa extends Model
 
     #endregion
 
-    #region Relaciones
-    public function usuarios()
-    {
-        return $this->hasMany(Usuario::class, 'id_empresa');
-    }
-
-    public function sucursales()
-    {
-        return $this->hasMany(Usuario::class, 'id_empresa');
-    }
-
-    public function pagosTarifa()
-    {
-        return $this->hasMany(Usuario::class, 'id_empresa');
-    }
-    #endregion
 
     
 }

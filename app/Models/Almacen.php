@@ -34,7 +34,7 @@ class Almacen extends Model
             "EXEC sp_registrar_almacen 
             @codigo = ?, @nombre = ?, @departamento = ?, @ciudad = ?, @direccion = ?, @id_empresa = ?",
             [
-                $data['codigo'],
+                strtoupper($data['codigo']),
                 $data['nombre'],
                 $data['departamento'] ?? null,
                 $data['ciudad'] ?? null,
@@ -54,13 +54,13 @@ class Almacen extends Model
 
     public static function get_almacen_by_codigo($codigo, $id_empresa): ?Almacen
     {
-        $result = DB::select("EXEC sp_get_almacen_by_codigo @codigo = ?, @id_empresa = ?", [$codigo, $id_empresa]);
+        $result = DB::select("EXEC sp_get_almacen_by_codigo @codigo = ?, @id_empresa = ?", [strtoupper($codigo), $id_empresa]);
         return $result ? new Almacen((array) $result[0]) : null;
     }
 
     public static function existencia_almacen_by_codigo($codigo, $id_empresa): ?bool
     {
-        $result = DB::select("EXEC sp_existencia_almacen_by_codigo @codigo = ?, @id_empresa = ?", [$codigo, $id_empresa]);
+        $result = DB::select("EXEC sp_existencia_almacen_by_codigo @codigo = ?, @id_empresa = ?", [strtoupper($codigo), $id_empresa]);
         if (isset($result[0]->verificar)) {
             return $result[0]->verificar === 'true';
         }

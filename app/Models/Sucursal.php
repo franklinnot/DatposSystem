@@ -37,7 +37,7 @@ class Sucursal extends Model
             "EXEC sp_registrar_sucursal 
             @codigo = ?, @nombre = ?, @departamento = ?, @ciudad = ?, @direccion = ?, @telefono = ?, @id_almacen = ?, @id_empresa = ?",
             [
-                $data['codigo'],
+                strtoupper($data['codigo']),
                 $data['nombre'],
                 $data['departamento'] ?? null,
                 $data['ciudad'] ?? null,
@@ -67,13 +67,13 @@ class Sucursal extends Model
 
     public static function get_sucursal_by_codigo($codigo, $id_empresa): ?Sucursal
     {
-        $result = DB::select("EXEC sp_get_sucursal_by_codigo @codigo = ?, @id_empresa = ?", [$codigo, $id_empresa]);
+        $result = DB::select("EXEC sp_get_sucursal_by_codigo @codigo = ?, @id_empresa = ?", [strtoupper($codigo), $id_empresa]);
         return $result ? new Sucursal((array) $result[0]) : null;
     }
 
     public static function existencia_sucursal_by_codigo($codigo, $id_empresa): ?bool
     {
-        $result = DB::select("EXEC sp_existencia_sucursal_by_codigo @codigo = ?, @id_empresa = ?", [$codigo, $id_empresa]);
+        $result = DB::select("EXEC sp_existencia_sucursal_by_codigo @codigo = ?, @id_empresa = ?", [strtoupper($codigo), $id_empresa]);
         if (isset($result[0]->verificar)) {
             return $result[0]->verificar === 'true';
         }

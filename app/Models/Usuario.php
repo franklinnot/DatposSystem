@@ -46,8 +46,11 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
     
     // Atributos y funciones que deben ser ocultadas al serializar el modelo en el data-page
     protected $hidden = [
+        'email_verified_at',
         'password',
         'remember_token',
+        'created_at',
+        'updated_at',
     ];
     #endregion
 
@@ -62,7 +65,7 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
             [
                 $data['dni'],
                 $data['nombre'],
-                $data['email'] ?? null,
+                strtolower($data['email']) ?? null,
                 $data['password'] ?? null,
                 $data['id_rol'] ?? null,
                 $data['id_empresa']
@@ -95,7 +98,7 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
 
     public static function existencia_usuario_by_email($email): ?bool
     {
-        $result = DB::select("EXEC sp_existencia_usuario_by_email @email = ?", [$email]);
+        $result = DB::select("EXEC sp_existencia_usuario_by_email @email = ?", [strtolower($email)]);
         if (isset($result[0]->verificar)) {
             return $result[0]->verificar === 'true';
         }
