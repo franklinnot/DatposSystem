@@ -264,6 +264,40 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
 
         #endregion
 
+        #region Unidades de Medida
+
+        // vista para listar
+        Route::get('/units', function () {
+            return Inertia::render('Dashboard');
+        })->name('units');
+
+
+        // vista para registrar
+        Route::get('/units/new', [NuevoUsuario::class, 'show'])
+            ->name('units/new');
+
+        // metodo para registrar
+        Route::post('/units/new', [NuevoUsuario::class, 'store'])
+            ->name('units/new');
+
+
+        // vista para editar
+        Route::get('/units/edit', function () {
+            return Inertia::render('Dashboard');
+        })->name('units/edit');
+
+        // metodo para editar 
+        Route::patch('/units/edit', function () {
+            return Inertia::render('Dashboard');
+        });
+
+
+        // metodo para eliminar
+        Route::post('/units/delete', function () {
+            return Inertia::render('Dashboard');
+        })->name('units/delete');
+
+        #endregion
     }
 );
 
