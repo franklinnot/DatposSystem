@@ -48,6 +48,15 @@ let rts_navegacion = [
             { label: "Editar información", routeName: "users/edit" },
         ],
     },
+    {
+        label: "Unidades de Medida",
+        routeName: "units",
+        subItems: [
+            { label: "Nueva Unidad de Medida", routeName: "units/new" },
+            { label: "Ver Unidades de Medida", routeName: "units" },
+            { label: "Editar información", routeName: "units/edit" },
+        ],
+    },
 ];
 
 // Rutas de perfil -- empresa y usuarios
