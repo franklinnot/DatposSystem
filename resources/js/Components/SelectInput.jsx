@@ -42,14 +42,11 @@ export default forwardRef(function SelectInput(
                 setHighlightedIndex(-1);
                 return;
             }
-            const selectedIndex = filteredOptions.findIndex(
-                (opt) => opt.id === selectedValue
-            );
-            setHighlightedIndex(selectedIndex >= 0 ? selectedIndex : 0);
+            setHighlightedIndex(-1); // Ya no se selecciona automáticamente ningún índice
         } else {
             setHighlightedIndex(-1);
         }
-    }, [filteredOptions, isOpen, selectedValue]);
+    }, [filteredOptions, isOpen]);
 
     useEffect(() => {
         if (isOpen && searchInputRef.current) {
@@ -240,7 +237,6 @@ export default forwardRef(function SelectInput(
                                             handleChange(option.id);
                                         }
                                     }}
-                                    
                                     tabIndex={0}
                                 >
                                     {option.name}
