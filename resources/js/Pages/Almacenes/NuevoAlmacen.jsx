@@ -19,7 +19,7 @@ import {
 } from "../../Utils/ubigeo.js";
 import useToast from "@/Components/Toast";
 
-export default function NuevaSucursal({ auth }) {
+export default function NuevoAlmacen({ auth }) {
     const { data, setData, post, reset, processing, transform, errors } =
         useForm({
             nombre: "",
@@ -32,7 +32,7 @@ export default function NuevaSucursal({ auth }) {
                 : "",
             direccion: "",
         });
-        
+
     const { toast } = usePage().props;
     const { showToast, ToastComponent } = useToast();
 
@@ -46,7 +46,6 @@ export default function NuevaSucursal({ auth }) {
     const [departamentos, setDepartamentos] = useState([]);
     const [provincias, setProvincias] = useState([]);
 
-    
     useEffect(() => {
         setDepartamentos(getDepartamentos());
         if (auth?.empresa?.departamento) {
@@ -89,10 +88,7 @@ export default function NuevaSucursal({ auth }) {
             !data.ciudad ||
             !data.direccion
         ) {
-            showToast(
-                "Por favor, llena todos los campos.",
-                "error"
-            );
+            showToast("Por favor, llena todos los campos.", "error");
             return;
         }
 

@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import useToast from "@/Components/Toast";
 
-export default function NuevoUsuario({ auth }) {
+export default function NuevaUnidadMedida({ auth }) {
     const { data, setData, post, reset, processing, transform, errors } =
         useForm({
             dni: "",

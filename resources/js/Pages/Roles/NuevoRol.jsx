@@ -11,7 +11,7 @@ import useToast from "@/Components/Toast";
 import { getRutasPadre, getRutaPorId } from "../../Utils/rutas.js";
 import GuestLayout from "@/Layouts/GuestLayout";
 
-export default function NuevaCaja({ auth }) {
+export default function NuevoRol({ auth }) {
     const { data, setData, post, reset, processing, errors } = useForm({
         nombre: "",
         subrutas: [], // Array para almacenar los IDs de las subrutas seleccionadas
