@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Almacen;
 use App\Models\Empresa;
 use App\Models\Rol;
+use App\Models\Sucursal;
 use App\Models\Usuario;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
@@ -26,6 +27,8 @@ class NuevoUsuario extends Controller
     {
         $user = Auth::user();
         $roles = Rol::get_roles_by_id_empresa($user->id_empresa);
+        $sucursales = Sucursal::get_sucursales_by_id_empresa($user->id_empresa);
+        $almacenes = Almacen::get_almacenes_by_id_empresa($user->id_empresa);
 
         // Filtrar roles con estado = 1
         $roles = array_filter($roles, function ($rol) {
@@ -40,8 +43,53 @@ class NuevoUsuario extends Controller
             ];
         }, $roles);
 
+
+        // Filtrar sucursales con estado = 1
+        $sucursales = array_filter($sucursales, function ($sucursal) {
+            return $sucursal->estado == '1';
+        });
+
+        // Mapear los datos a la estructura requerida
+        $sucursales_mapeadas = array_map(function ($rol) {
+            return [
+                'id' => $rol->id_rol,
+                'name' => $rol->nombre,
+            ];
+        }, $sucursales);
+
+
+        // Filtrar sucursales con estado = 1
+        $sucursales = array_filter($sucursales, function ($sucursal) {
+            return $sucursal->estado == '1';
+        });
+
+        // Mapear los datos a la estructura requerida
+        $sucursales_mapeadas = array_map(function ($rol) {
+            return [
+                'id' => $rol->id_sucursal,
+                'name' => $rol->nombre,
+            ];
+        }, $sucursales);
+
+
+
+        // Filtrar almacenes con estado = 1
+        $almacenes = array_filter($almacenes, function ($almacen) {
+            return $almacen->estado == '1';
+        });
+
+        // Mapear los datos a la estructura requerida
+        $almacenes_mapeadas = array_map(function ($almacen) {
+            return [
+                'id' => $almacen->id_almacen,
+                'name' => $almacen->nombre,
+            ];
+        }, $almacenes);
+
         return Inertia::render(self::COMPONENTE, [
             'roles' => $roles_mapeados,
+            'sucursales' => $sucursales_mapeadas,
+            'almacenes' => $almacenes_mapeadas,
         ]);
     }
 
