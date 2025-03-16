@@ -58,6 +58,14 @@ class Almacen extends Model
         return $result ? new Almacen((array) $result[0]) : null;
     }
 
+    public static function get_almacenes_by_id_empresa($id_empresa): ?array
+    {
+        $result = DB::select("EXEC sp_get_almacenes_by_id_empresa @id_empresa = ?", [$id_empresa]);
+        return $result ? array_map(function ($item) {
+            return new Almacen((array) $item);
+        }, $result) : null;
+    }
+
     public static function existencia_almacen_by_codigo($codigo, $id_empresa): ?bool
     {
         $result = DB::select("EXEC sp_existencia_almacen_by_codigo @codigo = ?, @id_empresa = ?", [strtoupper($codigo), $id_empresa]);
