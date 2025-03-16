@@ -6,6 +6,7 @@ use App\Http\Controllers\Cajas\NuevaCaja;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Roles\NuevoRol;
 use App\Http\Controllers\Sucursales\NuevaSucursal;
+use App\Http\Controllers\UnidadesMedida\NuevaUnidadMedida;
 use App\Http\Controllers\Usuarios\NuevoUsuario;
 use App\Http\Middleware\Authenticate;
 use Illuminate\Foundation\Application;
@@ -273,11 +274,11 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
 
 
         // vista para registrar
-        Route::get('/units/new', [NuevoUsuario::class, 'show'])
+        Route::get('/units/new', [NuevaUnidadMedida::class, 'show'])
             ->name('units/new');
 
         // metodo para registrar
-        Route::post('/units/new', [NuevoUsuario::class, 'store'])
+        Route::post('/units/new', [NuevaUnidadMedida::class, 'store'])
             ->name('units/new');
 
 
