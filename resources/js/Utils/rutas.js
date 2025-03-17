@@ -57,6 +57,15 @@ let rts_navegacion = [
             { label: "Editar información", routeName: "units/edit" },
         ],
     },
+    {
+        label: "Familias de Productos",
+        routeName: "families",
+        subItems: [
+            { label: "Nueva Familia", routeName: "families/new" },
+            { label: "Ver Familias", routeName: "families" },
+            { label: "Editar información", routeName: "families/edit" },
+        ],
+    },
 ];
 
 // Rutas de perfil -- empresa y usuarios

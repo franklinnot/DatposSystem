@@ -299,6 +299,44 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
         })->name('units/delete');
 
         #endregion
+
+        #region Familias de productos
+
+        // vista para listar
+        Route::get('/families', function () {
+            return Inertia::render('Dashboard');
+        })->name('families');
+
+
+        // vista para registrar
+        Route::get('/families/new', [NuevaUnidadMedida::class, 'show'])
+            ->name('families/new');
+
+        // metodo para registrar
+        Route::post('/families/new', [NuevaUnidadMedida::class, 'store'])
+            ->name('families/new');
+
+
+        // vista para editar
+        Route::get('/families/edit', function () {
+            return Inertia::render('Dashboard');
+        })->name('families/edit');
+
+        // metodo para editar 
+        Route::patch('/families/edit', function () {
+            return Inertia::render('Dashboard');
+        });
+
+
+        // metodo para eliminar
+        Route::post('/families/delete', function () {
+            return Inertia::render('Dashboard');
+        })->name('families/delete');
+
+        #endregion
+
+
+
     }
 );
 

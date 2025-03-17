@@ -112,7 +112,7 @@ class Almacen extends Model
 
     public static function eliminar_almacen_by_codigo($codigo, $id_empresa): ?bool
     {
-        $result = DB::select("EXEC sp_eliminar_almacen_by_id @codigo = ?, @id_empresa = ?", [$codigo, $id_empresa]);
+        $result = DB::select("EXEC sp_eliminar_almacen_by_codigo @codigo = ?, @id_empresa = ?", [$codigo, $id_empresa]);
         if (isset($result[0]->verificar)) {
             return $result[0]->verificar === 'true';
         }
