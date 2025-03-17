@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -31,9 +32,9 @@ class NuevoUsuario extends Controller
         $almacenes = Almacen::get_almacenes_by_id_empresa($user->id_empresa);
 
         // Filtrar roles con estado = 1
-        $roles = array_filter($roles, function ($rol) {
-            return $rol->estado == '1';
-        });
+        $roles = $this->filtrarEstado($roles);
+        $sucursales = $this->filtrarEstado($sucursales);
+        $almacenes = $this->filtrarEstado($almacenes);
 
         // Mapear los datos a la estructura requerida
         $roles_mapeados = array_map(function ($rol) {
@@ -43,27 +44,6 @@ class NuevoUsuario extends Controller
             ];
         }, $roles);
 
-
-        // Filtrar sucursales con estado = 1
-        $sucursales = array_filter($sucursales, function ($sucursal) {
-            return $sucursal->estado == '1';
-        });
-
-        // Mapear los datos a la estructura requerida
-        $sucursales_mapeadas = array_map(function ($rol) {
-            return [
-                'id' => $rol->id_rol,
-                'name' => $rol->nombre,
-            ];
-        }, $sucursales);
-
-
-        // Filtrar sucursales con estado = 1
-        $sucursales = array_filter($sucursales, function ($sucursal) {
-            return $sucursal->estado == '1';
-        });
-
-        // Mapear los datos a la estructura requerida
         $sucursales_mapeadas = array_map(function ($rol) {
             return [
                 'id' => $rol->id_sucursal,
@@ -71,14 +51,6 @@ class NuevoUsuario extends Controller
             ];
         }, $sucursales);
 
-
-
-        // Filtrar almacenes con estado = 1
-        $almacenes = array_filter($almacenes, function ($almacen) {
-            return $almacen->estado == '1';
-        });
-
-        // Mapear los datos a la estructura requerida
         $almacenes_mapeadas = array_map(function ($almacen) {
             return [
                 'id' => $almacen->id_almacen,
@@ -92,6 +64,13 @@ class NuevoUsuario extends Controller
             'almacenes' => $almacenes_mapeadas,
         ]);
     }
+    
+    public function filtrarEstado(array $data){
+        $data = array_filter($data, function ($item) {
+            return $item->estado == '1';
+        });
+        return $data;
+    }
 
     public function store(Request $request): Response
     {
@@ -101,6 +80,7 @@ class NuevoUsuario extends Controller
             'id_rol' => 'required|integer',
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|max:255',
+            'sucursales' => '',
         ]);
 
         // Convertir DNI a string antes de guardarlo (para que coincida con CHAR(8))
@@ -157,6 +137,7 @@ class NuevoUsuario extends Controller
             ],
         ]);
     }
+
 
     public function errorSameDni(): Response
     {
