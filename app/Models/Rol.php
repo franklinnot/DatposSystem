@@ -33,11 +33,11 @@ class Rol extends Model
         // Realizar la ejecución del procedimiento almacenado
         $result = DB::select(
             "EXEC sp_registrar_rol 
-            @nombre = :nombre, @accesos = :accesos, @id_empresa = :id_empresa",
+            @nombre = ?, @accesos = ?, @id_empresa = ?",
             [
-                'nombre' => $data['nombre'],
-                'accesos' => $accesosJson,
-                'id_empresa' => $data['id_empresa'],
+                $data['nombre'],
+                $accesosJson,
+                $data['id_empresa'],
             ]
         );
 
