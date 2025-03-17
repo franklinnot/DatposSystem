@@ -29,7 +29,8 @@ class NuevoUsuario extends Controller
         $user = Auth::user();
         $roles = Rol::get_roles_by_id_empresa($user->id_empresa);
         $sucursales = Sucursal::get_sucursales_by_id_empresa($user->id_empresa);
-        $almacenes = Almacen::get_almacenes_by_id_empresa($user->id_empresa);
+        // retornamos solo los almacenes que no son inventario de tienda
+        $almacenes = Almacen::get_exclusive_almacenes_by_id_empresa($user->id_empresa);
 
         // Filtrar roles con estado = 1
         $roles = $this->filtrarEstado($roles);
@@ -80,8 +81,14 @@ class NuevoUsuario extends Controller
             'id_rol' => 'required|integer',
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|max:255',
-            'sucursales' => '',
+            'sucursales' => 'nullable|array',
+            'almacenes' => 'nullable|array',
         ]);
+
+        // si no tiene nada tanto el array de sucursales como el de almacenes
+        if(!$data_usuario['sucursales'] && $data_usuario['almacenes']){
+            return $this->error();
+        }
 
         // Convertir DNI a string antes de guardarlo (para que coincida con CHAR(8))
         $data_usuario['dni'] = (string) $data_usuario['dni'];
@@ -89,20 +96,38 @@ class NuevoUsuario extends Controller
         $data_usuario['password'] = Hash::make($data_usuario['password']);
 
         $user = Auth::user();
-        $data_usuario['id_empresa'] = $user->id_empresa;
+        $id_empresa = $user->id_empresa;
+        $data_usuario['id_empresa'] = $id_empresa;
 
         // obtenemos a la empresa
-        $empresa = Empresa::get_empresa_by_id($user->id_empresa);
+        $empresa = Empresa::get_empresa_by_id($id_empresa);
 
         // verificamos que aun pueda seguir registrando usuarios
         if ($empresa->usuarios_registrados >= $empresa->cantidad_usuarios) {
             return $this->errorLimitRegister();
         }
 
-
-        // verificar que el dni del usuario sea único antes de registrar
-        if (Usuario::existencia_usuario_by_dni($data_usuario['dni'], $data_usuario['id_empresa'])) {
+        // Verificar que el dni del usuario sea único antes de registrar
+        if (Usuario::existencia_usuario_by_dni($data_usuario['dni'], $id_empresa)) {
             return $this->errorSameDni();
+        }
+
+        // Verificar que exista cada sucursal
+        if (!empty($data_usuario['sucursales'])) {
+            foreach ($data_usuario['sucursales'] as $id_sucursal) {
+                if (!Sucursal::existencia_sucursal_by_id($id_sucursal, $id_empresa)) {
+                    return $this->error();
+                }
+            }
+        }
+
+        // Verificar que exista cada almacen y que no sea de inventario
+        if (!empty($data_usuario['almacenes'])) {
+            foreach ($data_usuario['almacenes'] as $id_almacen) {
+                if (!Almacen::existencia_exclusive_almacen_by_id($id_almacen, $id_empresa)) {
+                    return $this->error();
+                }
+            }
         }
 
         // verificar que el email del usuario sea único antes de registrar
@@ -110,8 +135,8 @@ class NuevoUsuario extends Controller
             return $this->errorSameEmail();
         }
 
-        // si el no existe
-        $rol = Rol::get_rol_by_id($data_usuario['id_rol'], $data_usuario['id_empresa']);
+        // si el rol no existe
+        $rol = Rol::get_rol_by_id($data_usuario['id_rol'], $id_empresa);
         if (!$rol) {
             return $this->error();
         }
@@ -137,7 +162,6 @@ class NuevoUsuario extends Controller
             ],
         ]);
     }
-
 
     public function errorSameDni(): Response
     {

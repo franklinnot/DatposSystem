@@ -2,6 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import TextInput from "@/Components/TextInput";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
+import MultiSelectInput from "@/Components/MultiSelectInput";
 import SelectInput from "@/Components/SelectInput.jsx";
 import { Head, useForm, usePage } from "@inertiajs/react";
 import PrimaryButton from "@/Components/PrimaryButton";
@@ -15,6 +16,8 @@ export default function NuevoUsuario({ auth }) {
             dni: "",
             nombre: "",
             id_rol: "",
+            almacenes: [],
+            sucursales: [],
             email: "",
             password: "",
         });
@@ -30,10 +33,16 @@ export default function NuevoUsuario({ auth }) {
     }, [toast]);
 
     const lista_roles = usePage()?.props?.roles;
+    const lista_sucursales = usePage()?.props?.sucursales;
+    const lista_almacenes = usePage()?.props?.almacenes;
     const [roles, setRoles] = useState([]);
+    const [sucursales, setSucursales] = useState([]);
+    const [almacenes, setAlmacenes] = useState([]);
 
     useEffect(() => {
         setRoles(lista_roles || []);
+        setSucursales(lista_sucursales || []);
+        setAlmacenes(lista_almacenes || []);
         setData({
             ...data,
             email: "",
@@ -47,9 +56,17 @@ export default function NuevoUsuario({ auth }) {
         setData("id_rol", id_rol);
     };
 
+    const handleSucursalesChange = (e) => {
+        // Actualizar directamente el formulario
+        setData("sucursales", e.target.value);
+    };
+    const handleAlmacenesChange = (e) => {
+        // Actualizar directamente el formulario
+        setData("almacenes", e.target.value);
+    };
+
     const submit = (e) => {
         e.preventDefault();
-
         // Validación simple en cliente; si falta un campo obligatorio no se envía
         if (
             !data.dni ||
@@ -59,6 +76,13 @@ export default function NuevoUsuario({ auth }) {
             !data.password
         ) {
             showToast("Por favor, llena todos los campos.", "error");
+            return;
+        }
+        if (!data.sucursales && !data.almacenes) {
+            showToast(
+                "Selecciona al menos una sucursal o un almacén.",
+                "error"
+            );
             return;
         }
 
@@ -145,6 +169,50 @@ export default function NuevoUsuario({ auth }) {
                             closeOnSelect={true}
                         />
                         <InputError message={errors.rol} className="mt-2" />
+                    </div>
+
+                    {/* Input de Sucursales */}
+                    <div>
+                        <InputLabel
+                            htmlFor="sucursales"
+                            value="Sucursales"
+                            className="font-normal text-[#2B2B2B]"
+                        />
+                        <MultiSelectInput
+                            id="sucursales"
+                            name="sucursales"
+                            options={sucursales}
+                            value={data.sucursales}
+                            onChange={handleSucursalesChange}
+                            placeholder="Selecciona las sucursales..."
+                            isDisabled={processing}
+                        />
+                        <InputError
+                            message={errors.sucursales}
+                            className="mt-2"
+                        />
+                    </div>
+
+                    {/* Input de Almacenes */}
+                    <div>
+                        <InputLabel
+                            htmlFor="almacenes"
+                            value="Almacenes"
+                            className="font-normal text-[#2B2B2B]"
+                        />
+                        <MultiSelectInput
+                            id="almacenes"
+                            name="almacenes"
+                            options={almacenes}
+                            value={data.almacenes}
+                            onChange={handleAlmacenesChange}
+                            placeholder="Selecciona los almacenes..."
+                            closeOnSelect={true}
+                        />
+                        <InputError
+                            message={errors.almacenes}
+                            className="mt-2"
+                        />
                     </div>
 
                     {/* Input de Correo */}

@@ -92,6 +92,15 @@ class Almacen extends Model
         return null;
     }
 
+    public static function existencia_exclusive_almacen_by_id($id_almacen, $id_empresa): ?bool
+    {
+        $result = DB::select("EXEC sp_existencia_exclusive_almacen_by_id @id_almacen = ?, @id_empresa = ?", [$id_almacen, $id_empresa]);
+        if (isset($result[0]->verificar)) {
+            return $result[0]->verificar === 'true';
+        }
+        return null;
+    }
+
     public static function eliminar_almacen_by_id($id_almacen): ?bool
     {
         $result = DB::select("EXEC sp_eliminar_almacen_by_id @id_almacen = ?", [$id_almacen]);
