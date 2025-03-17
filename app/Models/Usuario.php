@@ -59,15 +59,27 @@ class Usuario extends Authenticatable // implements MustVerifyEmail
 
     public static function registrar(array $data): ?Usuario
     {
+        // Convertir el array de accesos en una cadena JSON
+        $sucursalesJson = json_encode(array_map(function ($id_sucursal) {
+            return ['id_sucursal' => $id_sucursal];
+        }, $data['sucursales']));
+
+        // Convertir el array de accesos en una cadena JSON
+        $almacenesJson = json_encode(array_map(function ($id_almacen) {
+            return ['id_almacen' => $id_almacen];
+        }, $data['almacenes']));
+
         $result = DB::select(
             "EXEC sp_registrar_usuario 
-            @dni = ?, @nombre = ?, @email = ?, @password = ?, @id_rol = ?, @id_empresa = ?",
+            @dni = ?, @nombre = ?, @email = ?, @password = ?, @id_rol = ?, @sucursales = ?, @almacenes = ?,@id_empresa = ?",
             [
                 $data['dni'],
                 $data['nombre'],
                 strtolower($data['email']) ?? null,
                 $data['password'] ?? null,
                 $data['id_rol'] ?? null,
+                $sucursalesJson,
+                $almacenesJson,
                 $data['id_empresa']
             ]
         );
