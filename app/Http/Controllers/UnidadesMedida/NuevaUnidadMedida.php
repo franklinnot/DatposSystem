@@ -64,7 +64,7 @@ class NuevaUnidadMedida extends Controller
     public function errorSameCode(): Response
     {
         throw ValidationException::withMessages([
-            'dni' => 'Por favor, intente registrar con otro código.',
+            'codigo' => 'Por favor, intente registrar con otro código.',
         ]);
     }
 
