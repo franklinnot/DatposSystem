@@ -3,6 +3,7 @@
 use App\Http\Controllers\Almacenes\NuevoAlmacen;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Cajas\NuevaCaja;
+use App\Http\Controllers\Familias\NuevaFamilia;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Roles\NuevoRol;
 use App\Http\Controllers\Sucursales\NuevaSucursal;
@@ -309,11 +310,11 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
 
 
         // vista para registrar
-        Route::get('/families/new', [NuevaUnidadMedida::class, 'show'])
+        Route::get('/families/new', [NuevaFamilia::class, 'show'])
             ->name('families/new');
 
         // metodo para registrar
-        Route::post('/families/new', [NuevaUnidadMedida::class, 'store'])
+        Route::post('/families/new', [NuevaFamilia::class, 'store'])
             ->name('families/new');
 
 

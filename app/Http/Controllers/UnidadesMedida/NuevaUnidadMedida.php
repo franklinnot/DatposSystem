@@ -64,7 +64,7 @@ class NuevaUnidadMedida extends Controller
     public function errorSameCode(): Response
     {
         throw ValidationException::withMessages([
-            'dni' => trans('unidades_medida.samecode'),
+            'dni' => 'Por favor, intente registrar con otro código.',
         ]);
     }
 
@@ -73,7 +73,7 @@ class NuevaUnidadMedida extends Controller
         return Inertia::render(self::COMPONENTE, [
             'toast' => [
                 'type' => 'error',
-                'message' => trans('unidades_medida.error'),
+                'message' => 'No fue posible registrar la nueva unidad de medida.',
             ]
         ]);
     }

@@ -94,7 +94,7 @@ class NuevaSucursal extends Controller
     public function errorSameCode(): Response
     {
         throw ValidationException::withMessages([
-            'codigo' => trans('sucursales.samecode'),
+            'codigo' => 'Por favor, intente registrar con otro código.',
         ]);
     }
 
@@ -103,7 +103,7 @@ class NuevaSucursal extends Controller
         return Inertia::render(self::COMPONENTE, [
             'toast' => [
                 'type' => 'error',
-                'message' => trans('sucursales.error'),
+                'message' => 'No fue posible registrar su nueva sucursal.',
             ]
         ]);
     }
@@ -113,7 +113,7 @@ class NuevaSucursal extends Controller
         return Inertia::render(self::COMPONENTE, [
             'toast' => [
                 'type' => 'error',
-                'message' => trans('sucursales.limit_registers'),
+                'message' => 'Ha llegado al límite de sucursales por registrar.',
             ]
         ]);
     }

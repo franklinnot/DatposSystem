@@ -166,14 +166,14 @@ class NuevoUsuario extends Controller
     public function errorSameDni(): Response
     {
         throw ValidationException::withMessages([
-            'dni' => trans('usuarios.samedni'),
+            'dni' => 'Por favor, intente registrar con otro DNI.',
         ]);
     }
 
     public function errorSameEmail(): Response
     {
         throw ValidationException::withMessages([
-            'email' => trans('usuarios.sameemail'),
+            'email' => 'Por favor, intente registrar con otro correo.',
         ]);
     }
 
@@ -182,7 +182,7 @@ class NuevoUsuario extends Controller
         return Inertia::render(self::COMPONENTE, [
             'toast' => [
                 'type' => 'error',
-                'message' => trans('usuarios.limit_registers'),
+                'message' => 'Ha llegado al límite de usuarios por registrar.',
             ]
         ]);
     }
@@ -192,7 +192,7 @@ class NuevoUsuario extends Controller
         return Inertia::render(self::COMPONENTE, [
             'toast' => [
                 'type' => 'error',
-                'message' => trans('usuarios.error'),
+                'message' => 'No fue posible registrar al nuevo usuario.',
             ]
         ]);
     }

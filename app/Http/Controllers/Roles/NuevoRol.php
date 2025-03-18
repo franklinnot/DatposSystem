@@ -98,7 +98,7 @@ class NuevoRol extends Controller
     public function errorSameName(): Response
     {
         throw ValidationException::withMessages([
-            'nombre' => trans('roles.samename'),
+            'nombre' => 'Por favor, intente registrar con otro nombre.',
         ]);
     }
 
@@ -107,7 +107,7 @@ class NuevoRol extends Controller
         return Inertia::render(self::COMPONENTE, [
             'toast' => [
                 'type' => 'error',
-                'message' => trans('roles.error'),
+                'message' => 'No fue posible registrar su nuevo rol.',
             ]
         ]);
     }

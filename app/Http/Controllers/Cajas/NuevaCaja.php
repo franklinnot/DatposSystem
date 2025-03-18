@@ -93,7 +93,7 @@ class NuevaCaja extends Controller
     public function errorSameCode(): Response
     {
         throw ValidationException::withMessages([
-            'codigo' => trans('cajas.samecode'),
+            'codigo' => 'Por favor, intente registrar con otro código.',
         ]);
     }
 
@@ -102,7 +102,7 @@ class NuevaCaja extends Controller
         return Inertia::render(self::COMPONENTE, [
             'toast' => [
                 'type' => 'error',
-                'message' => trans('cajas.error'),
+                'message' => 'No fue posible registrar su nueva caja.',
             ]
         ]);
     }

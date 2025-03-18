@@ -65,7 +65,7 @@ class NuevoAlmacen extends Controller
     public function errorSameCode(): Response
     {
         throw ValidationException::withMessages([
-            'codigo' => trans('almacenes.samecode'),
+            'codigo' => 'Por favor, intente registrar con otro código.',
         ]);
     }
 
@@ -74,7 +74,7 @@ class NuevoAlmacen extends Controller
         return Inertia::render(self::COMPONENTE, [
             'toast' => [
                 'type' => 'error',
-                'message' => trans('almacenes.error'),
+                'message' => 'No fue posible registrar su nuevo almacén.',
             ]
         ]);
     }
