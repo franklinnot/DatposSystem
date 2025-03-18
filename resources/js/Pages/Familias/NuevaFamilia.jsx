@@ -14,7 +14,7 @@ export default function NuevaFamilia({ auth }) {
     const { data, setData, post, reset, processing, errors } = useForm({
         nombre: "",
         codigo: "",
-        color: "#ffffff",
+        color: "",
     });
 
     const { toast } = usePage().props;
@@ -31,7 +31,7 @@ export default function NuevaFamilia({ auth }) {
         e.preventDefault();
 
         // Validación simple en cliente; si falta un campo obligatorio no se envía
-        if (!data.nombre || !data.codigo) {
+        if (!data.nombre || !data.codigo) {23  
             showToast("Por favor, llena todos los campos obligatorios.", "error");
             return;
         }
