@@ -84,7 +84,7 @@ export default function NuevaFamilia({ auth }) {
                     <div>
                         <InputLabel
                             htmlFor="codigo"
-                            value="Código"
+                            value="Código de SUNAT"
                             className="font-normal text-[#2B2B2B]"
                         />
                         <TextInput

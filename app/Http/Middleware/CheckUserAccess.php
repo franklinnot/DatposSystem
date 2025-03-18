@@ -25,30 +25,25 @@ class CheckUserAccess
 
         // Verificar si el usuario está autenticado
         if (!$user) {
-            return redirect()->route('login');
+            return Inertia::location(route('login'));
         }
 
         // Verificar que el usuario esté activo (estado = 1)
         if ($user->estado != '1') {
-            Auth::logout();
-            return Inertia::render('Auth/Login', [
-                'toast' => [
-                    'message' => 'Tu cuenta está inactiva.',
-                    'type' => 'error',
-                ],
-            ]);
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return Inertia::location(route('login'));
         }
 
         // verificar que la empresa este activa
         $empresa = Empresa::get_empresa_by_id($user->id_empresa);
         if (!$empresa || $empresa->estado != 1) {
-            Auth::logout();
-            return Inertia::render('Auth/Login', [
-                'toast' => [
-                    'message' => 'Tu cuenta está inactiva.',
-                    'type' => 'error',
-                ],
-            ]);
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return Inertia::location(route('login'));
         }
 
         $currentRoute = rtrim($request->path(), '/');
