@@ -39,7 +39,7 @@ class CheckUserAccess
 
         // verificar que la empresa este activa
         $empresa = Empresa::get_empresa_by_id($user->id_empresa);
-        if (!$empresa || $empresa->estado != 1) {
+        if (!$empresa || $empresa->estado == 0) {
             Auth::guard('web')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
@@ -50,16 +50,17 @@ class CheckUserAccess
 
         // Obtener las rutas permitidas para el usuario según su rol
         $accesos = Rol::get_accesos_rol_by_id($user->id_rol, $user->id_empresa);
-
-        // Si no hay accesos definidos para el rol, redirigir al perfil
-        if (!$accesos) {
-            return redirect()->route('profile')->with('error', 'No tienes accesos asignados.');
-        }
-
+        
         // Filtrar los accesos para incluir solo aquellos con estado activo (estado = 1)
         $accesos = array_filter($accesos, function ($acceso) {
             return $acceso->estado == '1';
         });
+
+
+        // Si no hay accesos definidos para el rol, redirigir al perfil
+        if (!$accesos) {
+            return Inertia::location(route('profile'));
+        }
 
         // Extraer las rutas permitidas del array de objetos Acceso
         $accesos = array_map(function ($acceso) {

@@ -66,16 +66,19 @@ class NuevoRol extends Controller
     public function store(Request $request): Response
     {
         $data_rol = $request->validate([
+            'codigo' => 'required|string|max:24',
             'nombre' => 'required|string|max:64',
+            'descripcion' => 'nullable|string|max:255',
             'subrutas' => 'required|array',
         ]);
 
         $user = Auth::user();
-        $data_rol['id_empresa'] = $user->id_empresa;
+        $id_empresa = $user->id_empresa;
+        $data_rol['id_empresa'] = $id_empresa;
 
         // verificar que el nombre no exista antes de registrar
-        if (Rol::existencia_rol_by_nombre($data_rol['nombre'], $data_rol['id_empresa'])) {
-            return $this->errorSameName();
+        if (Rol::existencia_rol_by_codigo($data_rol['codigo'], $id_empresa)) {
+            return $this->errorSameCode();
         }
 
         // registramos el nuevo rol
@@ -95,7 +98,7 @@ class NuevoRol extends Controller
         ]);
     }
 
-    public function errorSameName(): Response
+    public function errorSameCode(): Response
     {
         throw ValidationException::withMessages([
             'nombre' => 'Por favor, intente registrar con otro nombre.',

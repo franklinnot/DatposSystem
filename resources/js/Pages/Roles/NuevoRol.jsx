@@ -13,7 +13,9 @@ import GuestLayout from "@/Layouts/GuestLayout";
 
 export default function NuevoRol({ auth }) {
     const { data, setData, post, reset, processing, errors } = useForm({
+        codigo: "",
         nombre: "",
+        descripcion: "",
         subrutas: [], // Array para almacenar los IDs de las subrutas seleccionadas
     });
 
@@ -68,8 +70,11 @@ export default function NuevoRol({ auth }) {
         e.preventDefault();
 
         // Validación simple en cliente
-        if (!data.nombre || data.subrutas.length === 0) {
-            showToast("Por favor, llena todos los campos.", "error");
+        if (!data.nombre || !data.codigo || data.subrutas.length === 0) {
+            showToast(
+                "Por favor, llena todos los campos obligatorios.",
+                "error"
+            );
             return;
         }
 
@@ -117,11 +122,56 @@ export default function NuevoRol({ auth }) {
                         <InputError message={errors.nombre} className="mt-2" />
                     </div>
 
+                    {/* Input de Codigo */}
+                    <div>
+                        <InputLabel
+                            htmlFor="codigo"
+                            value="Código"
+                            className="font-normal text-[#2B2B2B]"
+                        />
+                        <TextInput
+                            id="codigo"
+                            type="text"
+                            name="codigo"
+                            value={data.codigo}
+                            className="mt-1 block w-full"
+                            isFocused={true}
+                            onChange={(e) =>
+                                setData("codigo", e.target.value.toUpperCase())
+                            }
+                        />
+                        <InputError message={errors.codigo} className="mt-2" />
+                    </div>
+
+                    {/* Input de Descripcion */}
+                    <div>
+                        <InputLabel
+                            htmlFor="descripcion"
+                            value="Descripción (opcional)"
+                            className="font-normal text-[#2B2B2B]"
+                        />
+                        <TextInput
+                            id="descripcion"
+                            type="text"
+                            name="descripcion"
+                            value={data.descripcion}
+                            className="mt-1 block w-full"
+                            isFocused={true}
+                            onChange={(e) =>
+                                setData(
+                                    "descripcion",
+                                    e.target.value.toUpperCase()
+                                )
+                            }
+                        />
+                        <InputError message={errors.codigo} className="mt-2" />
+                    </div>
+
                     {/* Input de Ruta Padre */}
                     <div>
                         <InputLabel
                             htmlFor="ruta"
-                            value="Ruta"
+                            value="Accesos"
                             className="font-normal text-[#2B2B2B]"
                         />
                         <SelectInput
@@ -177,7 +227,7 @@ export default function NuevoRol({ auth }) {
                     </div>
 
                     {/* Botón de Registrar */}
-                    <div className="grid grid-flow-row items-center mt-1">
+                    <div className="grid grid-flow-row items-center">
                         <PrimaryButton
                             className="font-medium text-md w-full justify-center rounded-lg bg-gradient-to-r from-[#0B6ACB] via-[#0875E4] to-[#0B6ACB] hover:bg-[#3c78fa] focus:ring-[#3c78fa]"
                             disabled={processing}

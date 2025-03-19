@@ -15,7 +15,9 @@ class Rol extends Model
     protected $primaryKey = 'id_rol';
     protected $fillable = [
         'id_rol',
+        'codigo',
         'nombre',
+        'descripcion',
         'estado',
         'id_empresa',
     ];
@@ -33,9 +35,11 @@ class Rol extends Model
         // Realizar la ejecución del procedimiento almacenado
         $result = DB::select(
             "EXEC sp_registrar_rol 
-            @nombre = ?, @accesos = ?, @id_empresa = ?",
+            @codigo = ?, @nombre = ?, @descripcion = ?, @accesos = ?, @id_empresa = ?",
             [
+                strtoupper($data['codigo']),
                 $data['nombre'],
+                $data['descripcion'] ?? null,
                 $accesosJson,
                 $data['id_empresa'],
             ]
@@ -66,10 +70,10 @@ class Rol extends Model
         }, $result) : null;  // Array de Roles[] o null
     }
 
-    public static function existencia_rol_by_nombre($nombre, $id_empresa): ?bool
+    public static function existencia_rol_by_codigo($codigo, $id_empresa): ?bool
     {
-        $result = DB::select("EXEC sp_existencia_rol_by_nombre @nombre = ?, @id_empresa = ?", [
-            strtolower($nombre),
+        $result = DB::select("EXEC sp_existencia_rol_by_codigo @codigo = ?, @id_empresa = ?", [
+            strtolower($codigo),
             $id_empresa
         ]);
         if (isset($result[0]->verificar)) {
