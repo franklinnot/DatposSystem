@@ -29,11 +29,13 @@ class Familia extends Model
     {
         $result = DB::select(
             "EXEC sp_registrar_familia 
-            @codigo = ?, @nombre = ?, @color = ?, @id_empresa = ?",
+            @codigo = ?, @nombre = ?, @descripcion = ?, @color = ?, @id_tipo_producto = ?, @id_empresa = ?",
             [
                 strtoupper($data['codigo']),
                 $data['nombre'],
+                $data['descripcion'],
                 $data['color'] ?? null,
+                $data['id_tipo_producto'],
                 $data['id_empresa']
             ]
         );

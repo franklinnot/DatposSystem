@@ -158,13 +158,13 @@ export default function NuevoRol({ auth }) {
                             className="mt-1 block w-full"
                             isFocused={true}
                             onChange={(e) =>
-                                setData(
-                                    "descripcion",
-                                    e.target.value.toUpperCase()
-                                )
+                                setData("descripcion", e.target.value)
                             }
                         />
-                        <InputError message={errors.codigo} className="mt-2" />
+                        <InputError
+                            message={errors.descripcion}
+                            className="mt-2"
+                        />
                     </div>
 
                     {/* Input de Ruta Padre */}

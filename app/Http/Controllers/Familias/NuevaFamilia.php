@@ -8,6 +8,7 @@ use App\Models\Caja;
 use App\Models\Empresa;
 use App\Models\Familia;
 use App\Models\Sucursal;
+use App\Models\TipoProducto;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -24,7 +25,24 @@ class NuevaFamilia extends Controller
 
     public function show(): Response
     {
-        return Inertia::render(self::COMPONENTE);
+        $tipos = TipoProducto::get_tipos_productos();
+
+        // Filtrar sucursales con estado = 1
+        $tipos = array_filter($tipos, function ($tipo) {
+            return $tipo->estado == '1';
+        });
+
+        // Mapear los datos a la estructura requerida
+        $tipos_mapeados = array_map(function ($tipo) {
+            return [
+                'id' => $tipo->id_tipo_producto,
+                'name' => $tipo->nombre,
+            ];
+        }, $tipos);
+
+        return Inertia::render(self::COMPONENTE, [
+            'tipos_productos' => $tipos_mapeados,
+        ]);
     }
 
     public function store(Request $request): Response
@@ -32,7 +50,9 @@ class NuevaFamilia extends Controller
         $data_familia = $request->validate([
             'nombre' => 'required|string|max:128',
             'codigo' => 'required|string|max:24',
+            'descripcion' => 'nullable|string|max:255',
             'color' => 'nullable|hex_color',
+            'id_tipo_producto' => 'required|integer',
         ]);
 
         $user = Auth::user();
@@ -43,6 +63,11 @@ class NuevaFamilia extends Controller
         // verificar que el código  sea único antes de registrar
         if (Familia::existencia_familia_by_codigo($data_familia['codigo'], $id_empresa)) {
             return $this->errorSameCode();
+        }
+
+        // verificar que el id del tipo de producto exista
+        if(!TipoProducto::existencia_tipo_producto_by_id($data_familia['id_tipo_producto'])){
+            return $this->error();
         }
 
         // registramos la nueva caja

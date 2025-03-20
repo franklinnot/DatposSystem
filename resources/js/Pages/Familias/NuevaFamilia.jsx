@@ -14,11 +14,26 @@ export default function NuevaFamilia({ auth }) {
     const { data, setData, post, reset, processing, errors } = useForm({
         nombre: "",
         codigo: "",
+        descripcion: "",
         color: "",
+        id_tipo_producto: "",
     });
 
     const { toast } = usePage().props;
     const { showToast, ToastComponent } = useToast();
+
+    const lista_tipos = usePage()?.props?.tipos_productos;
+    const [tipos, setTipos] = useState([]);
+
+    useEffect(() => {
+        setTipos(lista_tipos || []);
+    }, []);
+
+    // Se utiliza el manejo de cambios para la sucursal
+    const handleTipoChange = (e) => {
+        const id_tipo = e.target.value;
+        setData("id_tipo_producto", id_tipo);
+    };
 
     // Mostrar toast si hay respuesta del servidor
     useEffect(() => {
@@ -31,8 +46,12 @@ export default function NuevaFamilia({ auth }) {
         e.preventDefault();
 
         // Validación simple en cliente; si falta un campo obligatorio no se envía
-        if (!data.nombre || !data.codigo) {23  
-            showToast("Por favor, llena todos los campos obligatorios.", "error");
+        if (!data.nombre || !data.codigo || !data.id_tipo_producto) {
+            23;
+            showToast(
+                "Por favor, llena todos los campos obligatorios.",
+                "error"
+            );
             return;
         }
 
@@ -98,6 +117,49 @@ export default function NuevaFamilia({ auth }) {
                             }
                         />
                         <InputError message={errors.codigo} className="mt-2" />
+                    </div>
+
+                    {/* Input de Tipo de producto */}
+                    <div>
+                        <InputLabel
+                            htmlFor="tipo_producto"
+                            value="Tipo de Producto"
+                            className="font-normal text-[#2B2B2B]"
+                        />
+                        <SelectInput
+                            id="tipo_producto"
+                            name="tipo_producto"
+                            options={tipos}
+                            value={data.id_tipo_producto}
+                            onChange={handleTipoChange}
+                            placeholder="Selecciona una tipo de producto"
+                            closeOnSelect={true}
+                        />
+                        <InputError message={errors.id_tipo_producto} />
+                    </div>
+
+                    {/* Input de Descripcion */}
+                    <div>
+                        <InputLabel
+                            htmlFor="descripcion"
+                            value="Descripción (opcional)"
+                            className="font-normal text-[#2B2B2B]"
+                        />
+                        <TextInput
+                            id="descripcion"
+                            type="text"
+                            name="descripcion"
+                            value={data.descripcion}
+                            className="mt-1 block w-full"
+                            isFocused={true}
+                            onChange={(e) =>
+                                setData("descripcion", e.target.value)
+                            }
+                        />
+                        <InputError
+                            message={errors.descripcion}
+                            className="mt-2"
+                        />
                     </div>
 
                     {/* Input de Color */}

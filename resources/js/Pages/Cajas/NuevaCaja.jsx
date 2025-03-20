@@ -105,7 +105,9 @@ export default function NuevaCaja({ auth }) {
                             name="codigo"
                             value={data.codigo}
                             className="mt-1 block w-full"
-                            onChange={(e) => setData("codigo", e.target.value.toUpperCase())}
+                            onChange={(e) =>
+                                setData("codigo", e.target.value.toUpperCase())
+                            }
                         />
                         <InputError message={errors.codigo} className="mt-2" />
                     </div>
@@ -126,7 +128,7 @@ export default function NuevaCaja({ auth }) {
                             placeholder="Selecciona una sucursal"
                             closeOnSelect={true}
                         />
-                        <InputError message={errors.departamento} />
+                        <InputError message={errors.id_sucursal} />
                     </div>
 
                     {/* Botón de Registrar */}
