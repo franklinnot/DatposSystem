@@ -4,6 +4,7 @@ use App\Http\Controllers\Almacenes\NuevoAlmacen;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Cajas\NuevaCaja;
 use App\Http\Controllers\Familias\NuevaFamilia;
+use App\Http\Controllers\Productos\NuevoProducto;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Roles\NuevoRol;
 use App\Http\Controllers\Sucursales\NuevaSucursal;
@@ -333,6 +334,41 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
         Route::post('/families/delete', function () {
             return Inertia::render('Dashboard');
         })->name('families/delete');
+
+        #endregion
+
+        #region Productos
+
+        // vista para listar
+        Route::get('/products', function () {
+            return Inertia::render('Dashboard');
+        })->name('products');
+
+
+        // vista para registrar
+        Route::get('/products/new', [NuevoProducto::class, 'show'])
+            ->name('products/new');
+
+        // metodo para registrar
+        Route::post('/products/new', [NuevoProducto::class, 'store'])
+            ->name('products/new');
+
+
+        // vista para editar
+        Route::get('/products/edit', function () {
+            return Inertia::render('Dashboard');
+        })->name('products/edit');
+
+        // metodo para editar 
+        Route::patch('/products/edit', function () {
+            return Inertia::render('Dashboard');
+        });
+
+
+        // metodo para eliminar
+        Route::post('/products/delete', function () {
+            return Inertia::render('Dashboard');
+        })->name('products/delete');
 
         #endregion
 
