@@ -57,4 +57,12 @@ class UnidadMedida extends Model
         return null;
     }
 
+    public static function get_unidades_by_id_empresa($id_empresa): ?array
+    {
+        $result = DB::select("EXEC sp_get_unidades_medida_by_id_empresa @id_empresa = ?", [$id_empresa]);
+        return $result ? array_map(function ($item) {
+            return new UnidadMedida((array) $item);
+        }, $result) : null;
+    }
+
 }

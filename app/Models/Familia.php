@@ -51,4 +51,16 @@ class Familia extends Model
         }
         return null;
     }
+
+
+    public static function get_familias_by_id_empresa($id_empresa): ?array
+    {
+        $result = DB::select("EXEC sp_get_familias_by_id_empresa @id_empresa = ?", [$id_empresa]);
+        return $result ? array_map(function ($item) {
+            return new Familia((array) $item);
+        }, $result) : null;
+    }
+
+
+
 }
