@@ -135,7 +135,6 @@ export default function NuevoRol({ auth }) {
                             name="codigo"
                             value={data.codigo}
                             className="mt-1 block w-full"
-                            isFocused={true}
                             onChange={(e) =>
                                 setData("codigo", e.target.value.toUpperCase())
                             }
@@ -156,7 +155,6 @@ export default function NuevoRol({ auth }) {
                             name="descripcion"
                             value={data.descripcion}
                             className="mt-1 block w-full"
-                            isFocused={true}
                             onChange={(e) =>
                                 setData("descripcion", e.target.value)
                             }

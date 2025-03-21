@@ -238,7 +238,7 @@ export default function NuevaSucursal({ auth }) {
                         />
                         <TextInput
                             id="telefono"
-                            type="text"
+                            type="tel"
                             name="telefono"
                             value={data.telefono}
                             className="mt-1 block w-full"

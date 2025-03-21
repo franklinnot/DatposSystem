@@ -151,7 +151,6 @@ export default function NuevaFamilia({ auth }) {
                             name="descripcion"
                             value={data.descripcion}
                             className="mt-1 block w-full"
-                            isFocused={true}
                             onChange={(e) =>
                                 setData("descripcion", e.target.value)
                             }
