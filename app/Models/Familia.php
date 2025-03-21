@@ -18,8 +18,10 @@ class Familia extends Model
         'id_familia',
         'codigo',
         'nombre',
+        'descripcion',
         'color',
         'estado',
+        'id_tipo_producto',
         'id_empresa'
 
     ];
