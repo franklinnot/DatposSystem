@@ -67,11 +67,11 @@ export default function ImageInput({ className = "", onChange, ...props }) {
                     <img
                         src={image}
                         alt="Preview"
-                        className="h-full w-full object-cover rounded-lg"
+                        className="h-full w-full object-contain rounded-lg"
                     />
                     <button
                         onClick={handleRemoveImage}
-                        className="absolute top-[-0.5rem] right-[-0.5rem] text-xs pt-[0.29rem] w-6 h-6 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition"
+                        className="absolute top-[-0.5rem] focus:outline-[#e46b08] right-[-0.5rem] text-xs pt-[0.29rem] w-6 h-6 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition"
                     >
                         ✕
                     </button>
