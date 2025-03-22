@@ -22,6 +22,12 @@ class TipoProducto extends Model
     ];
     #endregion
 
+    public static function get_tipo_producto_by_id($id_tipo_producto): ?TipoProducto
+    {
+        $result = DB::select("EXEC sp_get_tipo_producto_by_id @id_tipo_producto = ?", [$id_tipo_producto]);
+        return $result ? new TipoProducto((array) $result[0]) : null;
+    }
+
     public static function get_tipos_productos(): ?array
     {
         $result = DB::select("EXEC sp_get_tipos_productos");

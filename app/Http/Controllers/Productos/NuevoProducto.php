@@ -29,7 +29,6 @@ class NuevoProducto extends Controller
         $user = Auth::user();
         $id_empresa = $user->id_empresa;
 
-        $tipos_productos = TipoProducto::get_tipos_productos();
         $familias = Familia::get_familias_by_id_empresa($id_empresa);
         $unidades = UnidadMedida::get_unidades_by_id_empresa($id_empresa);
 
@@ -37,15 +36,13 @@ class NuevoProducto extends Controller
         $familias = array_filter($familias, fn($familia) => $familia->estado == '1');
         $unidades= array_filter($unidades, fn($unidad) => $unidad->estado == '1');
 
-        // Crear un índice para buscar los tipos de productos más rápido
-        $tipos_indexados = array_column($tipos_productos, 'nombre', 'id_tipo_producto');
-
         // Transformar las familias en el nuevo formato
-        $resultado = array_map(function ($familia) use ($tipos_indexados) {
+        $resultado = array_map(function ($familia){
+            $tipo_producto = TipoProducto::get_tipo_producto_by_id($familia->id_tipo_producto);
             return [
                 'id'   => $familia->id_familia,
                 'name' => $familia->nombre,
-                'tipo' => strtolower($tipos_indexados[$familia->id_tipo_producto] ?? 'desconocido')
+                'tipo' => strtolower($tipo_producto->nombre),
             ];
         }, $familias);
 

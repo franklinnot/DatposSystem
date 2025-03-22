@@ -37,7 +37,11 @@ export default forwardRef(function TextInput(
             value={inputValue}
             onChange={handleChange}
             className={`
-                ${hasValue ? "bg-[#e8f0fe]" : "bg-[#f2f2f2]"} 
+                ${
+                    hasValue
+                        ? "bg-[#e8f0fe] text-inherit"
+                        : "bg-[#f2f2f2] text-gray-500"
+                } 
                 border-0 focus:border-[#0875E4] focus:ring-[#0875E4] 
                 rounded-lg shadow-sm ${className}
             `}
