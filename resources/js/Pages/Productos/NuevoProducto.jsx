@@ -194,8 +194,8 @@ export default function NuevoProducto({ auth }) {
                             id="imagen"
                             name="imagen"
                             className="mt-1 block w-full"
-                            // Aquí se recibe el string Base64 y se almacena en el estado
-                            onChange={(base64) => setData("imagen", base64)}
+                            // Ahora el componente retorna el objeto File, no un string Base64
+                            onChange={(file) => setData("imagen", file)}
                         />
                         <InputError message={errors.imagen} className="mt-2" />
                     </div>

@@ -1,35 +1,17 @@
 import { useState, useRef, useCallback } from "react";
 
 export default function ImageInput({ className = "", onChange, ...props }) {
-    const [image, setImage] = useState(null);
+    const [preview, setPreview] = useState(null);
     const inputRef = useRef();
 
-    // Función que convierte el archivo a Base64 usando una promesa.
-    const fileToBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-        });
-    };
-
-    // Función asíncrona para manejar el cambio de imagen.
     const handleImageChange = useCallback(
-        async (e) => {
+        (e) => {
             const file = e.target.files[0];
             if (file) {
-                try {
-                    const base64 = await fileToBase64(file);
-                    setImage(base64);
-                    // Envía el string en base64 a través de onChange para el registro en la base de datos.
-                    onChange?.(base64);
-                } catch (error) {
-                    console.error(
-                        "Error al convertir la imagen a Base64:",
-                        error
-                    );
-                }
+                // Crear una URL para la vista previa
+                setPreview(URL.createObjectURL(file));
+                // Enviar el objeto File a través del onChange
+                onChange?.(file);
             }
         },
         [onChange]
@@ -42,8 +24,11 @@ export default function ImageInput({ className = "", onChange, ...props }) {
     const handleRemoveImage = useCallback(
         (e) => {
             e.stopPropagation();
-            setImage(null);
+            setPreview(null);
             onChange?.(null);
+            if (inputRef.current) {
+                inputRef.current.value = ""; // Reinicia el input file
+            }
         },
         [onChange]
     );
@@ -62,16 +47,16 @@ export default function ImageInput({ className = "", onChange, ...props }) {
                 onChange={handleImageChange}
                 {...props}
             />
-            {image ? (
+            {preview ? (
                 <>
                     <img
-                        src={image}
+                        src={preview}
                         alt="Preview"
                         className="h-full w-full object-contain rounded-lg"
                     />
                     <button
                         onClick={handleRemoveImage}
-                        className="absolute top-[-0.5rem] focus:outline-[#e46b08] right-[-0.5rem] text-xs pt-[0.29rem] w-6 h-6 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition"
+                        className="absolute top-[-0.5rem] right-[-0.5rem] text-xs pt-[0.29rem] w-6 h-6 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition"
                     >
                         ✕
                     </button>
