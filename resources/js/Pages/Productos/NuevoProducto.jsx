@@ -9,6 +9,7 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import { useEffect, useState } from "react";
 import Checkbox from "@/Components/Checkbox";
 import { Inertia } from "@inertiajs/inertia";
+import ProductVariants from "@/Components/ProductVariants";
 import ImageInput from "@/Components/ImageInput";
 import useToast from "@/Components/Toast";
 
@@ -28,6 +29,8 @@ export default function NuevoProducto({ auth }) {
             fecha_vencimiento: "",
             alerta_stock: "",
             alerta_vencimiento: "",
+            //
+            variantes: [],
         });
 
     const { toast } = usePage().props;
@@ -60,7 +63,19 @@ export default function NuevoProducto({ auth }) {
             setEsBien(true);
         } else {
             setEsBien(false);
+            reset(
+                "id_unidad_medida",
+                "stock_minimo",
+                "stock_maximo",
+                "fecha_vencimiento",
+                "alerta_stock",
+                "alerta_vencimiento"
+            );
         }
+    };
+
+    const handleVariantsChange = (newVariants) => {
+        setData("variantes", newVariants);
     };
 
     const submit = (e) => {
@@ -75,7 +90,7 @@ export default function NuevoProducto({ auth }) {
             return;
         }
 
-        if(data.id_familia && es_bien && !data.id_unidad_medida){
+        if (data.id_familia && es_bien && !data.id_unidad_medida) {
             showToast(
                 "Por favor, llena todos los campos obligatorios.",
                 "error"
@@ -107,7 +122,7 @@ export default function NuevoProducto({ auth }) {
                     "stock_maximo",
                     "fecha_vencimiento",
                     "alerta_stock",
-                    "alerta_vencimiento",
+                    "alerta_vencimiento"
                 );
             },
         });
@@ -366,6 +381,22 @@ export default function NuevoProducto({ auth }) {
                             </div>
                         </>
                     )}
+
+                    {/* Input de variantes */}
+                    <div>
+                        <InputLabel
+                            htmlFor="variantes"
+                            value="Variantes (opcional)"
+                            className="font-normal text-[#2B2B2B]"
+                        />
+                        <ProductVariants
+                            onVariantsChange={handleVariantsChange}
+                        />
+                        <InputError
+                            message={errors.variantes}
+                            className="mt-2"
+                        />
+                    </div>
 
                     {/* Botón de Registrar */}
                     <div className="grid grid-flow-row items-center mt-2">
