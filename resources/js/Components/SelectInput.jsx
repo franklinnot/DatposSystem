@@ -25,24 +25,20 @@ export default forwardRef(function SelectInput(
     }, [value]);
 
     useEffect(() => {
-        if (!searchTerm.trim()) {
-            setFilteredOptions(options);
-            return;
-        }
-
-        const filtered = options.filter((option) =>
-            option.name.toLowerCase().includes(searchTerm.toLowerCase())
+        setFilteredOptions(
+            searchTerm.trim()
+                ? options.filter((option) =>
+                      option.name
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                  )
+                : options
         );
-        setFilteredOptions(filtered);
     }, [options, searchTerm]);
 
     useEffect(() => {
         if (isOpen) {
-            if (filteredOptions.length === 0) {
-                setHighlightedIndex(-1);
-                return;
-            }
-            setHighlightedIndex(-1); // Ya no se selecciona automáticamente ningún índice
+            setHighlightedIndex(-1);
         } else {
             setHighlightedIndex(-1);
         }
@@ -50,9 +46,7 @@ export default forwardRef(function SelectInput(
 
     useEffect(() => {
         if (isOpen && searchInputRef.current) {
-            setTimeout(() => {
-                searchInputRef.current.focus();
-            }, 10);
+            setTimeout(() => searchInputRef.current.focus(), 10);
         } else {
             setSearchTerm("");
         }
@@ -75,9 +69,7 @@ export default forwardRef(function SelectInput(
 
     useEffect(() => {
         const handleKeyUp = (e) => {
-            if (e.key === "Escape") {
-                setIsOpen(false);
-            }
+            if (e.key === "Escape") setIsOpen(false);
         };
 
         document.addEventListener("keyup", handleKeyUp);
@@ -88,20 +80,21 @@ export default forwardRef(function SelectInput(
         if (!isOpen) return;
 
         const handleKeyDown = (e) => {
-            if (e.key === "ArrowDown") {
+            if (["ArrowDown", "Tab"].includes(e.key)) {
                 e.preventDefault();
                 if (filteredOptions.length === 0) return;
-                setHighlightedIndex((prev) => {
-                    if (prev === -1) return 0;
-                    return prev >= filteredOptions.length - 1 ? 0 : prev + 1;
-                });
+                setHighlightedIndex((prev) =>
+                    prev === -1 ? 0 : (prev + 1) % filteredOptions.length
+                );
             } else if (e.key === "ArrowUp") {
                 e.preventDefault();
                 if (filteredOptions.length === 0) return;
-                setHighlightedIndex((prev) => {
-                    if (prev === -1) return filteredOptions.length - 1;
-                    return prev <= 0 ? filteredOptions.length - 1 : prev - 1;
-                });
+                setHighlightedIndex((prev) =>
+                    prev === -1
+                        ? filteredOptions.length - 1
+                        : (prev - 1 + filteredOptions.length) %
+                          filteredOptions.length
+                );
             } else if (e.key === "Enter") {
                 e.preventDefault();
                 if (
@@ -122,9 +115,7 @@ export default forwardRef(function SelectInput(
             const options =
                 optionsListRef.current.querySelectorAll('[role="option"]');
             if (options[highlightedIndex]) {
-                options[highlightedIndex].scrollIntoView({
-                    block: "nearest",
-                });
+                options[highlightedIndex].scrollIntoView({ block: "nearest" });
             }
         }
     }, [highlightedIndex]);
@@ -142,7 +133,7 @@ export default forwardRef(function SelectInput(
         <div className={`relative ${className}`} ref={dropdownRef}>
             <div
                 className={`
-                    cursor-pointer flex items-center justify-between mt-1 py-3 px-4 max-h-10 outline-1 focus:outline focus:outline-[#0875E4] focus:ring-[#0875E4]  rounded-lg 
+                    cursor-pointer flex items-center justify-between mt-1 py-3 px-4 max-h-10 outline-1 focus:outline focus:outline-[#0875E4] focus:ring-[#0875E4] rounded-lg 
                     ${hasValue ? "bg-[#e8f0fe]" : "bg-[#f2f2f2]"}
                     ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}
                 `}
@@ -218,15 +209,12 @@ export default forwardRef(function SelectInput(
                                     key={option.id}
                                     role="option"
                                     aria-selected={option.id === selectedValue}
-                                    className={`
-                                        px-4 py-3 hover:bg-[#e3ebff] text-gray-500 cursor-pointer
-                                        ${
-                                            option.id === selectedValue ||
-                                            index === highlightedIndex
-                                                ? "bg-[#e3ebff]"
-                                                : ""
-                                        }
-                                    `}
+                                    className={`px-4 py-3 hover:bg-[#e3ebff] text-gray-500 cursor-pointer ${
+                                        option.id === selectedValue ||
+                                        index === highlightedIndex
+                                            ? "bg-[#e3ebff]"
+                                            : ""
+                                    }`}
                                     onClick={() => handleChange(option.id)}
                                     onKeyDown={(e) => {
                                         if (
