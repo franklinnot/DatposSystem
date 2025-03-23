@@ -80,16 +80,40 @@ class NuevoProducto extends Controller
             ],
             'imagen' => 'nullable|image',
             'isc' => 'nullable|numeric|min:0',
-            'tiene_igv' => 'required|',
+            'tiene_igv' => 'required|boolean',
             //
-            'id_unidad_medida' => '',
-            'stock_minimo' => '',
-            'stock_maximo' => '',
-            'fecha_vencimiento' => '',
-            'alerta_stock' => '',
-            'alerta_vencimiento' => '',
+            'id_unidad_medida' => [
+                'nullable',
+                'integer',
+                Rule::exists('unidad_medida', 'id_unidad_medida')->where(function ($query) use ($id_empresa) {
+                    return $query->where('id_empresa', $id_empresa);
+                }),
+            ],
+            'stock_minimo' => 'nullable|numeric|min:0',
+            'stock_maximo' => 'nullable|numeric|min:0',
+            'fecha_vencimiento' => 'nullable|date',
+            'alerta_stock' => 'nullable|boolean',
+            'alerta_vencimiento' => 'nullable|boolean',
         ]);
 
+        $tipo = TipoProducto::get_tipo_producto_by_id($data_producto['id_familia']);
+        if(!$tipo){
+            $this->error();
+        }
+        else if(strtolower($tipo->nombre) == 'bien' && !$data_producto['id_unidad_medida']){
+            $this->error();
+        }
         return Inertia::render(self::COMPONENTE);
     }
+
+    public function error(): Response
+    {
+        return Inertia::render(self::COMPONENTE, [
+            'toast' => [
+                'type' => 'error',
+                'message' => 'No fue posible registrar su nuevo producto.',
+            ]
+        ]);
+    }
+
 }
