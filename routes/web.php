@@ -106,7 +106,7 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
             ->name('stores/new');
 
         // metodo para registrar
-        Route::post('/stores/new', [NuevaSucursal::class, 'store'])->name('stores/new');
+        Route::post('/stores/new', [NuevaSucursal::class, 'store']);
 
 
         // vista para editar
@@ -140,8 +140,7 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
             ->name('cashregisters/new');
 
         // metodo para registrar
-        Route::post('/cashregisters/new', [NuevaCaja::class, 'store'])
-            ->name('cashregisters/new');
+        Route::post('/cashregisters/new', [NuevaCaja::class, 'store']);
 
 
         // vista para editar
@@ -175,8 +174,7 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
             ->name('warehouses/new');
 
         // metodo para registrar
-        Route::post('/warehouses/new', [NuevoAlmacen::class, 'store'])
-            ->name('warehouses/new');
+        Route::post('/warehouses/new', [NuevoAlmacen::class, 'store']);
 
 
         // vista para editar
@@ -210,8 +208,7 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
             ->name('roles/new');
 
         // metodo para registrar
-        Route::post('/roles/new', [NuevoRol::class, 'store'])
-            ->name('roles/new');
+        Route::post('/roles/new', [NuevoRol::class, 'store']);
 
 
         // vista para editar
@@ -245,8 +242,7 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
             ->name('users/new');
 
         // metodo para registrar
-        Route::post('/users/new', [NuevoUsuario::class, 'store'])
-            ->name('users/new');
+        Route::post('/users/new', [NuevoUsuario::class, 'store']);
 
 
         // vista para editar
@@ -280,8 +276,7 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
             ->name('units/new');
 
         // metodo para registrar
-        Route::post('/units/new', [NuevaUnidadMedida::class, 'store'])
-            ->name('units/new');
+        Route::post('/units/new', [NuevaUnidadMedida::class, 'store']);
 
 
         // vista para editar
@@ -315,8 +310,7 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
             ->name('families/new');
 
         // metodo para registrar
-        Route::post('/families/new', [NuevaFamilia::class, 'store'])
-            ->name('families/new');
+        Route::post('/families/new', [NuevaFamilia::class, 'store']);
 
 
         // vista para editar
@@ -350,8 +344,7 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
             ->name('products/new');
 
         // metodo para registrar
-        Route::post('/products/new', [NuevoProducto::class, 'store'])
-            ->name('products/new');
+        Route::post('/products/new', [NuevoProducto::class, 'store']);
 
 
         // vista para editar
