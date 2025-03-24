@@ -103,6 +103,10 @@ const ProductVariants = ({ onVariantsChange }) => {
     const [expandedVariants, setExpandedVariants] = useState([]);
     const newVariantRef = useRef();
 
+    useEffect(() => {
+        onVariantsChange(variants.map(({ id, ...rest }) => rest));
+    }, [variants, onVariantsChange]);
+
     const handleAddVariant = (e) => {
         e.preventDefault();
         if (newVariant.trim()) {
@@ -113,7 +117,6 @@ const ProductVariants = ({ onVariantsChange }) => {
             };
             setVariants((prev) => {
                 const updated = [...prev, newVariantData];
-                onVariantsChange(updated.map(({ id, ...rest }) => rest));
                 return updated;
             });
             setExpandedVariants((prev) => [...prev, false]);
@@ -133,7 +136,6 @@ const ProductVariants = ({ onVariantsChange }) => {
             const updated = prev.map((v, i) =>
                 i === index ? { ...v, name: value } : v
             );
-            onVariantsChange(updated.map(({ id, ...rest }) => rest));
             return updated;
         });
     };
@@ -142,7 +144,6 @@ const ProductVariants = ({ onVariantsChange }) => {
         setVariants((prev) => {
             const updated = [...prev];
             updated[variantIndex].details.push("");
-            onVariantsChange(updated.map(({ id, ...rest }) => rest));
             return updated;
         });
     };
@@ -151,7 +152,6 @@ const ProductVariants = ({ onVariantsChange }) => {
         setVariants((prev) => {
             const updated = [...prev];
             updated[variantIndex].details[detailIndex] = value;
-            onVariantsChange(updated.map(({ id, ...rest }) => rest));
             return updated;
         });
     };
@@ -159,7 +159,6 @@ const ProductVariants = ({ onVariantsChange }) => {
     const handleDeleteVariant = (index) => {
         setVariants((prev) => {
             const updated = prev.filter((_, i) => i !== index);
-            onVariantsChange(updated.map(({ id, ...rest }) => rest));
             return updated;
         });
         setExpandedVariants((prev) => prev.filter((_, i) => i !== index));
@@ -171,7 +170,6 @@ const ProductVariants = ({ onVariantsChange }) => {
             updated[variantIndex].details = updated[
                 variantIndex
             ].details.filter((_, i) => i !== detailIndex);
-            onVariantsChange(updated.map(({ id, ...rest }) => rest));
             return updated;
         });
     };
