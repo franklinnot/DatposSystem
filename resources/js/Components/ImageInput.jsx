@@ -1,17 +1,25 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
-export default function ImageInput({ className = "", onChange, ...props }) {
-    const [preview, setPreview] = useState(null);
+export default function ImageInput({
+    className = "",
+    value,
+    onChange,
+    ...props
+}) {
+    const [preview, setPreview] = useState(value || null);
     const inputRef = useRef();
+
+    useEffect(() => {
+        setPreview(value);
+    }, [value]);
 
     const handleImageChange = useCallback(
         (e) => {
             const file = e.target.files[0];
             if (file) {
-                // Crear una URL para la vista previa
-                setPreview(URL.createObjectURL(file));
-                // Enviar el objeto File a través del onChange
-                onChange?.(file);
+                const previewURL = URL.createObjectURL(file);
+                setPreview(previewURL);
+                onChange?.(file, previewURL); // Enviar también la URL de la vista previa
             }
         },
         [onChange]

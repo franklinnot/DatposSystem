@@ -54,19 +54,23 @@ export default function NuevoProducto({ auth }) {
         }
     }, []);
 
+    // Estado para la URL de la imagen de vista previa
+    const [imagenPreview, setImagenPreview] = useState(data.imagen);
+
+    // Función para manejar el cambio de imagen
+    const handleImageChange = (file, previewURL) => {
+        setData("imagen", file);
+        setImagenPreview(previewURL);
+    };
+
     // Manejo de toast, familias, etc. (no modificado)
     const { toast } = usePage().props;
     const { showToast, ToastComponent } = useToast();
     const lista_familias = usePage()?.props?.familias;
     const lista_unidades = usePage()?.props?.unidades;
-    const [familias, setFamilias] = useState([]);
-    const [unidades, setUnidades] = useState([]);
+    const [familias, setFamilias] = useState(lista_familias || []);
+    const [unidades, setUnidades] = useState(lista_unidades || []);
     const [es_bien, setEsBien] = useState(false);
-
-    useEffect(() => {
-        setFamilias(lista_familias || []);
-        setUnidades(lista_unidades || []);
-    }, []);
 
     useEffect(() => {
         if (toast && toast.message) {
@@ -77,7 +81,7 @@ export default function NuevoProducto({ auth }) {
     const handleFamiliaChange = (e) => {
         const id_familia = e.target.value;
         setData("id_familia", id_familia);
-        let familia = lista_familias.find((item) => item.id === id_familia);
+        let familia = familias.find((item) => item.id === id_familia);
         if (familia && familia.tipo === "bien") {
             setEsBien(true);
         } else {
@@ -119,52 +123,63 @@ export default function NuevoProducto({ auth }) {
             return;
         }
 
-        // Validación de variantes duplicadas
-        const list_variantes = new Set();
+        // Set para detectar variantes duplicadas (ignorando mayúsculas/minúsculas)
+        const variantSet = new Set();
 
-        for (const varianteObj of data.variantes) {
-            // Se obtiene y normaliza el nombre de la variante
-            const nombre = varianteObj.variante.trim().toLowerCase();
+        // Recorrer cada elemento en data.variantes para realizar las validaciones
+        for (let i = 0; i < data.variantes.length; i++) {
+            const item = data.variantes[i];
 
-            if (list_variantes.has(nombre)) {
+            // Convertimos el valor de variante a minúsculas y eliminamos espacios en blanco
+            const variantValue = item.variante
+                ? item.variante.trim().toLowerCase()
+                : "";
+            const details = item.detalles; // se espera que sea un array
+
+            // Validaciones de campos vacíos:
+            // 2. Si 'variante' está vacío pero 'detalles' tiene contenido:
+            if (!variantValue && details && details.length > 0) {
                 showToast(
-                    `La variante "${varianteObj.variante}" está duplicada.`,
+                    "Para registrar una variante, debes ingresar su nombre.",
                     "error"
                 );
                 return;
             }
-            list_variantes.add(nombre);
+            // 3. Si 'variante' está lleno pero 'detalles' está vacío:
+            if (variantValue && (!details || details.length === 0)) {
+                showToast(
+                    "Para registrar una variante, debes ingresar sus detalles.",
+                    "error"
+                );
+                return;
+            }
 
-            // Validación de detalles duplicados en cada variante
-            const nombresDetalles = new Set();
-            for (const detalleObj of varianteObj.detalles) {
-                // Validar que el campo "detalle" no esté vacío
-                if (!detalleObj.detalle || detalleObj.detalle.trim() === "") {
+            // Validación: No se deben repetir las variantes (ignorando mayúsculas/minúsculas)
+            if (variantSet.has(variantValue)) {
+                showToast(
+                    `La variante '${item.variante}' está duplicada.`,
+                    "error"
+                );
+                return;
+            }
+            variantSet.add(variantValue);
+
+            // Validación en 'detalles': Si hay más de un elemento, no se deben repetir los detalles (ignorar mayúsculas/minúsculas)
+            const detailSet = new Set();
+            for (let j = 0; j < details.length; j++) {
+                const detailValue = details[j].detalle
+                    ? details[j].detalle.trim().toLowerCase()
+                    : "";
+                if (detailSet.has(detailValue)) {
                     showToast(
-                        `Para registrar la variante "${varianteObj.variante}" no puede estar vacío el detalle.`,
+                        `El detalle '${details[j].detalle}' de la variante '${item.variante}' está duplicado.`,
                         "error"
                     );
                     return;
                 }
-
-                // Se obtiene y normaliza el detalle
-                const nombreDetalle = detalleObj.detalle.trim().toLowerCase();
-
-                if (nombresDetalles.has(nombreDetalle)) {
-                    showToast(
-                        `El detalle "${detalleObj.detalle}" en la variante "${varianteObj.variante}" está duplicado.`,
-                        "error"
-                    );
-                    return;
-                }
-                nombresDetalles.add(nombreDetalle);
+                detailSet.add(detailValue);
             }
         }
-
-        // Se transforman los datos para un registro correcto
-        transform((data) => ({
-            ...data,
-        }));
 
         post(route("products/new"), {
             onError: (serverErrors) => {
@@ -174,8 +189,28 @@ export default function NuevoProducto({ auth }) {
                 }
             },
             onSuccess: () => {
-                reset();
+                setUnidades(lista_unidades);
+                setFamilias(lista_familias);
+                
+                if (!es_bien) {
+                    reset("id_unidad_medida");
+                }
+
+                reset(
+                    "nombre",
+                    "codigo",
+                    "imagen",
+                    "isc",
+                    "tiene_igv",
+                    "stock_minimo",
+                    "stock_maximo",
+                    "fecha_vencimiento",
+                    "alerta_stock",
+                    "alerta_vencimiento",
+                    "variantes"
+                );
                 setVariants([]);
+                setImagenPreview("");
             },
         });
     };
@@ -261,8 +296,8 @@ export default function NuevoProducto({ auth }) {
                             id="imagen"
                             name="imagen"
                             className="mt-1 block w-full"
-                            // Ahora el componente retorna el objeto File, no un string Base64
-                            onChange={(file) => setData("imagen", file)}
+                            value={imagenPreview}
+                            onChange={handleImageChange}
                         />
                         <InputError message={errors.imagen} className="mt-2" />
                     </div>
@@ -277,6 +312,7 @@ export default function NuevoProducto({ auth }) {
                         <NumberInput
                             id="isc"
                             name="isc"
+                            min="0"
                             value={data.isc}
                             className="mt-1 block w-full"
                             onChange={(e) => setData("isc", e.target.value)}
@@ -303,6 +339,7 @@ export default function NuevoProducto({ auth }) {
 
                     {es_bien && (
                         <>
+                            {/* Selector Unidad de Medida */}
                             <div>
                                 <InputLabel
                                     htmlFor="unidad_medida"
@@ -331,6 +368,7 @@ export default function NuevoProducto({ auth }) {
                                 <NumberInput
                                     id="stock_minimo"
                                     name="stock_minimo"
+                                    min="0"
                                     value={data.stock_minimo}
                                     className="mt-1 block w-full"
                                     onChange={(e) =>
@@ -353,6 +391,7 @@ export default function NuevoProducto({ auth }) {
                                 <NumberInput
                                     id="stock_maximo"
                                     name="stock_maximo"
+                                    min="0"
                                     value={data.stock_maximo}
                                     className="mt-1 block w-full"
                                     onChange={(e) =>
@@ -386,7 +425,7 @@ export default function NuevoProducto({ auth }) {
                                     }
                                 />
                                 <InputError
-                                    message={errors.codigo}
+                                    message={errors.fecha_vencimiento}
                                     className="mt-2"
                                 />
                             </div>
