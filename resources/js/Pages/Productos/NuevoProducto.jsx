@@ -80,6 +80,7 @@ export default function NuevoProducto({ auth }) {
 
     const submit = (e) => {
         e.preventDefault();
+        // alert(JSON.stringify(data.variantes));
 
         // Validación simple en cliente; si falta un campo obligatorio no se envía
         if (!data.nombre || !data.codigo || !data.id_familia) {
@@ -90,12 +91,45 @@ export default function NuevoProducto({ auth }) {
             return;
         }
 
-        if (data.id_familia && es_bien && !data.id_unidad_medida) {
+        if (es_bien && !data.id_unidad_medida) {
             showToast(
                 "Por favor, llena todos los campos obligatorios.",
                 "error"
             );
             return;
+        }
+
+        // Validación de variantes duplicadas
+        const list_variantes = new Set();
+
+        for (const varianteObj of data.variantes) {
+            // Se obtiene y normaliza el nombre de la variante
+            const nombre = varianteObj.variante.trim().toLowerCase();
+
+            if (list_variantes.has(nombre)) {
+                showToast(
+                    `La variante "${varianteObj.variante}" está duplicada.`,
+                    "error"
+                );
+                return;
+            }
+            list_variantes.add(nombre);
+
+            // Validación de detalles duplicados en cada variante
+            const nombresDetalles = new Set();
+            for (const detalleObj of varianteObj.detalles) {
+                // Se obtiene y normaliza el detalle
+                const nombreDetalle = detalleObj.detalle.trim().toLowerCase();
+
+                if (nombresDetalles.has(nombreDetalle)) {
+                    showToast(
+                        `El detalle "${detalleObj.detalle}" en la variante "${varianteObj.variante}" está duplicado.`,
+                        "error"
+                    );
+                    return;
+                }
+                nombresDetalles.add(nombreDetalle);
+            }
         }
 
         // Se transforman los datos para un registro correcto
