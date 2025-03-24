@@ -44,7 +44,7 @@ export default function Header({ auth }) {
     }, [accesos]); // Dependencias del useEffect
 
     return (
-        <header className="grid grid-flow-col place-items-center px-5 lg:px-6 h-14 sm:max-h-16 bg-[#EFF4FF] border-b-2">
+        <header className="sticky top-0 z-50 grid grid-flow-col place-items-center px-5 lg:px-6 h-14 sm:max-h-16 bg-[#EFF4FF] border-b-2">
             <div className="grid grid-flow-col place-items-center justify-self-start gap-2">
                 {/* Boton de menu de hamburguesa o de cerrar */}
                 <button

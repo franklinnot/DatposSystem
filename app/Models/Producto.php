@@ -36,32 +36,35 @@ class Producto extends Model
 
     public static function registrar(array $data): ?Producto
     {
-        // Convertir el array de variantes en una cadena JSON con la estructura correcta
-        $variantesJson = json_encode(array_map(function ($variante) {
-            return [
-                'variante' => $variante['variante'],
-                'detalles' => array_map(function ($detalle) {
-                    return ['detalle' => $detalle];
-                }, $variante['detalles'])
-            ];
-        }, $data['variantes']));
+        // Validar que existan variantes y no estén vacías.
+        $variantes = isset($data['variantes']) && !empty($data['variantes']) ? $data['variantes'] : null;
+
+        // Convertir el array de variantes a JSON tal cual, ya que la estructura es la esperada
+        $variantesJson = $variantes ? json_encode($variantes) : null;
 
         // Ejecutar el procedimiento almacenado con los parámetros adecuados
         $result = DB::select(
             "EXEC sp_registrar_producto 
-        @codigo = ?, @nombre = ?, 
-        @stock_minimo = ?, @stock_maximo = ?, 
-        @imagen = ?, @fecha_vencimiento = ?, 
-        @alerta_stock = ?, @alerta_vencimiento = ?, 
-        @tiene_igv = ?, @isc = ?,
-        @id_familia = ?, @id_unidad_medida = ?,
-        @id_empresa = ?, @variantes = ?",
+                @codigo = ?, 
+                @nombre = ?, 
+                @imagen = ?, 
+                @stock_minimo = ?, 
+                @stock_maximo = ?, 
+                @fecha_vencimiento = ?, 
+                @alerta_stock = ?, 
+                @alerta_vencimiento = ?, 
+                @tiene_igv = ?, 
+                @isc = ?,
+                @id_familia = ?, 
+                @id_unidad_medida = ?,
+                @id_empresa = ?, 
+                @variantes = ?",
             [
                 strtoupper($data['codigo']),
                 $data['nombre'],
+                $data['imagen'] ?? null,
                 $data['stock_minimo'] ?? null,
                 $data['stock_maximo'] ?? null,
-                $data['imagen'] ?? null,
                 $data['fecha_vencimiento'] ?? null,
                 $data['alerta_stock'] ?? null,
                 $data['alerta_vencimiento'] ?? null,
@@ -74,7 +77,30 @@ class Producto extends Model
             ]
         );
 
-        // Retornar una nueva instancia de Producto si la inserción fue exitosa
-        return $result ? new Producto(['id_producto' => $result[0]->nuevo_id] + $data) : null;
+        // Verificar que se haya obtenido un resultado y que tenga el nuevo id
+        if ($result && isset($result[0]->nuevo_id)) {
+            // Retornar una nueva instancia de Producto combinando el id obtenido con el resto de la data
+            return new Producto(array_merge(['id_producto' => $result[0]->nuevo_id], $data));
+        } else {
+            return null;
+        }
+    }
+
+
+    public static function existencia_producto_by_codigo($codigo, $id_empresa): ?bool
+    {
+        $result = DB::select(
+            "EXEC sp_existencia_producto_by_codigo 
+        @codigo = ?, @id_empresa = ?",
+            [
+                strtoupper($codigo),
+                $id_empresa
+            ]
+        );
+
+        if (isset($result[0]->verificar)) {
+            return $result[0]->verificar === 'true';
+        }
+        return null;
     }
 }

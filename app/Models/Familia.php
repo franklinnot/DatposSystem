@@ -54,6 +54,14 @@ class Familia extends Model
         return null;
     }
 
+    public static function existencia_familia_by_id($id_familia, $id_empresa): ?bool
+    {
+        $result = DB::select("EXEC sp_existencia_familia_by_id @id_familia = ?, @id_empresa = ?", [$id_familia, $id_empresa]);
+        if (isset($result[0]->verificar)) {
+            return $result[0]->verificar === 'true';
+        }
+        return null;
+    }
 
     public static function get_familias_by_id_empresa($id_empresa): ?array
     {

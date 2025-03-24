@@ -6,7 +6,7 @@ import NumberInput from "@/Components/NumberInput";
 import SelectInput from "@/Components/SelectInput.jsx";
 import { Head, useForm, usePage } from "@inertiajs/react";
 import PrimaryButton from "@/Components/PrimaryButton";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Checkbox from "@/Components/Checkbox";
 import { Inertia } from "@inertiajs/inertia";
 import ProductVariants from "@/Components/ProductVariants";
@@ -33,16 +33,30 @@ export default function NuevoProducto({ auth }) {
             variantes: [],
         });
 
+    // Aquí definimos un estado local "paralelo" para las variantes
+    const [variants, setVariants] = useState([]);
+
+    // Esta función se llama desde ProductVariants cuando cambian las variantes
+    // Memorízala con useCallback para que no se cree en cada render.
+    const handleVariantsChange = useCallback(
+        (newVariants) => {
+            // Actualiza el estado local
+            setVariants(newVariants);
+            // Actualiza el data.variantes del formulario (si lo necesitas)
+            setData("variantes", newVariants);
+        },
+        [setData]
+    );
+
+    useEffect(() => {
+        if (data.variantes?.length > 0) {
+            setVariants(data.variantes);
+        }
+    }, []);
+
+    // Manejo de toast, familias, etc. (no modificado)
     const { toast } = usePage().props;
     const { showToast, ToastComponent } = useToast();
-
-    // Mostrar toast si hay respuesta del servidor
-    useEffect(() => {
-        if (toast && toast.message) {
-            showToast(toast.message, toast.type);
-        }
-    }, [toast]);
-
     const lista_familias = usePage()?.props?.familias;
     const lista_unidades = usePage()?.props?.unidades;
     const [familias, setFamilias] = useState([]);
@@ -54,12 +68,17 @@ export default function NuevoProducto({ auth }) {
         setUnidades(lista_unidades || []);
     }, []);
 
-    // Se utiliza el manejo de cambios propuesto para el departmento.
+    useEffect(() => {
+        if (toast && toast.message) {
+            showToast(toast.message, toast.type);
+        }
+    }, [toast]);
+
     const handleFamiliaChange = (e) => {
         const id_familia = e.target.value;
         setData("id_familia", id_familia);
         let familia = lista_familias.find((item) => item.id === id_familia);
-        if (familia && familia.tipo == "bien") {
+        if (familia && familia.tipo === "bien") {
             setEsBien(true);
         } else {
             setEsBien(false);
@@ -74,13 +93,14 @@ export default function NuevoProducto({ auth }) {
         }
     };
 
-    const handleVariantsChange = (newVariants) => {
-        setData("variantes", newVariants);
+    // NOTA: Evita reusar la misma función para unidad de medida:
+    const handleUnidadMedidaChange = (e) => {
+        setData("id_unidad_medida", e.target.value);
     };
 
     const submit = (e) => {
         e.preventDefault();
-        // alert(JSON.stringify(data.variantes));
+        //alert(JSON.stringify(data.variantes));
 
         // Validación simple en cliente; si falta un campo obligatorio no se envía
         if (!data.nombre || !data.codigo || !data.id_familia) {
@@ -118,6 +138,15 @@ export default function NuevoProducto({ auth }) {
             // Validación de detalles duplicados en cada variante
             const nombresDetalles = new Set();
             for (const detalleObj of varianteObj.detalles) {
+                // Validar que el campo "detalle" no esté vacío
+                if (!detalleObj.detalle || detalleObj.detalle.trim() === "") {
+                    showToast(
+                        `Para registrar la variante "${varianteObj.variante}" no puede estar vacío el detalle.`,
+                        "error"
+                    );
+                    return;
+                }
+
                 // Se obtiene y normaliza el detalle
                 const nombreDetalle = detalleObj.detalle.trim().toLowerCase();
 
@@ -145,19 +174,8 @@ export default function NuevoProducto({ auth }) {
                 }
             },
             onSuccess: () => {
-                reset(
-                    "nombre",
-                    "codigo",
-                    "imagen",
-                    "isc",
-                    "tiene_igv",
-                    "id_unidad_medida",
-                    "stock_minimo",
-                    "stock_maximo",
-                    "fecha_vencimiento",
-                    "alerta_stock",
-                    "alerta_vencimiento"
-                );
+                reset();
+                setVariants([]);
             },
         });
     };
@@ -172,7 +190,7 @@ export default function NuevoProducto({ auth }) {
                 </div>
                 <form
                     onSubmit={submit}
-                    className="grid gap-6 sm:gap-8 justify-self-center bg-white rounded-2xl max-sm:w-full max-sm:max-w-[448px] sm:w-[75%] sm:max-w-[612px] px-5 py-6"
+                    className="grid gap-6 sm:gap-8 justify-self-center bg-white rounded-2xl max-sm:w-full max-sm:max-w-[448px] sm:w-[75%] sm:max-w-[612px] px-5 py-6 pt-2"
                 >
                     {/* Input de Nombre */}
                     <div>
@@ -213,7 +231,7 @@ export default function NuevoProducto({ auth }) {
                         <InputError message={errors.codigo} className="mt-2" />
                     </div>
 
-                    {/* Input de Familia */}
+                    {/* Selector Familia */}
                     <div>
                         <InputLabel
                             htmlFor="familia"
@@ -285,7 +303,6 @@ export default function NuevoProducto({ auth }) {
 
                     {es_bien && (
                         <>
-                            {/* Input de Unidad de medida */}
                             <div>
                                 <InputLabel
                                     htmlFor="unidad_medida"
@@ -297,7 +314,7 @@ export default function NuevoProducto({ auth }) {
                                     name="unidad_medida"
                                     options={unidades}
                                     value={data.id_unidad_medida}
-                                    onChange={handleFamiliaChange}
+                                    onChange={handleUnidadMedidaChange}
                                     placeholder="Selecciona una Unidad de Medida"
                                     closeOnSelect={true}
                                 />
@@ -416,20 +433,19 @@ export default function NuevoProducto({ auth }) {
                         </>
                     )}
 
-                    {/* Input de variantes */}
-                    <div>
-                        <InputLabel
-                            htmlFor="variantes"
-                            value="Variantes (opcional)"
-                            className="font-normal text-[#2B2B2B]"
-                        />
+                    {/* ProductVariants controlado */}
+                    <div className="mt-4">
+                        <h3 className="text-lg font-semibold mb-2">
+                            Variantes
+                        </h3>
                         <ProductVariants
+                            // Pasamos las variantes desde el padre
+                            variants={variants}
+                            // Pasamos la función para actualizarlas
                             onVariantsChange={handleVariantsChange}
                         />
-                        <InputError
-                            message={errors.variantes}
-                            className="mt-2"
-                        />
+                        {/* Aquí no hay setData("variantes") porque ya se maneja en handleVariantsChange */}
+                        <InputError message={errors.variantes} />
                     </div>
 
                     {/* Botón de Registrar */}

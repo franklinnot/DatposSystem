@@ -57,6 +57,15 @@ class UnidadMedida extends Model
         return null;
     }
 
+    public static function existencia_unidad_medida_by_id($id_unidad_medida, $id_empresa): ?bool
+    {
+        $result = DB::select("EXEC sp_existencia_unidad_medida_by_id @id_unidad_medida = ?, @id_empresa = ?", [$id_unidad_medida, $id_empresa]);
+        if (isset($result[0]->verificar)) {
+            return $result[0]->verificar === 'true';
+        }
+        return null;
+    }
+
     public static function get_unidades_by_id_empresa($id_empresa): ?array
     {
         $result = DB::select("EXEC sp_get_unidades_medida_by_id_empresa @id_empresa = ?", [$id_empresa]);
