@@ -113,6 +113,19 @@ class NuevoProducto extends Controller
                     return $this->error();
                 }
             }
+
+            if(isset($data_producto['stock_minimo']) && isset($data_producto['stock_maximo']) && ($data_producto['stock_minimo'] >= $data_producto['stock_maximo'])){
+                return $this->error();
+            }
+
+            if (!isset($data_producto['stock_minimo']) && !isset($data_producto['stock_maximo'])) {
+                $data_producto['alerta_stock'] = null;
+            }
+
+            if (!isset($data_producto['fecha_vencimiento'])) {
+                $data_producto['alerta_vencimiento'] = null;
+            }
+
         }
         else if(strtolower($tipo->nombre) == 'servicio'){
             $data_producto['id_unidad_medida'] = null;

@@ -123,6 +123,14 @@ export default function NuevoProducto({ auth }) {
             return;
         }
 
+        if (es_bien && data.stock_minimo >= data.stock_maximo) {
+            showToast(
+                "El stock mínimo debe ser menor al stock máximo.",
+                "error"
+            );
+            return;
+        }
+
         // Set para detectar variantes duplicadas (ignorando mayúsculas/minúsculas)
         const variantSet = new Set();
 
@@ -191,7 +199,7 @@ export default function NuevoProducto({ auth }) {
             onSuccess: () => {
                 setUnidades(lista_unidades);
                 setFamilias(lista_familias);
-                
+
                 if (!es_bien) {
                     reset("id_unidad_medida");
                 }
@@ -414,6 +422,7 @@ export default function NuevoProducto({ auth }) {
                                 <TextInput
                                     id="fecha_vencimiento"
                                     type="date"
+                                    min={new Date().toISOString().split("T")[0]}
                                     name="fecha_vencimiento"
                                     value={data.fecha_vencimiento}
                                     className="mt-1 block w-full"

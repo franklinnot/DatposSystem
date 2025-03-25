@@ -84,7 +84,7 @@ const TextInput = forwardRef(
                 type={type}
                 value={value}
                 onChange={onChange}
-                className={`transition-colors duration-200 bg-[#f2f2f2] text-gray-500
+                className={`transition-colors duration-200 bg-[#f2f2f2] text-gray-700
                             border-0 focus:ring-[#0875E4] rounded-lg shadow-sm ${className}`}
             />
         );
