@@ -26,7 +26,6 @@ export default function NuevoProducto({ auth }) {
             id_unidad_medida: "",
             stock_minimo: "",
             stock_maximo: "",
-            fecha_vencimiento: "",
             alerta_stock: "",
             alerta_vencimiento: "",
             //
@@ -90,7 +89,6 @@ export default function NuevoProducto({ auth }) {
                 "id_unidad_medida",
                 "stock_minimo",
                 "stock_maximo",
-                "fecha_vencimiento",
                 "alerta_stock",
                 "alerta_vencimiento"
             );
@@ -123,9 +121,22 @@ export default function NuevoProducto({ auth }) {
             return;
         }
 
-        if (es_bien && data.stock_minimo >= data.stock_maximo) {
+        if(data.alerta_stock && (!data.stock_minimo || !data.stock_maximo)){
+            showToast("Para recibir alertas de stock, debes ingresar el stock mínimo y máximo.", "error");
+            return;
+        }
+
+        if (es_bien && data.stock_minimo > (data.stock_maximo / 2)) {
             showToast(
-                "El stock mínimo debe ser menor al stock máximo.",
+                "El stock mínimo debe ser igual o menor a la mitad del stock máximo.",
+                "error"
+            );
+            return;
+        }
+
+        if (es_bien && data.stock_maximo < (data.stock_minimo * 2)) {
+            showToast(
+                "El stock máximo debe ser igual o mayor al doble del stock mínimo.",
                 "error"
             );
             return;
@@ -212,7 +223,6 @@ export default function NuevoProducto({ auth }) {
                     "tiene_igv",
                     "stock_minimo",
                     "stock_maximo",
-                    "fecha_vencimiento",
                     "alerta_stock",
                     "alerta_vencimiento",
                     "variantes"
@@ -408,33 +418,6 @@ export default function NuevoProducto({ auth }) {
                                 />
                                 <InputError
                                     message={errors.stock_maximo}
-                                    className="mt-2"
-                                />
-                            </div>
-
-                            {/* Fecha de Vencimiento */}
-                            <div>
-                                <InputLabel
-                                    htmlFor="fecha_vencimiento"
-                                    value="Fecha de vencimiento (opcional)"
-                                    className="font-normal text-[#2B2B2B]"
-                                />
-                                <TextInput
-                                    id="fecha_vencimiento"
-                                    type="date"
-                                    min={new Date().toISOString().split("T")[0]}
-                                    name="fecha_vencimiento"
-                                    value={data.fecha_vencimiento}
-                                    className="mt-1 block w-full"
-                                    onChange={(e) =>
-                                        setData(
-                                            "fecha_vencimiento",
-                                            e.target.value
-                                        )
-                                    }
-                                />
-                                <InputError
-                                    message={errors.fecha_vencimiento}
                                     className="mt-2"
                                 />
                             </div>

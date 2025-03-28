@@ -1,5 +1,5 @@
 import * as ToastPrimitives from "@radix-ui/react-toast";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const ToastTypeIcons = {
     success: (
@@ -57,32 +57,43 @@ export default function useToast() {
         message: null,
         type: "default",
         open: false,
-        duration: 5000,
-        extraClassName: "", // Permite agregar estilos personalizados
+        duration: 8000,
+        extraClassName: "",
     });
+
+    const timerRef = useRef(null); // Referencia para el timer
 
     const showToast = (
         message,
         type = "default",
-        duration = 5000,
+        duration = 8000,
         extraClassName = ""
     ) => {
+        // Limpia el timer existente al mostrar nuevo toast
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+        }
+
         setToast({
             message,
             type,
             open: true,
             duration,
-            extraClassName, // Asignar los estilos adicionales
+            extraClassName,
         });
     };
 
     useEffect(() => {
         if (toast.open) {
-            const timer = setTimeout(() => {
+            timerRef.current = setTimeout(() => {
                 setToast((prev) => ({ ...prev, open: false }));
             }, toast.duration);
-            return () => clearTimeout(timer);
         }
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
     }, [toast.open, toast.duration]);
 
     const ToastComponent = () => (
@@ -91,8 +102,8 @@ export default function useToast() {
                 open={toast.open}
                 onOpenChange={(open) => setToast((prev) => ({ ...prev, open }))}
                 className={`
-                    fixed top-[4.5rem] right-4 w-[320px] sm:w-max z-50 flex items-center gap-3 rounded-lg px-4 py-3
-                    shadow-md
+                    flex items-center gap-3 rounded-lg px-4 py-3
+                    shadow-md 
                     ${
                         toast.type === "success"
                             ? "bg-emerald-500 text-white"
@@ -100,7 +111,7 @@ export default function useToast() {
                             ? "bg-rose-500 text-white"
                             : "bg-gray-900 text-gray-100"
                     }
-                    ${toast.extraClassName} /* Estilos personalizados */
+                    ${toast.extraClassName}
                 `}
             >
                 {ToastTypeIcons?.[toast.type] || ToastTypeIcons.close}
@@ -122,7 +133,8 @@ export default function useToast() {
                 </ToastPrimitives.Close>
             </ToastPrimitives.Root>
 
-            <ToastPrimitives.Viewport className="fixed bottom-4 right-4 w-[320px]" />
+            {/* Viewport con posicionamiento correcto y z-index alto */}
+            <ToastPrimitives.Viewport className="fixed top-4 right-4 w-[320px] z-[9999]" />
         </ToastPrimitives.Provider>
     );
 

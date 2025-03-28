@@ -78,7 +78,6 @@ class NuevoProducto extends Controller
             'id_unidad_medida'   => 'nullable|integer',
             'stock_minimo'       => 'nullable|numeric|min:0',
             'stock_maximo'       => 'nullable|numeric|min:0',
-            'fecha_vencimiento'  => 'nullable|date',
             'alerta_stock'       => 'nullable|boolean',
             'alerta_vencimiento' => 'nullable|boolean',
             'variantes'          => 'nullable|array',
@@ -122,16 +121,11 @@ class NuevoProducto extends Controller
                 $data_producto['alerta_stock'] = null;
             }
 
-            if (!isset($data_producto['fecha_vencimiento'])) {
-                $data_producto['alerta_vencimiento'] = null;
-            }
-
         }
         else if(strtolower($tipo->nombre) == 'servicio'){
             $data_producto['id_unidad_medida'] = null;
             $data_producto['stock_minimo'] = null;
             $data_producto['stock_maximo'] = null;
-            $data_producto['fecha_vencimiento'] = null;
             $data_producto['alerta_stock'] = null;
             $data_producto['alerta_vencimiento'] = null;
         }
