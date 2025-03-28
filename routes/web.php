@@ -8,6 +8,7 @@ use App\Http\Controllers\Productos\NuevoProducto;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Roles\NuevoRol;
 use App\Http\Controllers\Sucursales\NuevaSucursal;
+use App\Http\Controllers\TiposOperacion\NuevoTipoOperacion;
 use App\Http\Controllers\UnidadesMedida\NuevaUnidadMedida;
 use App\Http\Controllers\Usuarios\NuevoUsuario;
 use App\Http\Middleware\Authenticate;
@@ -365,6 +366,39 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
 
         #endregion
 
+        #region Tipos de Operacion
+
+        // vista para listar
+        Route::get('/operationtypes', function () {
+            return Inertia::render('Dashboard');
+        })->name('operationtypes');
+
+
+        // vista para registrar
+        Route::get('/operationtypes/new', [NuevoTipoOperacion::class, 'show'])
+            ->name('operationtypes/new');
+
+        // metodo para registrar
+        Route::post('/operationtypes/new', [NuevoTipoOperacion::class, 'store']);
+
+
+        // vista para editar
+        Route::get('/operationtypes/edit', function () {
+            return Inertia::render('Dashboard');
+        })->name('operationtypes/edit');
+
+        // metodo para editar 
+        Route::patch('/operationtypes/edit', function () {
+            return Inertia::render('Dashboard');
+        });
+
+
+        // metodo para eliminar
+        Route::post('/operationtypes/delete', function () {
+            return Inertia::render('Dashboard');
+        })->name('operationtypes/delete');
+
+        #endregion
 
 
     }

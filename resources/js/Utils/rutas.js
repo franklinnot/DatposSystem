@@ -1,5 +1,3 @@
-
-
 // Rutas de navegación
 let rts_navegacion = [
     { label: "Dashboard", routeName: "dashboard", subItems: [] },
@@ -75,46 +73,64 @@ let rts_navegacion = [
             { label: "Editar información", routeName: "products/edit" },
         ],
     },
+    {
+        label: "Tipos de Operación",
+        routeName: "operationtypes",
+        subItems: [
+            {
+                label: "Nuevo Tipo de Operación",
+                routeName: "operationtypes/new",
+            },
+            { label: "Ver Tipos de Operación", routeName: "operationtypes" },
+            { label: "Editar información", routeName: "operationtypes/edit" },
+        ],
+    },
 ];
 
 // Rutas de perfil -- empresa y usuarios
 let rts_perfilEmpresa = [
-    { label: "Empresa", routeName: "business", subItems: [
-        {
-            label: "Ver información de la Empresa",
-            routeName: "business",
-            subItems: [],
-        },
-        {
-            label: "Editar información de la Empresa",
-            routeName: "business/edit",
-            subItems: [],
-        },
-        {
-            label: "Ver suscripciones de la Empresa",
-            routeName: "business/subscriptions",
-            subItems: [],
-        },
-    ]},
+    {
+        label: "Empresa",
+        routeName: "business",
+        subItems: [
+            {
+                label: "Ver información de la Empresa",
+                routeName: "business",
+                subItems: [],
+            },
+            {
+                label: "Editar información de la Empresa",
+                routeName: "business/edit",
+                subItems: [],
+            },
+            {
+                label: "Ver suscripciones de la Empresa",
+                routeName: "business/subscriptions",
+                subItems: [],
+            },
+        ],
+    },
 ];
-
 
 // Rutas de perfil de usuario
 let rts_perfilUsuario = [
-    { label: "Perfil de Usuario", routeName: "profile", subItems: [
-        {
-            label: "Editar información",
-            routeName: "profile/edit",
-            subItems: [],
-        },
-        {
-            label: "Cambiar contraseña",
-            routeName: "profile/edit/password",
-            subItems: [],
-        },
-    ]},
+    {
+        label: "Perfil de Usuario",
+        routeName: "profile",
+        subItems: [
+            {
+                label: "Editar información",
+                routeName: "profile/edit",
+                subItems: [],
+            },
+            {
+                label: "Cambiar contraseña",
+                routeName: "profile/edit/password",
+                subItems: [],
+            },
+        ],
+    },
 ];
-
 
 // --------------------------------------------
 
@@ -126,7 +142,6 @@ let rts_permisoTotal = [
         subItems: [],
     },
 ];
-
 
 // Función para filtrar las rutas permitidas
 function filterRoutes(rutas, accesos) {
@@ -143,7 +158,10 @@ function filterRoutes(rutas, accesos) {
                 : [];
 
             // Verificar si el elemento principal es accesible o si tiene subItems accesibles
-            if (rutasAccesibles.has(item.routeName) || filteredSubItems.length > 0) {
+            if (
+                rutasAccesibles.has(item.routeName) ||
+                filteredSubItems.length > 0
+            ) {
                 return { ...item, subItems: filteredSubItems };
             }
 
@@ -162,7 +180,6 @@ export function rutas_navegacion(accesos) {
     return filterRoutes(rts_navegacion, accesos);
 }
 
-
 // funcion que retorna las rutas padre
 function rutasPadre(rutas) {
     return rutas.map((item, index) => ({
@@ -172,7 +189,7 @@ function rutasPadre(rutas) {
     }));
 }
 
-export function getRutasPadre(){
+export function getRutasPadre() {
     let rutas = rts_perfilUsuario.concat(rts_perfilEmpresa);
     rutas = rutas.concat(rts_navegacion);
     return rutasPadre(rutas);
@@ -182,12 +199,3 @@ export function getRutasPadre(){
 export function getRutaPorId(rutas, id) {
     return rutas.find((ruta) => ruta.id === id) || null;
 }
-
-
-
-
-
-
-
-
-
