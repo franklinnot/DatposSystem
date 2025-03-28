@@ -57,7 +57,7 @@ export default function useToast() {
         message: null,
         type: "default",
         open: false,
-        duration: 8000,
+        duration: 10000,
         extraClassName: "",
     });
 
@@ -66,7 +66,7 @@ export default function useToast() {
     const showToast = (
         message,
         type = "default",
-        duration = 8000,
+        duration = 10000,
         extraClassName = ""
     ) => {
         // Limpia el timer existente al mostrar nuevo toast
@@ -134,7 +134,7 @@ export default function useToast() {
             </ToastPrimitives.Root>
 
             {/* Viewport con posicionamiento correcto y z-index alto */}
-            <ToastPrimitives.Viewport className="fixed top-4 right-4 w-[320px] z-[9999] w-[320px] sm:w-max" />
+            <ToastPrimitives.Viewport className="fixed top-4 right-4 z-[9999] w-[320px] sm:w-max" />
         </ToastPrimitives.Provider>
     );
 

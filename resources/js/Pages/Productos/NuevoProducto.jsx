@@ -126,14 +126,6 @@ export default function NuevoProducto({ auth }) {
             return;
         }
 
-        if (es_bien && data.stock_minimo > (data.stock_maximo / 2)) {
-            showToast(
-                "El stock mínimo debe ser igual o menor a la mitad del stock máximo.",
-                "error"
-            );
-            return;
-        }
-
         if (es_bien && data.stock_maximo < (data.stock_minimo * 2)) {
             showToast(
                 "El stock máximo debe ser igual o mayor al doble del stock mínimo.",
