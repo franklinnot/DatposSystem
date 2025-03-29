@@ -29,7 +29,7 @@ export default function NuevoTipoOperacion({ auth }) {
 
     const lista_movimientos = [
         { id: 1, name: "Entrada" },
-        { id: 0, name: "Salida" },
+        { id: 2, name: "Salida" },
     ];
 
     const [movimientos, setMovimientos] = useState([]);
@@ -62,7 +62,7 @@ export default function NuevoTipoOperacion({ auth }) {
                 }
             },
             onSuccess: () => {
-                reset("nombre", "serie");
+                reset("nombre", "serie", "descripcion");
             },
         });
     };
@@ -110,6 +110,7 @@ export default function NuevoTipoOperacion({ auth }) {
                         <TextInput
                             id="serie"
                             type="text"
+                            maxLength="4"
                             name="serie"
                             value={data.serie}
                             className="mt-1 block w-full"
