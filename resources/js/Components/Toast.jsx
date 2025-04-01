@@ -134,7 +134,7 @@ export default function useToast() {
             </ToastPrimitives.Root>
 
             {/* Viewport con posicionamiento correcto y z-index alto */}
-            <ToastPrimitives.Viewport className="fixed top-4 right-4 z-[9999] w-[320px] sm:w-max" />
+            <ToastPrimitives.Viewport className="fixed right-4 z-[9999] w-[320px] sm:w-max" />
         </ToastPrimitives.Provider>
     );
 
