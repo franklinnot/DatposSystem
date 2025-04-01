@@ -79,7 +79,6 @@ class NuevoProducto extends Controller
             'stock_minimo'       => 'nullable|numeric|min:0',
             'stock_maximo'       => 'nullable|numeric|min:0',
             'alerta_stock'       => 'nullable|boolean',
-            'alerta_vencimiento' => 'nullable|boolean',
             'variantes'          => 'nullable|array',
         ]);
 
@@ -127,7 +126,6 @@ class NuevoProducto extends Controller
             $data_producto['stock_minimo'] = null;
             $data_producto['stock_maximo'] = null;
             $data_producto['alerta_stock'] = null;
-            $data_producto['alerta_vencimiento'] = null;
         }
         else{
             return $this->error();

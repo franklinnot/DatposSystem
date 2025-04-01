@@ -27,7 +27,6 @@ export default function NuevoProducto({ auth }) {
             stock_minimo: "",
             stock_maximo: "",
             alerta_stock: "",
-            alerta_vencimiento: "",
             //
             variantes: [],
         });
@@ -90,7 +89,6 @@ export default function NuevoProducto({ auth }) {
                 "stock_minimo",
                 "stock_maximo",
                 "alerta_stock",
-                "alerta_vencimiento"
             );
         }
     };
@@ -216,7 +214,6 @@ export default function NuevoProducto({ auth }) {
                     "stock_minimo",
                     "stock_maximo",
                     "alerta_stock",
-                    "alerta_vencimiento",
                     "variantes"
                 );
                 setVariants([]);
@@ -430,26 +427,6 @@ export default function NuevoProducto({ auth }) {
                                     />
                                     <span className="ms-2 text-sm font-normal text-[#2B2B2B]">
                                         Recibir alertas de stock
-                                    </span>
-                                </label>
-                            </div>
-
-                            {/* Checkbox para recibir alertas por vencimiento */}
-                            <div>
-                                <label className="flex items-center">
-                                    <Checkbox
-                                        name="alerta_vencimiento"
-                                        checked={data.alerta_vencimiento}
-                                        className="border-gray-400"
-                                        onChange={(e) =>
-                                            setData(
-                                                "alerta_vencimiento",
-                                                e.target.checked
-                                            )
-                                        }
-                                    />
-                                    <span className="ms-2 text-sm font-normal text-[#2B2B2B]">
-                                        Recibir alertas por vencimiento
                                     </span>
                                 </label>
                             </div>
