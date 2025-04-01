@@ -85,6 +85,18 @@ let rts_navegacion = [
             { label: "Editar información", routeName: "operationtypes/edit" },
         ],
     },
+    {
+        label: "Asociados",
+        routeName: "partners",
+        subItems: [
+            {
+                label: "Nuevo Asociado",
+                routeName: "partners/new",
+            },
+            { label: "Ver lista de Asociados", routeName: "partners" },
+            { label: "Editar información", routeName: "partners/edit" },
+        ],
+    },
 ];
 
 // Rutas de perfil -- empresa y usuarios

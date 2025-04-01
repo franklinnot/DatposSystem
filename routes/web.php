@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Almacenes\NuevoAlmacen;
+use App\Http\Controllers\Asociados\NuevoAsociado;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Cajas\NuevaCaja;
 use App\Http\Controllers\Familias\NuevaFamilia;
@@ -365,6 +366,41 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
         })->name('products/delete');
 
         #endregion
+
+        #region Asociados
+
+        // vista para listar
+        Route::get('/partners', function () {
+            return Inertia::render('Dashboard');
+        })->name('partners');
+
+
+        // vista para registrar
+        Route::get('/partners/new', [NuevoAsociado::class, 'show'])
+            ->name('partners/new');
+
+        // metodo para registrar
+        Route::post('/partners/new', [NuevoAsociado::class, 'store']);
+
+
+        // vista para editar
+        Route::get('/partners/edit', function () {
+            return Inertia::render('Dashboard');
+        })->name('partners/edit');
+
+        // metodo para editar 
+        Route::patch('/partners/edit', function () {
+            return Inertia::render('Dashboard');
+        });
+
+
+        // metodo para eliminar
+        Route::post('/partners/delete', function () {
+            return Inertia::render('Dashboard');
+        })->name('partners/delete');
+
+        #endregion
+
 
         #region Tipos de Operacion
 
