@@ -5,6 +5,7 @@ use App\Http\Controllers\Asociados\NuevoAsociado;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Cajas\NuevaCaja;
 use App\Http\Controllers\Familias\NuevaFamilia;
+use App\Http\Controllers\Operaciones\NuevaOperacion;
 use App\Http\Controllers\Productos\NuevoProducto;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Roles\NuevoRol;
@@ -401,7 +402,6 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
 
         #endregion
 
-
         #region Tipos de Operacion
 
         // vista para listar
@@ -433,6 +433,40 @@ Route::middleware(['auth', 'no.cache', 'verified.access'])->group(
         Route::post('/operationtypes/delete', function () {
             return Inertia::render('Dashboard');
         })->name('operationtypes/delete');
+
+        #endregion
+
+        #region Operaciones
+
+        // vista para listar
+        Route::get('/operations', function () {
+            return Inertia::render('Dashboard');
+        })->name('operations');
+
+
+        // vista para registrar
+        Route::get('/operations/new', [NuevaOperacion::class, 'show'])
+            ->name('operations/new');
+
+        // metodo para registrar
+        Route::post('/operations/new', [NuevaOperacion::class, 'store']);
+
+
+        // vista para editar
+        Route::get('/operations/edit', function () {
+            return Inertia::render('Dashboard');
+        })->name('operations/edit');
+
+        // metodo para editar 
+        Route::patch('/operations/edit', function () {
+            return Inertia::render('Dashboard');
+        });
+
+
+        // metodo para eliminar
+        Route::post('/operations/delete', function () {
+            return Inertia::render('Dashboard');
+        })->name('operations/delete');
 
         #endregion
 

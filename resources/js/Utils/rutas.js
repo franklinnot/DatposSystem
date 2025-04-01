@@ -74,6 +74,18 @@ let rts_navegacion = [
         ],
     },
     {
+        label: "Asociados",
+        routeName: "partners",
+        subItems: [
+            {
+                label: "Nuevo Asociado",
+                routeName: "partners/new",
+            },
+            { label: "Ver lista de Asociados", routeName: "partners" },
+            { label: "Editar información", routeName: "partners/edit" },
+        ],
+    },
+    {
         label: "Tipos de Operación",
         routeName: "operationtypes",
         subItems: [
@@ -86,15 +98,15 @@ let rts_navegacion = [
         ],
     },
     {
-        label: "Asociados",
-        routeName: "partners",
+        label: "Operaciones",
+        routeName: "operations",
         subItems: [
             {
-                label: "Nuevo Asociado",
-                routeName: "partners/new",
+                label: "Nueva Operación",
+                routeName: "operations/new",
             },
-            { label: "Ver lista de Asociados", routeName: "partners" },
-            { label: "Editar información", routeName: "partners/edit" },
+            { label: "Ver Operaciones", routeName: "operations" },
+            { label: "Editar información", routeName: "operations/edit" },
         ],
     },
 ];
