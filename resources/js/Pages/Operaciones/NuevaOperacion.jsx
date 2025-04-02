@@ -215,11 +215,7 @@ export default function NuevaOperacion({ auth }) {
 
                     {/* Detalle de productos */}
                     <div>
-                        <InputLabel
-                            htmlFor="detalle"
-                            value="Detalle"
-                            className="font-normal text-[#2B2B2B]"
-                        />
+                        <h3 className="text-lg font-semibold mb-2">Detalle</h3>
                         <MultiSelectInput
                             id="detalle"
                             name="detalle"
@@ -232,101 +228,100 @@ export default function NuevaOperacion({ auth }) {
 
                         {/* Lista de productos seleccionados */}
                         {data.detalle.length > 0 && (
-                            <div className="mt-4 grid gap-3 items-center">
-                                {data.detalle.map((item, index) => {
-                                    const producto = lista_productos.find(
-                                        (p) => p.id == item.id
-                                    );
-                                    const isExpanded = expandedItems.includes(
-                                        item.id
-                                    );
-                                    return (
-                                        <div key={index} className="w-full">
-                                            {/* Botón de producto */}
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    toggleItem(item.id)
-                                                }
-                                                className="flex justify-between w-full py-2 px-4 rounded-lg bg-[#f1f2f5] text-[#2B2B2B] hover:bg-[#e3ebff] focus:outline-none"
-                                            >
-                                                <span>
-                                                    {producto?.name ||
-                                                        "No encontrado"}
-                                                </span>
-                                                <ArrowDown
-                                                    size="16"
-                                                    className={`relative top-1 transition-transform duration-300 ${
-                                                        isExpanded
-                                                            ? "rotate-180"
-                                                            : "rotate-0"
-                                                    }`}
-                                                />
-                                            </button>
+                            <div className="relative mt-4">
+                                <p className="text-sm font-normal text-[#2B2B2B]">
+                                    Productos seleccionados:
+                                </p>
 
-                                            {/* Contenedor de detalles con animación */}
-                                            <div
-                                                className={`overflow-hidden transition-[max-height] duration-300 ease-in-out ${
-                                                    isExpanded
-                                                        ? "max-h-40"
-                                                        : "max-h-0"
-                                                }`}
-                                            >
-                                                <div className="px-6 py-4 mt-2 border rounded-lg bg-white shadow-md">
-                                                    <strong className="block text-lg text-gray-800">
-                                                        Datos
-                                                    </strong>
-                                                    <div className="mt-2 flex items-center gap-2">
-                                                        <InputLabel
-                                                            value="Cantidad:"
-                                                            className="font-normal text-[#2B2B2B]"
-                                                        />
-                                                        <NumberInput
-                                                            min="0"
-                                                            value={
-                                                                item.cantidad
-                                                            }
-                                                            className="block w-full py-1 mr-8"
-                                                            onChange={(e) =>
-                                                                actualizarDetalle(
-                                                                    item.id,
-                                                                    "cantidad",
-                                                                    Number(
-                                                                        e.target
-                                                                            .value
+                                <div className="mt-4 grid gap-3 items-center">
+                                    {data.detalle.map((item, index) => {
+                                        const producto = lista_productos.find(
+                                            (p) => p.id == item.id
+                                        );
+                                        const isExpanded =
+                                            expandedItems.includes(item.id);
+                                        return (
+                                            <div key={index} className="w-full">
+                                                {/* Botón de producto */}
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        toggleItem(item.id)
+                                                    }
+                                                    className="flex justify-between w-full py-2 px-4 rounded-lg bg-[#f1f2f5] text-[#2B2B2B] hover:bg-[#e3ebff] focus:outline-none"
+                                                >
+                                                    <span>
+                                                        {producto?.name ||
+                                                            "No encontrado"}
+                                                    </span>
+                                                    <ArrowDown
+                                                        size="16"
+                                                        className={`relative top-1 transition-transform duration-300 ${
+                                                            isExpanded
+                                                                ? "rotate-180"
+                                                                : "rotate-0"
+                                                        }`}
+                                                    />
+                                                </button>
+
+                                                {/* Contenedor de detalles con animación */}
+                                                <div
+                                                    className={`overflow-hidden transition-[max-height] duration-300 ease-in-out ${
+                                                        isExpanded
+                                                            ? "max-h-40"
+                                                            : "max-h-0"
+                                                    }`}
+                                                >
+                                                    <div className="px-6 py-4 mt-2 border rounded-lg bg-white shadow-md">
+                                                        {/* <strong className="block text-base text-gray-800">
+                                                            Datos
+                                                        </strong> */}
+                                                        <div className="mt-2 flex items-center gap-2">
+                                                            <InputLabel
+                                                                value="Cantidad:"
+                                                                className="font-normal text-[#2B2B2B]"
+                                                            />
+                                                            <NumberInput
+                                                                min="0"
+                                                                value={
+                                                                    item.cantidad
+                                                                }
+                                                                className="block w-full py-1 mr-6"
+                                                                onChange={(e) =>
+                                                                    actualizarDetalle(
+                                                                        item.id,
+                                                                        "cantidad",
+                                                                        Number(e.target.value)
                                                                     )
-                                                                )
-                                                            }
-                                                        />
-                                                    </div>
-                                                    <div className="mt-2 flex items-center gap-2">
-                                                        <InputLabel
-                                                            value="Costo unitario:"
-                                                            className="text-nowrap font-normal text-[#2B2B2B]"
-                                                        />
-                                                        <NumberInput
-                                                            min="0"
-                                                            value={
-                                                                item.costo_unitario
-                                                            }
-                                                            className="block w-full py-1 mr-8"
-                                                            onChange={(e) =>
-                                                                actualizarDetalle(
-                                                                    item.id,
-                                                                    "costo_unitario",
-                                                                    Number(
-                                                                        e.target
-                                                                            .value
+                                                                }
+                                                            />
+                                                        </div>
+                                                        <div className="mt-2 flex items-center gap-2">
+                                                            <InputLabel
+                                                                value="Costo unitario:"
+                                                                className="text-nowrap font-normal text-[#2B2B2B]"
+                                                            />
+                                                            <NumberInput
+                                                                min="0"
+                                                                value={
+                                                                    item.costo_unitario
+                                                                }
+                                                                className="block w-full py-1 mr-6"
+                                                                onChange={(e) =>
+                                                                    actualizarDetalle(
+                                                                        item.id,
+                                                                        "costo_unitario",
+                                                                        Number(e.target.value)
                                                                     )
-                                                                )
-                                                            }
-                                                        />
+                                                                }
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
+                                </div>
                             </div>
                         )}
                         <InputError message={errors.detalle} className="mt-2" />
