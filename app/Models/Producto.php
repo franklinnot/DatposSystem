@@ -85,7 +85,7 @@ class Producto extends Model
     {
         $result = DB::select(
             "EXEC sp_existencia_producto_by_codigo 
-        @codigo = ?, @id_empresa = ?",
+            @codigo = ?, @id_empresa = ?",
             [
                 strtoupper($codigo),
                 $id_empresa
@@ -96,5 +96,13 @@ class Producto extends Model
             return $result[0]->verificar === 'true';
         }
         return null;
+    }
+
+    public static function get_productos_tipo_bien($id_empresa): ?array
+    {
+        $result = DB::select("EXEC sp_get_productos_tipo_bien @id_empresa = ?", [$id_empresa]);
+        return $result ? array_map(function ($item) {
+            return new Producto((array) $item);
+        }, $result) : null;
     }
 }

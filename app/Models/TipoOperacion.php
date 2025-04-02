@@ -52,4 +52,12 @@ class TipoOperacion extends Model
         return null;
     }
 
+    public static function get_tipos_operacion($id_empresa):?array
+    {
+        $result = DB::select("EXEC sp_get_tipos_operacion @id_empresa = ?", [$id_empresa]);
+        return $result ? array_map(function ($item) {
+            return new TipoOperacion((array) $item);
+        }, $result) : null;
+    }
+
 }
