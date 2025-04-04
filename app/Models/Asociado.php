@@ -47,9 +47,9 @@ class Asociado extends Model
         return $result ? new Asociado(['id_asociado' => $result[0]->nuevo_id] + $data) : null;
     }
 
-    public static function get_asociados($id_empresa): ?array
+    public static function get_proveedores($id_empresa): ?array
     {
-        $result = DB::select("EXEC sp_get_asociados @id_empresa = ?", [$id_empresa]);
+        $result = DB::select("EXEC sp_get_proveedores @id_empresa = ?", [$id_empresa]);
         return $result ? array_map(function ($item) {
             return new Asociado((array) $item);
         }, $result) : null;
