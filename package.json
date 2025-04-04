@@ -20,7 +20,6 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
-        "@inertiajs/inertia": "^0.11.1",
-        "@radix-ui/react-toast": "^1.2.6"
+        "@inertiajs/inertia": "^0.11.1"
     }
 }

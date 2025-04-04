@@ -1,4 +1,3 @@
-import * as ToastPrimitives from "@radix-ui/react-toast";
 import { useState, useEffect, useRef } from "react";
 
 const ToastTypeIcons = {
@@ -53,89 +52,113 @@ const ToastTypeIcons = {
 };
 
 export default function useToast() {
-    const [toast, setToast] = useState({
-        message: null,
-        type: "default",
-        open: false,
-        duration: 10000,
-        extraClassName: "",
-    });
+    // Single toast state
+    const [toast, setToast] = useState(null);
+    const timerRef = useRef(null);
 
-    const timerRef = useRef(null); // Referencia para el timer
+    // Fixed duration constant
+    const TOAST_DURATION = 8000; // 8 seconds
 
     const showToast = (
         message,
         type = "default",
-        duration = 10000,
+        duration = TOAST_DURATION,
         extraClassName = ""
     ) => {
-        // Limpia el timer existente al mostrar nuevo toast
+        // Clear any existing timer
         if (timerRef.current) {
             clearTimeout(timerRef.current);
         }
 
+        // Set the new toast
         setToast({
             message,
             type,
-            open: true,
-            duration,
             extraClassName,
+            visible: true,
+            timestamp: Date.now(),
         });
+
+        // Set timer to hide the toast
+        timerRef.current = setTimeout(() => {
+            setToast((currentToast) =>
+                currentToast ? { ...currentToast, visible: false } : null
+            );
+
+            // Clear toast data after animation completes
+            setTimeout(() => {
+                setToast(null);
+            }, 300);
+        }, duration);
     };
 
-    useEffect(() => {
-        if (toast.open) {
-            timerRef.current = setTimeout(() => {
-                setToast((prev) => ({ ...prev, open: false }));
-            }, toast.duration);
+    const handleCloseToast = () => {
+        // Clear any existing timer
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
         }
+
+        // Mark toast as not visible to trigger exit animation
+        setToast((currentToast) =>
+            currentToast ? { ...currentToast, visible: false } : null
+        );
+
+        // Clear toast data after animation completes
+        setTimeout(() => {
+            setToast(null);
+        }, 300);
+    };
+
+    // Cleanup on unmount
+    useEffect(() => {
         return () => {
             if (timerRef.current) {
                 clearTimeout(timerRef.current);
             }
         };
-    }, [toast.open, toast.duration]);
+    }, []);
 
     const ToastComponent = () => (
-        <ToastPrimitives.Provider>
-            <ToastPrimitives.Root
-                open={toast.open}
-                onOpenChange={(open) => setToast((prev) => ({ ...prev, open }))}
-                className={`
-                    flex items-center gap-3 rounded-lg px-4 py-3
-                    shadow-md 
-                    ${
-                        toast.type === "success"
-                            ? "bg-emerald-500 text-white"
-                            : toast.type === "error"
-                            ? "bg-rose-500 text-white"
-                            : "bg-gray-900 text-gray-100"
-                    }
-                    ${toast.extraClassName}
-                `}
-            >
-                {ToastTypeIcons?.[toast.type] || ToastTypeIcons.close}
-
-                <div className="flex-1 min-w-0">
-                    <ToastPrimitives.Title className="font-semibold text-sm leading-6">
-                        {toast.message}
-                    </ToastPrimitives.Title>
-                </div>
-
-                <ToastPrimitives.Close
-                    className="ml-4 p-1 hover:bg-white/20 rounded focus:outline-none"
-                    onClick={() =>
-                        setToast((prev) => ({ ...prev, open: false }))
-                    }
+        <div className="fixed right-4 z-[9999] w-[320px] sm:w-max">
+            {toast && (
+                <div
+                    className={`
+                        flex items-center gap-3 rounded-lg px-4 py-3
+                        shadow-md 
+                        ${
+                            toast.type === "success"
+                                ? "bg-emerald-500 text-white"
+                                : toast.type === "error"
+                                ? "bg-rose-500 text-white"
+                                : "bg-gray-900 text-gray-100"
+                        }
+                        ${toast.extraClassName}
+                        transition-all duration-300 ease-in-out
+                        ${
+                            toast.visible
+                                ? "opacity-100 translate-y-0"
+                                : "opacity-0 translate-y-[-10px]"
+                        }
+                    `}
                 >
-                    {ToastTypeIcons.close}
-                    <span className="sr-only">Cerrar</span>
-                </ToastPrimitives.Close>
-            </ToastPrimitives.Root>
+                    {ToastTypeIcons?.[toast.type] || ToastTypeIcons.close}
 
-            {/* Viewport con posicionamiento correcto y z-index alto */}
-            <ToastPrimitives.Viewport className="fixed right-4 z-[9999] w-[320px] sm:w-max" />
-        </ToastPrimitives.Provider>
+                    <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-sm leading-6">
+                            {toast.message}
+                        </div>
+                    </div>
+
+                    <button
+                        className="ml-4 p-1 hover:bg-white/20 rounded focus:outline-none"
+                        onClick={handleCloseToast}
+                    >
+                        {ToastTypeIcons.close}
+                        <span className="sr-only">Cerrar</span>
+                    </button>
+                </div>
+            )}
+        </div>
     );
 
     return { showToast, ToastComponent };
