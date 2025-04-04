@@ -39,11 +39,12 @@ class NuevaOperacion extends Controller
             return [
                 'id' => $item->id_tipo_operacion,
                 'name' => $item->nombre,
+                'tipo_movimiento' => $item->tipo_movimiento,
             ];
         }, $tipos);
 
         // asociados
-        $asociados = Asociado::get_asociados($id_empresa);
+        $asociados = Asociado::get_proveedores($id_empresa);
         $asociados = array_filter($asociados, function ($item) {
             return $item->estado == '1';
         });
@@ -85,4 +86,46 @@ class NuevaOperacion extends Controller
             'productos' => $productos_mapeados,
         ]);
     }
+
+    public function store(Request $request): Response
+    {
+        $data = $request->validate([
+            'id_tipo_operacion' => 'required|integer',
+            'id_asociado' => 'nullable|integer',
+            'id_almacen_origen' => 'nullable|integer',
+            'id_almacen_destino' => 'nullable|integer',
+            'detalle' => 'required|array',
+        ]);
+
+        $user = Auth::user();
+        $id_empresa = $user->id_empresa;
+
+        
+
+        // Guardar mensaje flash en la sesión y enviar datos actualizados al cliente
+        return Inertia::render(self::COMPONENTE, [
+            'toast' => [
+                'type' => 'success',
+                'message' => 'Caja registrada exitosamente!',
+            ],
+        ]);
+    }
+
+    public function errorSameCode(): Response
+    {
+        throw ValidationException::withMessages([
+            'codigo' => 'Por favor, intente registrar con otro código.',
+        ]);
+    }
+
+    public function error(): Response
+    {
+        return Inertia::render(self::COMPONENTE, [
+            'toast' => [
+                'type' => 'error',
+                'message' => 'No fue posible registrar su nueva caja.',
+            ]
+        ]);
+    }
+
 }

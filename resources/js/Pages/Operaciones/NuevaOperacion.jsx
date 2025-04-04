@@ -75,7 +75,15 @@ export default function NuevaOperacion({ auth }) {
         const value = e.target.value;
         const tipo = lista_tipos.find((t) => t.id == value)?.tipo_movimiento;
         if (value && tipo) {
-            setTipoMov(tipo == 1 ? "entrada" : "salida");
+            let name = "";
+            if (tipo == 1) {
+                name = "de la etrada";
+            } else if (tipo == 2) {
+                name = "de la salida";
+            } else if (tipo == 3) {
+                name = "del traslado";
+            }
+            setTipoMov(name);
             setTipoSeleccionado(true);
         }
         else{
@@ -146,6 +154,19 @@ export default function NuevaOperacion({ auth }) {
         ) {
             showToast(
                 "Para realizar una operación de salida, debes seleccionar el almacén de origen.",
+                "error"
+            );
+            return;
+        }
+
+        // si es un traslado, debe seleccionar ambos almacenes
+        if (
+            lista_tipos.find((t) => t.id == data.id_tipo_operacion)
+                .tipo_movimiento == 3 &&
+            !data.id_almacen_origen && !data.id_almacen_destino
+        ) {
+            showToast(
+                "Para realizar una operación de traslado, debes seleccionar el almacén de origen y destino.",
                 "error"
             );
             return;
@@ -279,7 +300,7 @@ export default function NuevaOperacion({ auth }) {
                     {tipoSeleccionado && (
                         <div>
                             <h3 className="text-lg font-semibold mb-2">
-                                Detalle de la {tipoMov}
+                                Detalle {tipoMov}
                             </h3>
                             <MultiSelectInput
                                 id="detalle"
