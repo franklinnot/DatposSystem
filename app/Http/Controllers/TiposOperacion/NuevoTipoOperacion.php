@@ -47,7 +47,7 @@ class NuevoTipoOperacion extends Controller
             return $this->errorSameSerie();
         }
 
-        $movimientos = [2, 1];
+        $movimientos = [1, 2 ,3]; // 1: entrada, 2: salida, 3: traslado
         if(!in_array($data_tipoOperacion['tipo_movimiento'], $movimientos)) {
             return $this->error();
         }
