@@ -7,6 +7,8 @@ export default forwardRef(function SelectInput(
         className = "",
         placeholder = "Selecciona...",
         isDisabled = false,
+        includeEmptyOption = true,
+        emptyOptionText = "Ninguna opción",
         ...props
     },
     ref
@@ -20,6 +22,11 @@ export default forwardRef(function SelectInput(
     const searchInputRef = useRef(null);
     const optionsListRef = useRef(null);
 
+    // Add empty option to the beginning of the options list
+    const allOptions = includeEmptyOption
+        ? [{ id: "", name: emptyOptionText }, ...options]
+        : options;
+
     useEffect(() => {
         setSelectedValue(value);
     }, [value]);
@@ -27,14 +34,14 @@ export default forwardRef(function SelectInput(
     useEffect(() => {
         setFilteredOptions(
             searchTerm.trim()
-                ? options.filter((option) =>
+                ? allOptions.filter((option) =>
                       option.name
                           .toLowerCase()
                           .includes(searchTerm.toLowerCase())
                   )
-                : options
+                : allOptions
         );
-    }, [options, searchTerm]);
+    }, [searchTerm, options, includeEmptyOption, emptyOptionText]);
 
     useEffect(() => {
         if (isOpen) {
@@ -126,7 +133,7 @@ export default forwardRef(function SelectInput(
         setIsOpen(false);
     };
 
-    const selectedOption = options.find((opt) => opt.id === selectedValue);
+    const selectedOption = allOptions.find((opt) => opt.id === selectedValue);
     const hasValue = Boolean(selectedValue) && selectedValue !== "";
 
     return (
@@ -155,7 +162,9 @@ export default forwardRef(function SelectInput(
                         hasValue ? "text-inherit" : "text-gray-500"
                     }`}
                 >
-                    {selectedOption?.name || placeholder}
+                    {selectedOption && selectedOption.id
+                        ? selectedOption.name
+                        : placeholder}
                 </span>
                 <svg
                     className={`w-4 h-4 transition-transform ${
@@ -210,9 +219,11 @@ export default forwardRef(function SelectInput(
                                     role="option"
                                     aria-selected={option.id === selectedValue}
                                     className={`px-4 py-3 hover:bg-[#e3ebff] text-gray-500 cursor-pointer ${
-                                        option.id === selectedValue ||
                                         index === highlightedIndex
                                             ? "bg-[#e3ebff]"
+                                            : option.id === selectedValue &&
+                                              index !== highlightedIndex
+                                            ? "bg-[#f0f5ff]"
                                             : ""
                                     }`}
                                     onClick={() => handleChange(option.id)}
