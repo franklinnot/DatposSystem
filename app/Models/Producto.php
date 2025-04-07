@@ -105,4 +105,24 @@ class Producto extends Model
             return new Producto((array) $item);
         }, $result) : null;
     }
+
+    public static function verificar_stock_by_id($id_producto, $cantidad, $id_almacen, $id_empresa): ?bool
+    {
+        $result = DB::select(
+            "EXEC sp_verificar_stock_by_id 
+            @id_producto = ?, @cantidad = ?, @id_almacen = ?, @id_empresa = ?",
+            [
+                $id_producto,
+                $cantidad,
+                $id_almacen,
+                $id_empresa
+            ]
+        );
+
+        if (isset($result[0]->verificar)) {
+            return $result[0]->verificar === 'true';
+        }
+        return null;
+    }
+
 }

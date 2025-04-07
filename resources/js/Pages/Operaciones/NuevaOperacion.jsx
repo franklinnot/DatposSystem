@@ -19,6 +19,7 @@ export default function NuevaOperacion({ auth }) {
         id_almacen_origen: "",
         id_almacen_destino: "",
         detalle: [],
+        toast: "",
     });
 
     const { toast } = usePage().props;
@@ -41,9 +42,9 @@ export default function NuevaOperacion({ auth }) {
     const [almacenes, setAlmacenes] = useState([]);
     const [productos, setProductos] = useState([]);
     const [expandedItems, setExpandedItems] = useState([]);
-    const [tipoSeleccionado, setTipoSeleccionado] = useState(false);
-    const [tipoMov, setTipoMov] = useState();
-    const [codigoMovimiento, setCodigoMovimiento] = useState();
+    const [tipoSeleccionado, setTipoSeleccionado] = useState(false); // verificar si se ha seleccionado un tipo de operación
+    const [tipoMov, setTipoMov] = useState(); // nombre del tipo de operación
+    const [codigoMovimiento, setCodigoMovimiento] = useState(); // 1: entrada, 2: salida, 3: traslado
 
     // Función para actualizar cantidad o costo_unitario en data.detalle
     const actualizarDetalle = (id, campo, valor) => {
@@ -70,6 +71,15 @@ export default function NuevaOperacion({ auth }) {
         setAlmacenes(lista_almacenes || []);
         setProductos(lista_productos || []);
     }, []);
+
+    // Agregar este useEffect para reiniciar lógica cuando el tipo de operación se borra
+    useEffect(() => {
+        if (!data.id_tipo_operacion) {
+            setCodigoMovimiento(null);
+            setTipoMov(null);
+            setTipoSeleccionado(false);
+        }
+    }, [data.id_tipo_operacion]);
 
     // Cambio de tipo de operación
     const handleTipoChange = (e) => {
@@ -175,7 +185,11 @@ export default function NuevaOperacion({ auth }) {
         }
 
         // si ha seleccionado ambos almacenes, debe ser diferente
-        if (data.id_almacen_origen == data.id_almacen_destino) {
+        if (
+            data.id_almacen_origen == data.id_almacen_destino &&
+            codigoMovimiento == 3
+        ) {
+            // si es un traslado
             showToast(
                 "No puedes seleccionar el mismo almacén de origen y destino.",
                 "error"
@@ -204,8 +218,17 @@ export default function NuevaOperacion({ auth }) {
         }
 
         post(route("operations/new"), {
+            onError: (serverErrors) => {
+                if (serverErrors.toast) {
+                    showToast(serverErrors.toast, "error");
+                }
+            },
             onSuccess: () => {
                 reset();
+                setTipoSeleccionado(false);
+                setCodigoMovimiento(null);
+                setTipoMov(null);
+                setExpandedItems([]);
             },
         });
     };
@@ -233,7 +256,7 @@ export default function NuevaOperacion({ auth }) {
                             id="id_tipo_operacion"
                             name="id_tipo_operacion"
                             options={tipos}
-                            value={data.id_tipo_operacion}
+                            value={data.id_tipo_operacion || ""}
                             onChange={handleTipoChange}
                             placeholder="Selecciona un tipo de operación"
                             closeOnSelect={true}
@@ -242,23 +265,25 @@ export default function NuevaOperacion({ auth }) {
                     </div>
 
                     {/* Input de tipo de asociado */}
-                    <div>
-                        <InputLabel
-                            htmlFor="id_asociado"
-                            value="Asociado (opcional)"
-                            className="font-normal text-[#2B2B2B]"
-                        />
-                        <SelectInput
-                            id="id_asociado"
-                            name="id_asociado"
-                            options={asociados}
-                            value={data.id_asociado}
-                            onChange={handleAsociadoChange}
-                            placeholder="Selecciona un asociado"
-                            closeOnSelect={true}
-                        />
-                        <InputError message={errors.id_asociado} />
-                    </div>
+                    {codigoMovimiento == 1 && (
+                        <div>
+                            <InputLabel
+                                htmlFor="id_asociado"
+                                value="Asociado (opcional)"
+                                className="font-normal text-[#2B2B2B]"
+                            />
+                            <SelectInput
+                                id="id_asociado"
+                                name="id_asociado"
+                                options={asociados}
+                                value={data.id_asociado}
+                                onChange={handleAsociadoChange}
+                                placeholder="Selecciona un asociado"
+                                closeOnSelect={true}
+                            />
+                            <InputError message={errors.id_asociado} />
+                        </div>
+                    )}
 
                     {/* Input de almacén de origen */}
                     {(codigoMovimiento == 2 || codigoMovimiento == 3) && (

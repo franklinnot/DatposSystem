@@ -22,7 +22,6 @@ use Illuminate\Validation\ValidationException;
 
 class NuevaOperacion extends Controller
 {
-    //
     public const COMPONENTE = "Operaciones/NuevaOperacion";
     public const RUTA = "operations/new";
 
@@ -31,81 +30,30 @@ class NuevaOperacion extends Controller
         $user = Auth::user();
         $id_empresa = $user->id_empresa;
 
-        // tipos de operacion
-        $tipos = TipoOperacion::get_tipos_operacion($id_empresa);
-        $tipos = array_filter($tipos, function ($item) {
-            return $item->estado == '1';
-        });
-        $tipos_mapeados = array_map(function ($item) {
-            return [
-                'id' => $item->id_tipo_operacion,
-                'name' => $item->nombre,
-                'tipo_movimiento' => $item->tipo_movimiento,
-            ];
-        }, $tipos);
+        // Se reutiliza la función para obtener los datos comunes
+        $commonData = $this->getCommonData($id_empresa);
 
-        // asociados
-        $asociados = Asociado::get_proveedores($id_empresa);
-        $asociados = array_filter($asociados, function ($item) {
-            return $item->estado == '1';
-        });
-        $asociados_mapeados = array_map(function ($item) {
-            return [
-                'id' => $item->id_asociado,
-                'name' => $item->nombre,
-            ];
-        }, $asociados);
-
-        // almacenes
-        $almacenes = Almacen::get_almacenes_by_id_empresa($id_empresa);
-        $almacenes = array_filter($almacenes, function ($item) {
-            return $item->estado == '1';
-        });
-        $almacenes_mapeados = array_map(function ($item) {
-            return [
-                'id' => $item->id_almacen,
-                'name' => $item->nombre,
-            ];
-        }, $almacenes);
-
-        // productos
-        $productos = Producto::get_productos_tipo_bien($id_empresa);
-        $productos = array_filter($productos, function ($item) {
-            return $item->estado != '0';
-        });
-        $productos_mapeados = array_map(function ($item) {
-            return [
-                'id' => $item->id_producto,
-                'name' => $item->nombre,
-            ];
-        }, $productos);
-
-        return Inertia::render(self::COMPONENTE, [
-            'tipos_operacion' => $tipos_mapeados,
-            'asociados' => $asociados_mapeados,
-            'almacenes' => $almacenes_mapeados,
-            'productos' => $productos_mapeados,
-        ]);
+        return Inertia::render(self::COMPONENTE, $commonData);
     }
 
     public function store(Request $request): Response
     {
-        // Basic validation
+        // Validación básica
         $data = $request->validate([
-            'id_tipo_operacion' => 'required|integer|exists:tipo_operacion,id_tipo_operacion',
-            'id_asociado' => 'nullable|integer|exists:asociado,id_asociado',
-            'id_almacen_origen' => 'nullable|integer|exists:almacen,id_almacen',
-            'id_almacen_destino' => 'nullable|integer|exists:almacen,id_almacen',
-            'detalle' => 'required|array|min:1',
-            'detalle.*.id' => 'required|integer|exists:producto,id_producto',
-            'detalle.*.cantidad' => 'required|numeric|min:0.01',
+            'id_tipo_operacion'   => 'required|integer|exists:tipo_operacion,id_tipo_operacion',
+            'id_asociado'         => 'nullable|integer|exists:asociado,id_asociado',
+            'id_almacen_origen'   => 'nullable|integer|exists:almacen,id_almacen',
+            'id_almacen_destino'  => 'nullable|integer|exists:almacen,id_almacen',
+            'detalle'             => 'required|array|min:1',
+            'detalle.*.id'        => 'required|integer|exists:producto,id_producto',
+            'detalle.*.cantidad'  => 'required|numeric|min:0.01',
             'detalle.*.costo_unitario' => 'nullable|numeric|min:0',
         ]);
 
         $user = Auth::user();
         $id_empresa = $user->id_empresa;
 
-        // Get tipo_operacion to check tipo_movimiento
+        // Obtener el tipo de operación para verificar el tipo de movimiento
         $tipoOperacion = TipoOperacion::where('id_tipo_operacion', $data['id_tipo_operacion'])
             ->where('id_empresa', $id_empresa)
             ->where('estado', '1')
@@ -115,7 +63,7 @@ class NuevaOperacion extends Controller
             return $this->error('El tipo de operación seleccionado no es válido.');
         }
 
-        // Additional validations based on tipo_movimiento
+        // Validaciones adicionales según el tipo de movimiento
         switch ($tipoOperacion->tipo_movimiento) {
             case 1: // Entrada
                 if (empty($data['id_almacen_destino'])) {
@@ -134,60 +82,88 @@ class NuevaOperacion extends Controller
                 break;
         }
 
-        // Check if origin and destination are different when both are provided
+        $id_almacen_origen = $data['id_almacen_origen'] ?? null;
+        // Para cualquier operación que no sea ingreso, no se enviará costo unitario
+        if ($tipoOperacion->tipo_movimiento != 1) {
+            foreach ($data['detalle'] as &$detalle) {
+                $detalle['costo_unitario'] = null;
+                $cantidad = $detalle['cantidad'];
+                $id_producto = $detalle['id'];
+                $producto = Producto::find($id_producto);
+                if (!Producto::verificar_stock_by_id($id_producto, $cantidad, $id_almacen_origen, $id_empresa)) {
+                    return $this->error('No hay stock suficiente para el producto: ' . $producto->nombre);
+                }
+            }
+        }
+
+        // Verifica que en transferencia los almacenes sean diferentes
         if (
-            !empty($data['id_almacen_origen']) && !empty($data['id_almacen_destino'])
-            && $data['id_almacen_origen'] == $data['id_almacen_destino']
+            !empty($data['id_almacen_origen']) &&
+            !empty($data['id_almacen_destino']) &&
+            $data['id_almacen_origen'] == $data['id_almacen_destino'] &&
+            $tipoOperacion->tipo_movimiento == 3
         ) {
             return $this->error('El almacén de origen y destino no pueden ser el mismo.');
         }
 
-        // Prepare data for Operacion::registrar
+        // Para ingreso se limpia el almacén de origen; y para salida, el de destino
+        if ($tipoOperacion->tipo_movimiento == 1) {
+            $data['id_almacen_origen'] = null;
+        } else if ($tipoOperacion->tipo_movimiento == 2) {
+            $data['id_almacen_destino'] = null;
+        }
+
+        // Preparar datos para Operacion::registrar
         $operacionData = [
-            'id_usuario' => $user->id_usuario,
-            'id_tipo_operacion' => $data['id_tipo_operacion'],
-            'id_almacen_origen' => $data['id_almacen_origen'],
-            'id_almacen_destino' => $data['id_almacen_destino'],
-            'id_asociado' => $data['id_asociado'],
-            'id_empresa' => $id_empresa,
-            'detalles' => array_map(function ($item) {
+            'id_usuario'           => $user->id_usuario,
+            'id_tipo_operacion'    => $data['id_tipo_operacion'],
+            'id_almacen_origen'    => $data['id_almacen_origen'],
+            'id_almacen_destino'   => $data['id_almacen_destino'],
+            'id_asociado'          => $data['id_asociado'],
+            'id_empresa'           => $id_empresa,
+            'detalles'             => array_map(function ($item) {
                 return [
-                    'id_producto' => $item['id'],
-                    'cantidad' => $item['cantidad'],
+                    'id_producto'   => $item['id'],
+                    'cantidad'      => $item['cantidad'],
                     'costo_unitario' => $item['costo_unitario'] ?? null
                 ];
             }, $data['detalle'])
         ];
 
-        // Register the operation
+        // Registrar la operación usando tu store procedure
         $operacion = Operacion::registrar($operacionData);
 
         if (!$operacion) {
             return $this->error('No fue posible registrar la operación. Por favor, inténtelo de nuevo.');
         }
 
-        // Return success response
-        return Inertia::render(self::COMPONENTE, [
-            'toast' => [
-                'type' => 'success',
-                'message' => 'Operación registrada exitosamente! Código: ' . $operacion->codigo,
-            ],
-        ]);
+        // Retornar respuesta con el "toast" y los datos iguales a show()
+        return Inertia::render(self::COMPONENTE, array_merge(
+            $this->getCommonData($id_empresa),
+            [
+                'toast' => [
+                    'type' => 'success',
+                    'message' => 'Operación registrada exitosamente! Código: ' . $operacion->codigo,
+                ],
+            ]
+        ));
     }
 
-    // Helper method for error responses
-    private function error($message = null): Response
+    /**
+     * Método privado que agrupa la lógica para obtener
+     * los datos comunes requeridos tanto en show() como en store()
+     */
+    private function getCommonData($id_empresa): array
     {
-        return Inertia::render(self::COMPONENTE, [
-            'toast' => [
-                'type' => 'error',
-                'message' => $message ?? 'No fue posible registrar la operación.',
-            ],
-        ]);
+        return [
+            'tipos_operacion' => $this->getTiposOperacion($id_empresa),
+            'asociados'      => $this->getAsociados($id_empresa),
+            'almacenes'      => $this->getAlmacenes($id_empresa),
+            'productos'      => $this->getProductos($id_empresa),
+        ];
     }
 
-    // Helper methods to get data for the form
-    private function getTiposOperacion($id_empresa)
+    private function getTiposOperacion($id_empresa): array
     {
         $tipos = TipoOperacion::get_tipos_operacion($id_empresa);
         $tipos = array_filter($tipos, function ($item) {
@@ -195,14 +171,14 @@ class NuevaOperacion extends Controller
         });
         return array_map(function ($item) {
             return [
-                'id' => $item->id_tipo_operacion,
-                'name' => $item->nombre,
+                'id'              => $item->id_tipo_operacion,
+                'name'            => $item->nombre,
                 'tipo_movimiento' => $item->tipo_movimiento,
             ];
         }, $tipos);
     }
 
-    private function getAsociados($id_empresa)
+    private function getAsociados($id_empresa): array
     {
         $asociados = Asociado::get_proveedores($id_empresa);
         $asociados = array_filter($asociados, function ($item) {
@@ -210,13 +186,13 @@ class NuevaOperacion extends Controller
         });
         return array_map(function ($item) {
             return [
-                'id' => $item->id_asociado,
+                'id'   => $item->id_asociado,
                 'name' => $item->nombre,
             ];
         }, $asociados);
     }
 
-    private function getAlmacenes($id_empresa)
+    private function getAlmacenes($id_empresa): array
     {
         $almacenes = Almacen::get_almacenes_by_id_empresa($id_empresa);
         $almacenes = array_filter($almacenes, function ($item) {
@@ -224,13 +200,13 @@ class NuevaOperacion extends Controller
         });
         return array_map(function ($item) {
             return [
-                'id' => $item->id_almacen,
+                'id'   => $item->id_almacen,
                 'name' => $item->nombre,
             ];
         }, $almacenes);
     }
 
-    private function getProductos($id_empresa)
+    private function getProductos($id_empresa): array
     {
         $productos = Producto::get_productos_tipo_bien($id_empresa);
         $productos = array_filter($productos, function ($item) {
@@ -238,10 +214,17 @@ class NuevaOperacion extends Controller
         });
         return array_map(function ($item) {
             return [
-                'id' => $item->id_producto,
+                'id'   => $item->id_producto,
                 'name' => $item->nombre,
             ];
         }, $productos);
     }
 
+    // Método auxiliar para respuestas de error
+    private function error($message = null): Response
+    {
+        throw ValidationException::withMessages([
+            'toast' => $message ?? 'No fue posible registrar la operación. Por favor, inténtelo de nuevo.',
+        ]);
+    }
 }
