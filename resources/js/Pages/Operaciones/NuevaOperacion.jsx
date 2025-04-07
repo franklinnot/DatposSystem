@@ -43,6 +43,7 @@ export default function NuevaOperacion({ auth }) {
     const [expandedItems, setExpandedItems] = useState([]);
     const [tipoSeleccionado, setTipoSeleccionado] = useState(false);
     const [tipoMov, setTipoMov] = useState();
+    const [codigoMovimiento, setCodigoMovimiento] = useState();
 
     // Función para actualizar cantidad o costo_unitario en data.detalle
     const actualizarDetalle = (id, campo, valor) => {
@@ -74,6 +75,7 @@ export default function NuevaOperacion({ auth }) {
     const handleTipoChange = (e) => {
         const value = e.target.value;
         const tipo = lista_tipos.find((t) => t.id == value)?.tipo_movimiento;
+        setCodigoMovimiento(tipo);
         if (value && tipo) {
             let name = "";
             if (tipo == 1) {
@@ -81,12 +83,11 @@ export default function NuevaOperacion({ auth }) {
             } else if (tipo == 2) {
                 name = "de la salida";
             } else if (tipo == 3) {
-                name = "del traslado";
+                name = "de la transferencia";
             }
             setTipoMov(name);
             setTipoSeleccionado(true);
-        }
-        else{
+        } else {
             setTipoSeleccionado(false);
         }
         setData("id_tipo_operacion", value);
@@ -163,10 +164,11 @@ export default function NuevaOperacion({ auth }) {
         if (
             lista_tipos.find((t) => t.id == data.id_tipo_operacion)
                 .tipo_movimiento == 3 &&
-            !data.id_almacen_origen && !data.id_almacen_destino
+            !data.id_almacen_origen &&
+            !data.id_almacen_destino
         ) {
             showToast(
-                "Para realizar una operación de traslado, debes seleccionar el almacén de origen y destino.",
+                "Para realizar una operación de transferencia, debes seleccionar el almacén de origen y destino.",
                 "error"
             );
             return;
@@ -259,42 +261,46 @@ export default function NuevaOperacion({ auth }) {
                     </div>
 
                     {/* Input de almacén de origen */}
-                    <div>
-                        <InputLabel
-                            htmlFor="id_almacen_origen"
-                            value="Almacén de Origen"
-                            className="font-normal text-[#2B2B2B]"
-                        />
-                        <SelectInput
-                            id="id_almacen_origen"
-                            name="id_almacen_origen"
-                            options={almacenes}
-                            value={data.id_almacen_origen}
-                            onChange={handleAlOrigenChange}
-                            placeholder="Selecciona un almacén de origen"
-                            closeOnSelect={true}
-                        />
-                        <InputError message={errors.id_almacen_origen} />
-                    </div>
+                    {(codigoMovimiento == 2 || codigoMovimiento == 3) && (
+                        <div>
+                            <InputLabel
+                                htmlFor="id_almacen_origen"
+                                value="Almacén de Origen"
+                                className="font-normal text-[#2B2B2B]"
+                            />
+                            <SelectInput
+                                id="id_almacen_origen"
+                                name="id_almacen_origen"
+                                options={almacenes}
+                                value={data.id_almacen_origen}
+                                onChange={handleAlOrigenChange}
+                                placeholder="Selecciona un almacén de origen"
+                                closeOnSelect={true}
+                            />
+                            <InputError message={errors.id_almacen_origen} />
+                        </div>
+                    )}
 
                     {/* Input de almacén de destino */}
-                    <div>
-                        <InputLabel
-                            htmlFor="id_almacen_destino"
-                            value="Almacén de Destino"
-                            className="font-normal text-[#2B2B2B]"
-                        />
-                        <SelectInput
-                            id="id_almacen_destino"
-                            name="id_almacen_destino"
-                            options={almacenes}
-                            value={data.id_almacen_destino}
-                            onChange={handleAlDestinoChange}
-                            placeholder="Selecciona un almacén de destino"
-                            closeOnSelect={true}
-                        />
-                        <InputError message={errors.id_almacen_destino} />
-                    </div>
+                    {(codigoMovimiento == 1 || codigoMovimiento == 3) && (
+                        <div>
+                            <InputLabel
+                                htmlFor="id_almacen_destino"
+                                value="Almacén de Destino"
+                                className="font-normal text-[#2B2B2B]"
+                            />
+                            <SelectInput
+                                id="id_almacen_destino"
+                                name="id_almacen_destino"
+                                options={almacenes}
+                                value={data.id_almacen_destino}
+                                onChange={handleAlDestinoChange}
+                                placeholder="Selecciona un almacén de destino"
+                                closeOnSelect={true}
+                            />
+                            <InputError message={errors.id_almacen_destino} />
+                        </div>
+                    )}
 
                     {/* Detalle de productos */}
                     {tipoSeleccionado && (
@@ -392,32 +398,35 @@ export default function NuevaOperacion({ auth }) {
                                                                     }
                                                                 />
                                                             </div>
-                                                            <div className="mt-2 flex items-center gap-2">
-                                                                <InputLabel
-                                                                    value="Costo unitario:"
-                                                                    className="text-nowrap font-normal text-[#2B2B2B]"
-                                                                />
-                                                                <NumberInput
-                                                                    min="0"
-                                                                    value={
-                                                                        item.costo_unitario
-                                                                    }
-                                                                    className="block w-full py-1 mr-6"
-                                                                    onChange={(
-                                                                        e
-                                                                    ) =>
-                                                                        actualizarDetalle(
-                                                                            item.id,
-                                                                            "costo_unitario",
-                                                                            Number(
-                                                                                e
-                                                                                    .target
-                                                                                    .value
+                                                            {codigoMovimiento ==
+                                                                1 && (
+                                                                <div className="mt-2 flex items-center gap-2">
+                                                                    <InputLabel
+                                                                        value="Costo unitario:"
+                                                                        className="text-nowrap font-normal text-[#2B2B2B]"
+                                                                    />
+                                                                    <NumberInput
+                                                                        min="0"
+                                                                        value={
+                                                                            item.costo_unitario
+                                                                        }
+                                                                        className="block w-full py-1 mr-6"
+                                                                        onChange={(
+                                                                            e
+                                                                        ) =>
+                                                                            actualizarDetalle(
+                                                                                item.id,
+                                                                                "costo_unitario",
+                                                                                Number(
+                                                                                    e
+                                                                                        .target
+                                                                                        .value
+                                                                                )
                                                                             )
-                                                                        )
-                                                                    }
-                                                                />
-                                                            </div>
+                                                                        }
+                                                                    />
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
