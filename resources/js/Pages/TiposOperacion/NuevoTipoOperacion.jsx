@@ -30,7 +30,7 @@ export default function NuevoTipoOperacion({ auth }) {
     const lista_movimientos = [
         { id: 1, name: "Entrada" },
         { id: 2, name: "Salida" },
-        { id: 3, name: "Traslado" },
+        { id: 3, name: "Transferencia" },
     ];
 
     const [movimientos, setMovimientos] = useState([]);
