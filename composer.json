@@ -1,9 +1,16 @@
 {
-    "name": "laravel/laravel",
+    "name": "franklinnot/datpossystem",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Sistema de Ventas desarrollado por Franklin Baca Campos",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "franklinnot",
+            "email": "franklinnot@outlook.com",
+            "homepage": "https://github.com/franklinnot"
+        }
+    ],
     "require": {
         "php": "^8.1",
         "doctrine/dbal": "^3.9",
