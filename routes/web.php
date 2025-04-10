@@ -31,13 +31,6 @@ use Inertia\Response;
 |
 */
 
-// Rutas globales para usuarios NO autenticados
-Route::middleware('guest', 'no.cache')->group(function () {
-
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('login', [AuthenticatedSessionController::class, 'store'])->name('login');
-});
-
 // Rutas globales para usuarios autenticados
 Route::middleware(['auth', 'no.cache'])->group(function () {
 
