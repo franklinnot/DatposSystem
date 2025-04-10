@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Sistema de Ventas desarrollado por Franklin Baca Campos",
     "author": "Franklin Baca Campos <franklinnot@outlook.com> (https://github.com/franklinnot)",
+    "license": "MIT",
     "private": true,
     "type": "module",
     "scripts": {

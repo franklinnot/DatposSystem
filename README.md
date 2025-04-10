@@ -140,9 +140,9 @@ Sigue estos pasos para configurar y ejecutar el proyecto en tu entorno local:
 ## ✍️ Autor
 
 **Franklin Baca Campos**  
-- **LinkedIn:** [Franklin Not](https://www.linkedin.com/in/franklinnot/)  
+- **LinkedIn:** [Franklin Baca Campos](https://www.linkedin.com/in/franklinnot/)  
 - **GitHub:** [franklinnot](https://github.com/franklinnot)  
-- **Correo:** [tuemail@example.com](mailto:tuemail@example.com)
+- **Correo:** [franklinnot@outlook.com](mailto:franklinnot@outlook.com)
 
 Este proyecto fue diseñado y desarrollado con el objetivo de ser una solución práctica para la gestión comercial, así como un ejemplo de buenas prácticas en desarrollo web.
 
